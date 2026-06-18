@@ -1,22 +1,15 @@
 ---
-
 marp: true
 paginate: true
 transition: fade
-
-# PechaKucha: 6 slides, 20s auto-advance. Do not change the count.
-
-## auto-advance: 20
-
-<!-- slide 1 -->
+auto-advance: 20
+---
 
 # Who's my person?
 
 **Job seekers** who apply to many positions and want to keep applications organized while creating tailored cover letters quickly.
 
 ---
-
-<!-- slide 2 -->
 
 # Their problem
 
@@ -26,8 +19,6 @@ transition: fade
 * Follow-ups are often forgotten.
 
 ---
-
-<!-- slide 3 -->
 
 # What I built
 
@@ -40,8 +31,6 @@ A Claude Code workflow that:
 
 ---
 
-<!-- slide 4 -->
-
 # How I built it
 
 * **MCP:** Filesystem MCP reads `resume.md` and updates `applications.json`.
@@ -49,8 +38,6 @@ A Claude Code workflow that:
 * **Agent:** `application-tracker` flags applications with no status change for 10+ days.
 
 ---
-
-<!-- slide 5 -->
 
 # Why it matters
 
@@ -60,8 +47,6 @@ A Claude Code workflow that:
 * Reminds users when it's time to follow up.
 
 ---
-
-<!-- slide 6 -->
 
 # Done checklist
 

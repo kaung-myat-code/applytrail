@@ -1,1 +1,16 @@
-[]
+[
+  {
+    "company": "Unnamed (Nuxt.js + Laravel Fullstack role)",
+    "role": "Fullstack Developer",
+    "date_applied": "2026-06-18",
+    "status": "drafted",
+    "cover_letter_paragraph": "With two years of fullstack experience shipping features end to end — from building a React/TypeScript booking dashboard backed by 12 REST API endpoints at Brightlane Solutions, to maintaining a Vue.js inventory app used daily by 40 staff at Tigerwave — I'm comfortable owning features across the entire stack. My work on schema migrations, CI pipelines, and third-party integrations (Stripe webhooks) reflects the kind of reliable, independent delivery this role calls for, and I'm eager to bring that same ownership to a Nuxt.js and Laravel stack. I've also embraced AI-assisted tooling in my own workflow — whether scaffolding project structure, debugging across frontend and backend, or generating CLI tooling — and I'm excited by the prospect of working on a team that treats AI as a first-class productivity lever rather than an afterthought."
+  },
+  {
+    "company": "BitLab Digital",
+    "role": "Frontend Developer",
+    "date_applied": "2026-06-18",
+    "status": "drafted",
+    "cover_letter_paragraph": "My frontend experience maps directly onto your stack: at Tigerwave Apps, I maintained and extended a Vue.js application used daily by ~40 internal staff, giving me hands-on familiarity with Vue's component model, routing, and state patterns that translates naturally to the Vue 3 Composition API and Pinia you're using. At Brightlane Solutions, I deepened my TypeScript skills while building a React-based booking dashboard and designing 12 REST API endpoints — so I'm comfortable not just consuming APIs but understanding the contract from both sides. I'm drawn to this role's emphasis on accessibility and semantic HTML, and I'd welcome the chance to focus on a modern frontend toolchain (Vite, Tailwind, shadcn-vue) while collaborating closely with designers to ship polished, performant interfaces."
+  }
+]

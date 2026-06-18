@@ -65,8 +65,6 @@ A Claude Code workflow that:
 
 # Done checklist
 
-* ✅ Public GitHub repository
-* ✅ Filesystem MCP configured
-* ✅ Custom skill created
-* ✅ Custom agent created
-* ✅ `report.md` submitted
+* [X] repo public
+* [X] MCP + skill + agent used
+* [X] report.md in team repo

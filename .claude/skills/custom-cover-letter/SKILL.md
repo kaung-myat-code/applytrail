@@ -1,10 +1,10 @@
 ---
 
-name: cover-letter-style
+name: custom-cover-letter
 description: Drafts a tailored cover letter paragraph by matching resume experience to a job posting.
 -----------------------------------------------------------------------------------------------------
 
-# Cover Letter Style
+# Custom Cover Letter
 
 Use this skill when the user provides:
 

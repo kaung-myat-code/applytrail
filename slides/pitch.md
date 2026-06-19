@@ -34,7 +34,7 @@ A Claude Code workflow that:
 # How I built it
 
 * **MCP:** Filesystem MCP reads `resume.md` and updates `applications.json`.
-* **Skill:** `cover-letter-style` matches resume experience to job requirements and follows my writing style.
+* **Skill:** `custom-cover-letter` matches resume experience to job requirements and follows my writing style.
 * **Agent:** `application-tracker` flags applications with no status change for 10+ days.
 
 ---

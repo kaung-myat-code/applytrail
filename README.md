@@ -63,7 +63,7 @@ Flag applications with no status change for 10+ days
 ├── applications.json
 ├── .claude/
 │   ├── skills/
-│   │   └── cover-letter-style/
+│   │   └── custom-cover-letter/
 │   │       └── SKILL.md
 │   └── agents/
 │       └── application-tracker.md
@@ -90,7 +90,7 @@ Used to:
 **File**
 
 ```text
-.claude/skills/cover-letter-style/SKILL.md
+.claude/skills/custom-cover-letter/SKILL.md
 ```
 
 Purpose:

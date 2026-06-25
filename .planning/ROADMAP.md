@@ -28,10 +28,10 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. App starts with a single command and loads in the browser
   2. Data persists across server restarts (JSON files survive stop/start)
   3. User can navigate between at least two placeholder pages via the app shell
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
-- [ ] 01-01: TBD
+- [ ] 01-01-PLAN.md — Scaffold monorepo, Express API, React Router, and resume.json migration
 
 ### Phase 2: Resume & Job Input
 **Mode:** mvp
@@ -89,7 +89,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/1 | Not started | - |
+| 1. Foundation | 0/1 | Planned | - |
 | 2. Resume & Job Input | 0/1 | Not started | - |
 | 3. Cover Letter Generation | 0/1 | Not started | - |
 | 4. Application Tracking | 0/1 | Not started | - |

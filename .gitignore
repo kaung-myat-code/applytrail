@@ -1,1 +1,39 @@
+# dependencies
+node_modules/
+
+# env
 .env
+.env.local
+
+# build outputs
+dist/
+build/
+client/dist/
+server/dist/
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
+
+# local data
+data/*.local.json
+
+
+# GSD local installation artifacts
+.claude/.gsd-profile
+.claude/gsd-core/
+.claude/gsd-file-manifest.json
+.claude/gsd-install-state.json
+.claude/gsd-migration-journal/
+.claude/hooks/
+.claude/package.json
+.claude/scripts/
+.claude/commands/gsd-*.md
+.claude/agents/gsd-*.md

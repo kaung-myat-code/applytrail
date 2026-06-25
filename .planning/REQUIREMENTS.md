@@ -58,24 +58,24 @@ Deferred to future release. Tracked but not in current roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| RESUME-01 | — | Pending |
-| RESUME-02 | — | Pending |
-| JOB-01 | — | Pending |
-| JOB-02 | — | Pending |
-| COVER-01 | — | Pending |
-| COVER-02 | — | Pending |
-| COVER-03 | — | Pending |
-| COVER-04 | — | Pending |
-| APP-01 | — | Pending |
-| APP-02 | — | Pending |
-| APP-03 | — | Pending |
-| APP-04 | — | Pending |
+| RESUME-01 | Phase 2 | Pending |
+| RESUME-02 | Phase 1 | Pending |
+| JOB-01 | Phase 2 | Pending |
+| JOB-02 | Phase 4 | Pending |
+| COVER-01 | Phase 3 | Pending |
+| COVER-02 | Phase 3 | Pending |
+| COVER-03 | Phase 3 | Pending |
+| COVER-04 | Phase 3 | Pending |
+| APP-01 | Phase 4 | Pending |
+| APP-02 | Phase 4 | Pending |
+| APP-03 | Phase 4 | Pending |
+| APP-04 | Phase 4 | Pending |
 
 **Coverage:**
 - v1 requirements: 12 total
-- Mapped to phases: 0
-- Unmapped: 12 ⚠️
+- Mapped to phases: 12
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-06-26*
-*Last updated: 2026-06-26 after initial definition*
+*Last updated: 2026-06-26 after roadmap revision*

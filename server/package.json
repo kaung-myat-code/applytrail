@@ -1,0 +1,11 @@
+{
+  "name": "applytrail-server",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0"
+  }
+}

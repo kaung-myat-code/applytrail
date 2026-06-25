@@ -1,0 +1,30 @@
+import { NavLink } from 'react-router-dom'
+import styles from './Navbar.module.css'
+
+const navLinks = [
+  { to: '/', label: 'Dashboard' },
+  { to: '/resume', label: 'Resume' },
+  { to: '/new', label: 'New Application' },
+  { to: '/applications', label: 'Applications' },
+]
+
+function Navbar() {
+  return (
+    <nav className={styles.navbar}>
+      {navLinks.map(({ to, label }) => (
+        <NavLink
+          key={to}
+          to={to}
+          end={to === '/'}
+          className={({ isActive }) =>
+            `${styles.link} ${isActive ? styles.active : ''}`
+          }
+        >
+          {label}
+        </NavLink>
+      ))}
+    </nav>
+  )
+}
+
+export default Navbar

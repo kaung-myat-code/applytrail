@@ -74,11 +74,10 @@ function CoverLetter() {
         })
       })
       const data = await res.json()
-      if (data.ok) {
-        setSavedApplication(data.application)
-      } else {
-        setError(data.error || 'Failed to save application')
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to save application')
       }
+      setSavedApplication(data.application)
     } catch {
       setError('Failed to save application')
     } finally {

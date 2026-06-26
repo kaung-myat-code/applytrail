@@ -35,7 +35,10 @@ function Applications() {
 
   useEffect(() => {
     fetch('/api/applications')
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error('Server error')
+        return res.json()
+      })
       .then(data => {
         setApplications(data)
         setLoading(false)
@@ -125,7 +128,7 @@ function Applications() {
               <span>{daysSinceLastChange(app)} days since last change</span>
             </div>
 
-            {isStale(app) && (
+            {isStale(app) && app.status !== 'withdrawn' && app.status !== 'rejected' && (
               <div className={styles.stale}>
                 <span>&#9888;</span> Needs follow-up ({daysSinceLastChange(app)} days)
               </div>

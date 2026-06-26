@@ -8,6 +8,10 @@ const DATA_DIR = path.join(__dirname, '..')
 
 app.use(express.json())
 
+function generateId() {
+  return Date.now().toString(36) + Math.random().toString(36).substring(2, 11)
+}
+
 function readJSON(filename) {
   const filePath = path.join(DATA_DIR, filename)
   if (!fs.existsSync(filePath)) {
@@ -29,7 +33,7 @@ function migrateApplications() {
 
   for (const app of applications) {
     if (!app.id) {
-      app.id = Date.now().toString() + Math.random().toString(36).substr(2, 9)
+      app.id = generateId()
       migrated = true
     }
     if (!app.last_status_change) {
@@ -74,7 +78,7 @@ app.post('/api/applications', (req, res) => {
   const now = new Date().toISOString().split('T')[0]
 
   const newApplication = {
-    id: Date.now().toString(),
+    id: generateId(),
     job_posting_id,
     company: posting.company,
     role: posting.role,
@@ -89,12 +93,14 @@ app.post('/api/applications', (req, res) => {
   res.json({ ok: true, application: newApplication })
 })
 
+const VALID_STATUSES = ['drafted', 'applied', 'interviewing', 'offered', 'rejected', 'withdrawn']
+
 app.put('/api/applications/:id', (req, res) => {
   const { id } = req.params
   const { status } = req.body
 
-  if (!status) {
-    return res.status(400).json({ error: 'status is required' })
+  if (!status || !VALID_STATUSES.includes(status)) {
+    return res.status(400).json({ error: `status must be one of: ${VALID_STATUSES.join(', ')}` })
   }
 
   const applications = readJSON('applications.json')
@@ -119,7 +125,7 @@ app.get('/api/job-postings', (req, res) => {
 app.post('/api/job-postings', (req, res) => {
   const postings = readJSON('job_postings.json')
   const newPosting = {
-    id: Date.now().toString(),
+    id: generateId(),
     company: req.body.company,
     role: req.body.role,
     posting_text: req.body.posting_text,

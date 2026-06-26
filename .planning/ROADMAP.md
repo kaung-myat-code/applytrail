@@ -187,7 +187,11 @@ Plans:
   3. MIT LICENSE file exists in the repository root
   4. Marp slides at `slides/pitch.md` describe the web app (not the CLI workflow)
   5. Architecture documentation, if included, accurately reflects the production deployment, OR remove it if DOC-05 is optional
-**Plans**: TBD
+**Plans**: 1/1 plans complete
+
+Plans:
+
+- [ ] 08-01-PLAN.md — LICENSE, README, Marp slides, and architecture diagram for public release
 
 ## Progress
 

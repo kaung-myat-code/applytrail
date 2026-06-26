@@ -5,6 +5,7 @@ milestone_name: Release Polish
 status: complete
 last_updated: "2026-06-27"
 last_activity: "2026-06-27"
+shipped_tag: "v1.1"
 uat:
   phase: "08-documentation-release"
   status: complete
@@ -105,5 +106,5 @@ Items acknowledged and carried forward from previous milestone close:
 ## Session Continuity
 
 Last session: 2026-06-27
-Stopped at: Phase 8 complete — v1.1 milestone shipped
+Stopped at: v1.1 milestone tagged and shipped
 Resume file: None

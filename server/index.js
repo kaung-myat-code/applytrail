@@ -25,6 +25,24 @@ app.get('/api/applications', (req, res) => {
   res.json(readJSON('applications.json'))
 })
 
+app.get('/api/job-postings', (req, res) => {
+  res.json(readJSON('job_postings.json'))
+})
+
+app.post('/api/job-postings', (req, res) => {
+  const postings = readJSON('job_postings.json')
+  const newPosting = {
+    id: Date.now().toString(),
+    company: req.body.company,
+    role: req.body.role,
+    posting_text: req.body.posting_text,
+    created_at: new Date().toISOString().split('T')[0]
+  }
+  postings.push(newPosting)
+  writeJSON('job_postings.json', postings)
+  res.json({ ok: true, posting: newPosting })
+})
+
 app.get('/api/resume', (req, res) => {
   res.json(readJSON('resume.json'))
 })

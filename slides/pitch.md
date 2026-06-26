@@ -5,6 +5,12 @@ transition: fade
 auto-advance: 20
 ---
 
+# ApplyTrail
+
+**Job Application Management — Web App**
+
+---
+
 # Who's my person?
 
 **Job seekers** who apply to many positions and want to keep applications organized while creating tailored cover letters quickly.
@@ -22,20 +28,34 @@ auto-advance: 20
 
 # What I built
 
-A Claude Code workflow that:
+A React + Express web app that:
 
-* Reads `resume.md`
-* Generates a tailored cover letter paragraph from a pasted job posting
-* Records the application in `applications.json`
-* Tracks applications that need follow-up
+* Edits resume with structured sections
+* Generates tailored cover letter paragraphs via keyword matching
+* Saves and tracks applications with status updates
+* Flags stale applications needing follow-up
+
+**Live:** https://applytrail.onrender.com
 
 ---
 
 # How I built it
 
-* **MCP:** Filesystem MCP reads `resume.md` and updates `applications.json`.
-* **Skill:** `custom-cover-letter` matches resume experience to job requirements and follows my writing style.
-* **Agent:** `application-tracker` flags applications with no status change for 10+ days.
+* **Frontend:** React 18 + Vite + React Router
+* **Backend:** Express 4 + JSON file storage
+* **Cover letters:** Keyword-matching heuristics that connect resume experience to job requirements
+* **Deployment:** Render free tier with auto-deploy from GitHub
+
+---
+
+# Key features
+
+* Resume editor with structured sections (experience, projects, skills, education)
+* Job posting input with company and role
+* Cover letter generation from resume-job matching
+* Application tracking with status management
+* Follow-up reminders for stale applications (10+ days)
+* Demo data seeded on first launch
 
 ---
 
@@ -45,11 +65,15 @@ A Claude Code workflow that:
 * Produces more personalized cover letters.
 * Keeps all applications in one place.
 * Reminds users when it's time to follow up.
+* No login required — runs locally or on Render.
 
 ---
 
 # Done checklist
 
-* [X] repo public
-* [X] MCP + skill + agent used
-* [X] report.md in team repo
+* [x] React + Express web app
+* [x] Resume editing
+* [x] Cover letter generation
+* [x] Application tracking
+* [x] Live on Render
+* [x] Demo data seeded

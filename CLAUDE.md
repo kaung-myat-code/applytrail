@@ -153,28 +153,54 @@ A local web MVP that migrates an existing Claude Code job application workflow i
 
 ## System Overview
 
+**Development Mode:**
+
 ```text
 ┌─────────────────────────────────────────────────────────────┐
 │                      Browser (User)                          │
 │              React SPA on localhost:5173                      │
 └────────────────────────┬────────────────────────────────────┘
-                         │ HTTP (proxied)
+                         │ HTTP (Vite proxy)
                          ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                   Express API Server                          │
 │                  localhost:3000                               │
 │  GET/PUT /api/resume    — resume.json CRUD                   │
 │  GET/POST /api/job-postings — job_postings.json CRUD         │
-│  GET /api/applications  — applications.json (read-only)      │
+│  GET/POST /api/applications — applications.json CRUD         │
+│  GET /api/health        — health check                       │
 └──────────┬──────────────────────────────────┬───────────────┘
            │                                  │
            ▼                                  ▼
 ┌─────────────────────────┐    ┌──────────────────────────────┐
 │    JSON File Storage     │    │    React Frontend (Vite)      │
 │    server/data/          │    │    client/src/                │
-│    - resume.json         │    │    - pages/ (Resume, etc.)   │
-│    - job_postings.json   │    │    - components/              │
-│    - applications.json   │    │    - App.jsx (Router)         │
+└─────────────────────────┘    └──────────────────────────────┘
+```
+
+**Production Mode (Render):**
+
+```text
+┌─────────────────────────────────────────────────────────────┐
+│                      Browser (User)                          │
+│            https://applytrail.onrender.com                    │
+└────────────────────────┬────────────────────────────────────┘
+                         │ HTTPS
+                         ▼
+┌─────────────────────────────────────────────────────────────┐
+│              Express (serves built React + API)               │
+│                  Port from $PORT                             │
+│  Static: client/dist/ (built React)                          │
+│  GET/PUT /api/resume    — resume.json CRUD                   │
+│  GET/POST /api/job-postings — job_postings.json CRUD         │
+│  GET/POST /api/applications — applications.json CRUD         │
+│  GET /api/health        — health check                       │
+└──────────┬──────────────────────────────────┬───────────────┘
+           │                                  │
+           ▼                                  ▼
+┌─────────────────────────┐    ┌──────────────────────────────┐
+│    JSON File Storage     │    │    Built React (client/dist/) │
+│    server/data/          │    │    Served by Express static   │
 └─────────────────────────┘    └──────────────────────────────┘
 ```
 
@@ -247,7 +273,7 @@ A local web MVP that migrates an existing Claude Code job application workflow i
 3. On submit, React sends `POST /api/job-postings`
 4. Express appends to `server/data/job_postings.json`
 
-### Cover Letter Generation (Phase 3 — planned)
+### Cover Letter Generation
 
 1. User selects a resume and job posting pair
 2. Client sends request to API
@@ -284,14 +310,19 @@ A local web MVP that migrates an existing Claude Code job application workflow i
 
 ## Entry Points
 
-**Web App:**
+**Production:**
+- Location: `https://applytrail.onrender.com`
+- Express serves both built React files and API from a single origin
+- Auto-deploys from GitHub main branch via Render
+
+**Development (Web App):**
 - Location: `http://localhost:5173` (Vite dev server)
 - Triggers: Browser navigation
 - Routes: `/` (Dashboard), `/resume` (Resume Editor), `/applications/new` (Job Posting), `/applications` (Application List)
 
-**API Server:**
+**Development (API Server):**
 - Location: `http://localhost:3000`
-- Routes: `/api/resume`, `/api/job-postings`, `/api/applications`
+- Routes: `/api/resume`, `/api/job-postings`, `/api/applications`, `/api/health`
 
 **Legacy CLI (still available):**
 - Location: User pastes job posting in Claude Code CLI

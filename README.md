@@ -1,48 +1,61 @@
 # ApplyTrail
 
-A local web app for managing job applications — from resume editing to cover letter generation to application tracking.
+[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)](https://react.dev/)
+[![Express](https://img.shields.io/badge/Express-4-000000?logo=express&logoColor=white)](https://expressjs.com/)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Deploy](https://img.shields.io/badge/Deploy-Render-46E3B7?logo=render&logoColor=white)](https://render.com/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+A web app for managing job applications — from resume editing to cover letter generation to application tracking.
+
+**Live Demo:** https://applytrail.onrender.com
+
+---
+
+## Screenshots
+
+![Dashboard](docs/screenshots/dashboard.png)
+*Application dashboard with status overview*
+
+![Resume Editor](docs/screenshots/resume-editor.png)
+*Structured resume editor*
+
+![Applications](docs/screenshots/applications.png)
+*Application tracking with follow-up alerts*
 
 ---
 
 ## What It Does
 
-ApplyTrail streamlines the job application process in a browser-based UI:
-
-1. Edit your resume with structured sections (experience, projects, skills, education)
-2. Paste job postings with company and role details
-3. Generate tailored cover letter paragraphs (Phase 3)
-4. Save and track applications with status updates (Phase 4)
-5. Get follow-up reminders for stale applications (Phase 4)
-
----
-
-## Who It Is For
-
-Job seekers who:
-
-* Apply to multiple jobs
-* Want personalized cover letters
-* Need a simple way to track applications
-* Often forget to follow up
+* Edit resume with structured sections (experience, projects, skills, education)
+* Paste job postings with company and role details
+* Generate tailored cover letter paragraphs via keyword matching
+* Save and track applications with status updates
+* Get follow-up reminders for stale applications (10+ days without status change)
+* Launch with demo data on first visit
 
 ---
 
 ## Tech Stack
 
-* **Frontend:** React 18 + Vite + React Router
-* **Backend:** Express 4 + Node.js
-* **Storage:** JSON files on disk
-* **Styling:** CSS Modules
+| Layer | Technology |
+|-------|------------|
+| Frontend | React 18, Vite, React Router |
+| Backend | Express 4, Node.js |
+| Storage | JSON files on disk |
+| Styling | CSS Modules |
+| Deployment | Render free tier |
 
 ---
 
 ## Getting Started
 
-```bash
-# Install dependencies
-npm install
+**Prerequisites:** Node.js 18+, npm
 
-# Start development servers (client + server)
+```bash
+git clone https://github.com/YOUR_USERNAME/applytrail.git
+cd applytrail
+npm install
 npm run dev
 ```
 
@@ -50,6 +63,8 @@ The app runs at:
 
 * Frontend: http://localhost:5173
 * API: http://localhost:3000
+
+Demo data is seeded automatically on first launch.
 
 ---
 
@@ -60,22 +75,20 @@ The app runs at:
 ├── client/                  # React frontend (Vite)
 │   └── src/
 │       ├── components/      # Reusable UI components
-│       │   ├── Navbar/      # Navigation bar
-│       │   └── SectionEditor.jsx  # Resume section wrapper
 │       ├── pages/           # Route pages
-│       │   ├── Dashboard.jsx
-│       │   ├── Resume.jsx   # Resume editor
-│       │   ├── NewApplication.jsx  # Job posting input
-│       │   └── Applications.jsx    # Application list (Phase 4)
 │       ├── App.jsx          # Layout + Router
 │       └── main.jsx         # Entry point
 ├── server/                  # Express API
-│   ├── index.js             # API routes
-│   └── data/                # JSON file storage
-│       ├── resume.json
-│       ├── job_postings.json
-│       └── applications.json
+│   ├── index.js             # API routes + production server
+│   ├── data/                # JSON file storage
+│   └── demo-data/           # Seed data for first launch
+├── docs/
+│   └── screenshots/         # App screenshots
+├── slides/
+│   └── pitch.md             # Marp presentation
+├── render.yaml              # Render deployment config
 ├── package.json             # Root config (concurrently)
+├── LICENSE                  # MIT License
 └── README.md
 ```
 
@@ -90,31 +103,32 @@ The app runs at:
 | GET | `/api/job-postings` | List job postings |
 | POST | `/api/job-postings` | Create job posting |
 | GET | `/api/applications` | List applications |
+| POST | `/api/applications` | Save application |
+| GET | `/api/health` | Health check |
 
 ---
 
-## Roadmap
+## Deployment
 
-- [x] **Phase 1:** Foundation — React + Express scaffold, JSON storage, app shell
-- [x] **Phase 2:** Resume & Job Input — Resume editor, job posting form
-- [ ] **Phase 3:** Cover Letter Generation — Keyword-matching heuristics
-- [ ] **Phase 4:** Application Tracking — Save, view, update, follow-up
+The app is deployed on Render free tier using the `render.yaml` blueprint.
+
+To deploy your own instance:
+
+1. Fork this repository
+2. Go to [Render](https://render.com) and create a new Blueprint
+3. Connect your GitHub account and select the forked repo
+4. Render detects `render.yaml` and auto-configures the service
+5. Click Apply — the app deploys in 2-5 minutes
+
+Environment variables:
+
+* `NODE_ENV=production` — enables helmet, compression, and static file serving (set in render.yaml)
+* `PORT` — auto-set by Render
+
+Data resets on each redeploy (acceptable for a portfolio demo).
 
 ---
 
-## Development
+## License
 
-This project uses a monorepo structure with concurrent development servers:
-
-* `npm run dev` — Start both client and server
-* `npm run client` — Start only Vite dev server
-* `npm run server` — Start only Express API
-
----
-
-## What I Learned
-
-* How to structure a React + Express monorepo
-* How to use CSS Modules for component-scoped styling
-* How to build reusable form components (SectionEditor)
-* How to set up Vite proxy for API requests
+This project is licensed under the MIT License — see [LICENSE](LICENSE) for details.

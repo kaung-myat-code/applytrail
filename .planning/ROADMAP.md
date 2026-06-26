@@ -7,7 +7,7 @@ A local web MVP that migrates a CLI-based job application workflow into a React 
 ## Milestones
 
 - [x] **v1.0 MVP** - Phases 1-4 (shipped 2026-06-26)
-- [ ] **v1.1 Release Polish** - Phases 5-8 (in progress)
+- [x] **v1.1 Release Polish** - Phases 5-8 (shipped 2026-06-27)
 
 ## Phases
 
@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 5: Deployment Readiness** - Production server serves built React files with security headers, compression, and environment-based config (completed 2026-06-27)
 - [x] **Phase 6: Demo Data & Seeding** - App launches with realistic demo data so portfolio visitors see a populated interface (completed 2026-06-27)
 - [x] **Phase 7: Production Deployment** - App is live and fully functional on a public Render URL (completed 2026-06-27)
-- [ ] **Phase 8: Documentation & Release** - Repository is polished with README, LICENSE, screenshots, and presentation materials
+- [x] **Phase 8: Documentation & Release** - Repository is polished with README, LICENSE, screenshots, and presentation materials (completed 2026-06-27)
 
 ## Phase Details
 
@@ -191,7 +191,7 @@ Plans:
 
 Plans:
 
-- [ ] 08-01-PLAN.md — LICENSE, README, Marp slides, and architecture diagram for public release
+- [x] 08-01-PLAN.md — LICENSE, README, Marp slides, and architecture diagram for public release
 
 ## Progress
 
@@ -207,4 +207,4 @@ Phases execute in numeric order: 5 -> 6 -> 7 -> 8
 | 5. Deployment Readiness | v1.1 | 1/1 | Complete | 2026-06-27 |
 | 6. Demo Data & Seeding | v1.1 | 1/1 | Complete | 2026-06-27 |
 | 7. Production Deployment | v1.1 | 1/1 | Complete | 2026-06-27 |
-| 8. Documentation & Release | v1.1 | 0/TBD | Not started | - |
+| 8. Documentation & Release | v1.1 | 1/1 | Complete | 2026-06-27 |

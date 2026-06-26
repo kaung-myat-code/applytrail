@@ -13,21 +13,21 @@
 ### Job Postings
 
 - [x] **JOB-01**: User can paste a job posting text into an application
-- [ ] **JOB-02**: Job posting is associated with the application entry
+- [x] **JOB-02**: Job posting is associated with the application entry
 
 ### Cover Letter Generation
 
-- [ ] **COVER-01**: User can generate a tailored cover letter paragraph from resume + job posting using keyword-matching heuristics
-- [ ] **COVER-02**: Cover letter logic matches resume skills and experience to job posting keywords
-- [ ] **COVER-03**: Generated cover letter is a concise, professional paragraph assembled from matching sections
-- [ ] **COVER-04**: User can copy generated cover letter to clipboard
+- [x] **COVER-01**: User can generate a tailored cover letter paragraph from resume + job posting using keyword-matching heuristics
+- [x] **COVER-02**: Cover letter logic matches resume skills and experience to job posting keywords
+- [x] **COVER-03**: Generated cover letter is a concise, professional paragraph assembled from matching sections
+- [x] **COVER-04**: User can copy generated cover letter to clipboard
 
 ### Application Tracking
 
-- [ ] **APP-01**: User can save an application with company, role, job posting, cover letter, status, and date
-- [ ] **APP-02**: User can view all saved applications in a list
-- [ ] **APP-03**: User can update application status (e.g., applied, interviewing, offered, rejected)
-- [ ] **APP-04**: User can see which applications need follow-up (10+ days without status change)
+- [x] **APP-01**: User can save an application with company, role, job posting, cover letter, status, and date
+- [x] **APP-02**: User can view all saved applications in a list
+- [x] **APP-03**: User can update application status (e.g., applied, interviewing, offered, rejected)
+- [x] **APP-04**: User can see which applications need follow-up (10+ days without status change)
 
 ## v2 Requirements
 
@@ -61,17 +61,18 @@ Deferred to future release. Tracked but not in current roadmap.
 | RESUME-01 | Phase 2 | Complete |
 | RESUME-02 | Phase 1 | Complete |
 | JOB-01 | Phase 2 | Complete |
-| JOB-02 | Phase 4 | Pending |
-| COVER-01 | Phase 3 | Pending |
-| COVER-02 | Phase 3 | Pending |
-| COVER-03 | Phase 3 | Pending |
-| COVER-04 | Phase 3 | Pending |
-| APP-01 | Phase 4 | Pending |
-| APP-02 | Phase 4 | Pending |
-| APP-03 | Phase 4 | Pending |
-| APP-04 | Phase 4 | Pending |
+| JOB-02 | Phase 4 | Complete |
+| COVER-01 | Phase 3 | Complete |
+| COVER-02 | Phase 3 | Complete |
+| COVER-03 | Phase 3 | Complete |
+| COVER-04 | Phase 3 | Complete |
+| APP-01 | Phase 4 | Complete |
+| APP-02 | Phase 4 | Complete |
+| APP-03 | Phase 4 | Complete |
+| APP-04 | Phase 4 | Complete |
 
 **Coverage:**
+
 - v1 requirements: 12 total
 - Mapped to phases: 12
 - Unmapped: 0

@@ -5,6 +5,7 @@ const navLinks = [
   { to: '/', label: 'Dashboard' },
   { to: '/resume', label: 'Resume' },
   { to: '/new', label: 'New Application' },
+  { to: '/cover-letter', label: 'Cover Letter' },
   { to: '/applications', label: 'Applications' },
 ]
 

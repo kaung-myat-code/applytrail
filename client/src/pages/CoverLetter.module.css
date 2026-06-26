@@ -1,0 +1,169 @@
+.page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.description {
+  color: var(--color-muted);
+  margin-bottom: 1.5rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.label {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+
+.select {
+  padding: 0.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+}
+
+.select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+.generateButton {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  align-self: flex-start;
+}
+
+.generateButton:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+.generateButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.result {
+  margin-top: 2rem;
+  background: var(--color-surface);
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.paragraph {
+  line-height: 1.7;
+  font-size: 1rem;
+  white-space: pre-wrap;
+  color: var(--color-text);
+}
+
+.resultActions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.copyButton {
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.copyButton:hover {
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.meta {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.error {
+  color: #ef4444;
+  font-size: 0.875rem;
+}
+
+.empty {
+  text-align: center;
+  padding: 3rem;
+  color: var(--color-muted);
+}
+
+.link {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+.link:hover {
+  opacity: 0.8;
+}
+
+.saveButton {
+  background: #059669;
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+.saveButton:hover:not(:disabled) {
+  background: #047857;
+}
+
+.saveButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.saved {
+  color: #059669;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.saved a {
+  color: #059669;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.saved a:hover {
+  opacity: 0.8;
+}

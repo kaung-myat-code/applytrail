@@ -101,3 +101,119 @@
   padding: 2rem;
   text-align: center;
 }
+
+.entryCard {
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+}
+
+.entryHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.entryRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.entryRow .input {
+  flex: 1;
+}
+
+.bulletList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.bulletRow {
+  display: flex;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.bulletRow .textarea {
+  flex: 1;
+  min-height: 48px;
+}
+
+.removeButton {
+  background: none;
+  border: none;
+  color: #ef4444;
+  cursor: pointer;
+  padding: 0.25rem;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+  line-height: 1;
+  align-self: center;
+}
+
+.removeButton:hover {
+  color: #dc2626;
+}
+
+.removeButton:disabled {
+  color: #d1d5db;
+  cursor: not-allowed;
+}
+
+.addButton {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  align-self: flex-start;
+}
+
+.addButton:hover {
+  opacity: 0.9;
+}
+
+.removeEntryButton {
+  background: none;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
+  align-self: flex-start;
+}
+
+.removeEntryButton:hover {
+  background: #fef2f2;
+}
+
+.skillsInput {
+  padding: 0.5rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 1rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+  width: 100%;
+}
+
+.skillsInput:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+}
+
+.skillsHint {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+  margin-top: 0.25rem;
+}

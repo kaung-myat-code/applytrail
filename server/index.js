@@ -1,12 +1,19 @@
 const express = require('express')
 const fs = require('fs')
 const path = require('path')
+const helmet = require('helmet')
+const compression = require('compression')
 const { generateCoverLetter } = require('./lib/cover-letter')
 
 const app = express()
 const DATA_DIR = path.join(__dirname, '..')
 
 app.use(express.json())
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(helmet({ contentSecurityPolicy: false }))
+  app.use(compression())
+}
 
 function generateId() {
   return Date.now().toString(36) + Math.random().toString(36).substring(2, 11)
@@ -53,6 +60,10 @@ function migrateApplications() {
 }
 
 migrateApplications()
+
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', uptime: process.uptime() })
+})
 
 app.get('/api/applications', (req, res) => {
   const applications = readJSON('applications.json')
@@ -164,6 +175,13 @@ app.post('/api/generate-cover-letter', (req, res) => {
 
   res.json({ ok: true, cover_letter_paragraph: paragraph })
 })
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '..', 'client', 'dist')))
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '..', 'client', 'dist', 'index.html'))
+  })
+}
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {

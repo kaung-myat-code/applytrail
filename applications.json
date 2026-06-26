@@ -55,7 +55,7 @@
     "company": "pitchIN",
     "role": "Fullstack Developer",
     "cover_letter_paragraph": "My background in software development with hands-on experience in React, Node.js, Express aligns well with your need for a Fullstack Developer at pitchIN. For instance, built and shipped a customer-facing booking dashboard in React and TypeScript, cutting average support-ticket resolution time by 30% by surfacing order history directly in the UI. Additionally, wrote unit tests with Jest for a previously untested billing module, raising coverage from 12% to 68% over four months. These kinds of results — designed and implemented 12 REST API endpoints in Node.js/Express backing the dashboard, with input validation and consistent error responses across all routes. — reflect the impact I aim to deliver. I would welcome the chance to bring this experience to the Fullstack Developer position and contribute to pitchIN's goals.",
-    "status": "drafted",
+    "status": "interviewing",
     "date_applied": "2026-06-26",
     "last_status_change": "2026-06-26"
   }

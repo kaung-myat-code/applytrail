@@ -1,0 +1,23 @@
+[
+  {
+    "id": "demo-posting-1",
+    "company": "Meridian Software",
+    "role": "Fullstack Developer",
+    "posting_text": "Meridian Software is looking for a Fullstack Developer to join our product team. You'll work with React, Node.js, and PostgreSQL to build features for our SaaS platform used by thousands of small businesses. We value clean REST API design, strong testing practices, and engineers who can own features end-to-end. Experience with CI/CD pipelines and cloud deployment is a plus.",
+    "created_at": "2026-06-05"
+  },
+  {
+    "id": "demo-posting-2",
+    "company": "Arclight Labs",
+    "role": "Frontend Engineer",
+    "posting_text": "Arclight Labs is hiring a Frontend Engineer to help build our next-generation analytics dashboard. You'll work primarily with React and TypeScript to create responsive, accessible interfaces. We're looking for someone with a strong eye for design, experience with component libraries, and the ability to collaborate closely with backend engineers on REST API contracts. Familiarity with testing frameworks like Jest is required.",
+    "created_at": "2026-06-15"
+  },
+  {
+    "id": "demo-posting-3",
+    "company": "Summit Platform Co.",
+    "role": "Backend Developer",
+    "posting_text": "Summit Platform Co. is seeking a Backend Developer to scale our core API infrastructure. You'll design and implement REST API endpoints in Node.js and Express, optimize PostgreSQL queries, and build integrations with third-party services. We need engineers who understand performance, can write thorough tests with Jest, and are comfortable with CI/CD workflows. Docker experience is a strong plus.",
+    "created_at": "2026-06-22"
+  }
+]

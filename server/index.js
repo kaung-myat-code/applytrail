@@ -7,6 +7,7 @@ const { generateCoverLetter } = require('./lib/cover-letter')
 
 const app = express()
 const DATA_DIR = path.join(__dirname, '..')
+const DEMO_DIR = path.join(__dirname, 'demo-data')
 
 app.use(express.json())
 
@@ -31,6 +32,49 @@ function readJSON(filename) {
 function writeJSON(filename, data) {
   const filePath = path.join(DATA_DIR, filename)
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2) + '\n', 'utf-8')
+}
+
+// Seed demo data on startup when data files are missing or empty
+function seedDemoData() {
+  const files = ['resume.json', 'job_postings.json', 'applications.json']
+
+  for (const filename of files) {
+    const dataPath = path.join(DATA_DIR, filename)
+    const demoPath = path.join(DEMO_DIR, filename)
+
+    // Check if demo source exists
+    if (!fs.existsSync(demoPath)) {
+      continue
+    }
+
+    // Check if data file needs seeding
+    let needsSeed = false
+    if (!fs.existsSync(dataPath)) {
+      needsSeed = true
+    } else {
+      try {
+        const raw = fs.readFileSync(dataPath, 'utf-8').trim()
+        if (!raw) {
+          needsSeed = true
+        } else {
+          const parsed = JSON.parse(raw)
+          if (filename === 'resume.json') {
+            needsSeed = typeof parsed === 'object' && !Array.isArray(parsed) && Object.keys(parsed).length === 0
+          } else {
+            needsSeed = Array.isArray(parsed) && parsed.length === 0
+          }
+        }
+      } catch {
+        needsSeed = true
+      }
+    }
+
+    if (needsSeed) {
+      const demoData = JSON.parse(fs.readFileSync(demoPath, 'utf-8'))
+      writeJSON(filename, demoData)
+      console.log(`Seeded ${filename} from demo data`)
+    }
+  }
 }
 
 // Migrate legacy application records (runs once at startup)
@@ -59,6 +103,7 @@ function migrateApplications() {
   }
 }
 
+seedDemoData()
 migrateApplications()
 
 app.get('/api/health', (req, res) => {

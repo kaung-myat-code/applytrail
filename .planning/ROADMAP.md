@@ -158,7 +158,7 @@ Plans:
 
 Plans:
 
-- [ ] 06-01-PLAN.md — Demo data files and server seeding mechanism
+- [x] 06-01-PLAN.md — Demo data files and server seeding mechanism
 
 ### Phase 7: Production Deployment
 
@@ -197,6 +197,6 @@ Phases execute in numeric order: 5 -> 6 -> 7 -> 8
 | 3. Cover Letter Generation | v1.0 | 2/2 | Complete | 2026-06-26 |
 | 4. Application Tracking | v1.0 | 1/1 | Complete | 2026-06-26 |
 | 5. Deployment Readiness | v1.1 | 1/1 | Ready | - |
-| 6. Demo Data & Seeding | v1.1 | 0/TBD | Not started | - |
+| 6. Demo Data & Seeding | v1.1 | 1/1 | Planned | - |
 | 7. Production Deployment | v1.1 | 0/TBD | Not started | - |
 | 8. Documentation & Release | v1.1 | 0/TBD | Not started | - |

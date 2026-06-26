@@ -1,0 +1,74 @@
+{
+  "name": "Jordan Rivera",
+  "contact": {
+    "email": "jordan.rivera.dev@demo.com",
+    "github": "github.com/jordanrivera-dev",
+    "location": "Austin, TX (open to remote)"
+  },
+  "summary": "Fullstack developer with 3 years of experience building web applications with React, Node.js, and PostgreSQL. Comfortable across the stack from REST API design to responsive UI implementation. Looking for a role where I can contribute to product development and grow as an engineer.",
+  "experience": [
+    {
+      "company": "Cloudbridge Technologies",
+      "role": "Fullstack Developer",
+      "period": "Jan 2025 – Present",
+      "bullets": [
+        "Built a customer dashboard with React and TypeScript that reduced support tickets by 35%",
+        "Designed and implemented REST API endpoints in Node.js and Express serving 10K+ daily requests",
+        "Improved PostgreSQL query performance by 40% through indexing and query optimization",
+        "Set up CI/CD pipelines with GitHub Actions, cutting deployment time from 20 minutes to 5"
+      ]
+    },
+    {
+      "company": "NovaByte Labs",
+      "role": "Junior Developer",
+      "period": "Jun 2023 – Dec 2024",
+      "bullets": [
+        "Contributed to a React-based internal tool used by 200+ employees across 4 departments",
+        "Built REST API integrations with third-party services (Stripe, SendGrid) using Node.js",
+        "Wrote Jest unit and integration tests, increasing code coverage from 55% to 82%",
+        "Participated in code reviews and agile sprint planning with a 6-person engineering team"
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Task Flow App",
+      "description": "A personal project management app with drag-and-drop boards and real-time updates.",
+      "bullets": [
+        "Built with React, Express, and PostgreSQL; deployed on Render with CI/CD from GitHub",
+        "Implemented WebSocket-based live updates and optimistic UI for seamless task editing"
+      ]
+    },
+    {
+      "name": "Open Source CLI Tool",
+      "description": "A command-line utility for scaffolding Express projects with common middleware preconfigured.",
+      "bullets": [
+        "Published to npm with 150+ weekly downloads; maintained with monthly dependency updates",
+        "Written in Node.js with comprehensive Jest test suite and GitHub Actions CI"
+      ]
+    }
+  ],
+  "skills": [
+    "JavaScript",
+    "TypeScript",
+    "React",
+    "Node.js",
+    "Express",
+    "PostgreSQL",
+    "REST API",
+    "Git",
+    "CI/CD",
+    "Jest",
+    "HTML",
+    "CSS",
+    "GitHub Actions",
+    "Docker"
+  ],
+  "education": [
+    {
+      "degree": "B.S. Computer Science",
+      "school": "University of Texas at Austin",
+      "year": "2023"
+    }
+  ]
+}

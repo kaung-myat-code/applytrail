@@ -1,0 +1,42 @@
+[
+  {
+    "id": "demo-app-1",
+    "job_posting_id": "demo-posting-1",
+    "company": "Meridian Software",
+    "role": "Fullstack Developer",
+    "cover_letter_paragraph": "I'm excited to apply for the Fullstack Developer role at Meridian Software. With three years of experience building web applications using React, Node.js, and PostgreSQL, I'm confident I can contribute to your SaaS platform from day one. At Cloudbridge Technologies, I built a customer dashboard that reduced support tickets by 35% and designed REST API endpoints handling over 10,000 daily requests. I'm drawn to Meridian's focus on clean API design and end-to-end ownership, which aligns with how I like to work. I'd welcome the chance to bring my skills in testing, CI/CD, and fullstack development to your product team.",
+    "status": "applied",
+    "date_applied": "2026-06-08",
+    "last_status_change": "2026-06-08"
+  },
+  {
+    "id": "demo-app-2",
+    "job_posting_id": "demo-posting-2",
+    "company": "Arclight Labs",
+    "role": "Frontend Engineer",
+    "cover_letter_paragraph": "I'd love to join Arclight Labs as a Frontend Engineer. My experience with React and TypeScript at Cloudbridge Technologies included building a customer dashboard used by hundreds of users, where I focused on responsive design and component reusability. I'm passionate about creating accessible interfaces and have worked closely with backend teams to align on REST API contracts. At NovaByte Labs, I contributed to an internal tool serving 200+ employees, which gave me a strong foundation in collaborative frontend development. I'm also experienced with Jest for unit and integration testing, which I understand is important to your team. I'm excited about the opportunity to bring this experience to Arclight's analytics platform.",
+    "status": "interviewing",
+    "date_applied": "2026-06-18",
+    "last_status_change": "2026-06-25"
+  },
+  {
+    "id": "demo-app-3",
+    "job_posting_id": "demo-posting-3",
+    "company": "Summit Platform Co.",
+    "role": "Backend Developer",
+    "cover_letter_paragraph": "I'm writing to express my interest in the Backend Developer position at Summit Platform Co. While my title has been Fullstack Developer, a significant portion of my work has focused on backend systems — I've designed REST API endpoints in Node.js and Express, optimized PostgreSQL queries for a 40% performance improvement, and built integrations with services like Stripe and SendGrid. I write thorough Jest tests and have set up CI/CD pipelines with GitHub Actions that reduced deployment time by 75%. I'm comfortable with Docker and have used it for local development environments. I'd be excited to bring this backend-focused experience to help scale Summit's API infrastructure.",
+    "status": "drafted",
+    "date_applied": "2026-06-27",
+    "last_status_change": "2026-06-27"
+  },
+  {
+    "id": "demo-app-4",
+    "job_posting_id": "demo-posting-1",
+    "company": "Meridian Software",
+    "role": "Fullstack Developer",
+    "cover_letter_paragraph": "I'm applying for the Fullstack Developer role at Meridian Software. As a developer with three years of experience in React, Node.js, and PostgreSQL, I've built production features end-to-end — from database design to user-facing interfaces. My recent work at Cloudbridge Technologies involved building a customer dashboard that cut support tickets by 35% and implementing REST APIs serving thousands of requests daily. I'm also experienced with CI/CD through GitHub Actions and believe in thorough testing with Jest. Meridian's product-focused engineering culture is exactly what I'm looking for, and I'd love to contribute to your platform.",
+    "status": "rejected",
+    "date_applied": "2026-06-02",
+    "last_status_change": "2026-06-10"
+  }
+]

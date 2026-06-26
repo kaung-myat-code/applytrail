@@ -1,154 +1,187 @@
 .page {
   max-width: 900px;
   margin: 0 auto;
-  padding: 2rem;
+}
+
+.page > h1 {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-2);
 }
 
 .description {
   color: var(--color-muted);
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-6);
+  font-size: 1rem;
 }
 
 .list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-4);
 }
 
 .card {
   background: var(--color-surface);
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 1.5rem;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--duration-normal) var(--ease-out),
+              transform var(--duration-normal) var(--ease-out);
+}
+
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 .cardHeader {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
 }
 
 .company {
-  font-weight: 600;
-  font-size: 1.125rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--color-text);
 }
 
 .role {
   color: var(--color-muted);
-  font-size: 0.875rem;
-  margin-top: 0.25rem;
+  font-size: 0.85rem;
+  margin-top: var(--space-1);
 }
 
 .statusBadge {
   display: inline-block;
-  padding: 0.25rem 0.75rem;
-  border-radius: 9999px;
-  font-size: 0.75rem;
-  font-weight: 500;
-  text-transform: capitalize;
+  padding: var(--space-1) var(--space-3);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
 }
 
-.statusDrafted {
-  background: #f3f4f6;
-  color: #6b7280;
-}
-
-.statusApplied {
-  background: #dbeafe;
-  color: #2563eb;
-}
-
-.statusInterviewing {
-  background: #fef3c7;
-  color: #d97706;
-}
-
-.statusOffered {
-  background: #d1fae5;
-  color: #059669;
-}
-
-.statusRejected {
-  background: #fee2e2;
-  color: #dc2626;
-}
-
-.statusWithdrawn {
-  background: #f3f4f6;
-  color: #6b7280;
-}
+.statusDrafted { background: #f3f4f6; color: #6b7280; }
+.statusApplied { background: var(--color-primary-light); color: var(--color-primary); }
+.statusInterviewing { background: var(--color-warning-bg); color: var(--color-warning); }
+.statusOffered { background: var(--color-success-bg); color: var(--color-success); }
+.statusRejected { background: var(--color-danger-bg); color: var(--color-danger); }
+.statusWithdrawn { background: #f3f4f6; color: #6b7280; }
 
 .meta {
   display: flex;
-  gap: 1.5rem;
-  margin-top: 0.75rem;
-  font-size: 0.875rem;
+  gap: var(--space-5);
+  margin-top: var(--space-3);
+  font-size: 0.8rem;
   color: var(--color-muted);
+}
+
+.meta span {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
 }
 
 .statusRow {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  margin-top: 0.75rem;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border-light);
 }
 
 .statusSelect {
-  padding: 0.25rem 0.5rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  font-family: inherit;
-  font-size: 0.875rem;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
   color: var(--color-text);
   background: var(--color-surface);
+  cursor: pointer;
+  transition: border-color var(--duration-fast);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%238a839b' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 2rem;
 }
 
 .statusSelect:focus {
   outline: none;
   border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus);
 }
 
 .stale {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
-  padding: 0.5rem;
-  background: #fef3c7;
-  border-radius: 4px;
-  color: #92400e;
-  font-size: 0.875rem;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-warning-bg);
+  border-radius: var(--radius-sm);
+  color: var(--color-warning);
+  font-size: 0.85rem;
+  font-weight: 500;
 }
 
 .success {
-  color: #059669;
-  font-size: 0.875rem;
-  margin-top: 0.5rem;
+  color: var(--color-success);
+  font-size: 0.8rem;
+  font-weight: 600;
+  animation: fadeInUp var(--duration-normal) var(--ease-out);
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .empty {
   text-align: center;
-  padding: 3rem;
+  padding: var(--space-10);
   color: var(--color-muted);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.empty p:first-child {
+  font-size: 1.1rem;
+  margin-bottom: var(--space-3);
 }
 
 .empty a {
   color: var(--color-primary);
-  text-decoration: underline;
+  text-decoration: none;
+  font-weight: 600;
 }
 
 .empty a:hover {
-  opacity: 0.8;
+  opacity: 0.7;
 }
 
 .loading {
   text-align: center;
-  padding: 3rem;
+  padding: var(--space-10);
   color: var(--color-muted);
+  font-size: 0.95rem;
 }
 
 .error {
-  color: #ef4444;
-  font-size: 0.875rem;
-  margin-top: 0.5rem;
+  color: var(--color-danger);
+  font-size: 0.85rem;
+  margin-bottom: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-danger-bg);
+  border-radius: var(--radius-sm);
 }

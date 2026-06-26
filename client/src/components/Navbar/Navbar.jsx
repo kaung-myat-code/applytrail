@@ -12,18 +12,23 @@ const navLinks = [
 function Navbar() {
   return (
     <nav className={styles.navbar}>
-      {navLinks.map(({ to, label }) => (
-        <NavLink
-          key={to}
-          to={to}
-          end={to === '/'}
-          className={({ isActive }) =>
-            `${styles.link} ${isActive ? styles.active : ''}`
-          }
-        >
-          {label}
-        </NavLink>
-      ))}
+      <NavLink to="/" className={styles.brand}>
+        ApplyTrail
+      </NavLink>
+      <div className={styles.links}>
+        {navLinks.map(({ to, label }) => (
+          <NavLink
+            key={to}
+            to={to}
+            end={to === '/'}
+            className={({ isActive }) =>
+              `${styles.link} ${isActive ? styles.active : ''}`
+            }
+          >
+            {label}
+          </NavLink>
+        ))}
+      </div>
     </nav>
   )
 }

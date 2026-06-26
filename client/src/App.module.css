@@ -1,9 +1,23 @@
 .app {
-  max-width: 1200px;
+  max-width: 1120px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 var(--space-5);
+  min-height: 100vh;
 }
 
 .main {
-  padding: 2rem 0;
+  padding: var(--space-8) 0 var(--space-10);
+  animation: fadeInUp var(--duration-slow) var(--ease-out) both;
+  animation-delay: 100ms;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

@@ -1,80 +1,110 @@
 .page {
   max-width: 800px;
   margin: 0 auto;
-  padding: 2rem;
+}
+
+.page > h1 {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-6);
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--space-1);
 }
 
 .label {
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .input,
 .textarea {
-  padding: 0.5rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  font-family: inherit;
-  font-size: 1rem;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
   color: var(--color-text);
   background: var(--color-surface);
+  transition: border-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out);
 }
 
 .input:focus,
 .textarea:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+  box-shadow: var(--shadow-focus);
+}
+
+.input::placeholder,
+.textarea::placeholder {
+  color: var(--color-muted);
 }
 
 .textarea {
   resize: vertical;
   min-height: 200px;
+  line-height: 1.6;
 }
 
 .submitButton {
   background: var(--color-primary);
   color: white;
   border: none;
-  padding: 0.75rem 2rem;
-  border-radius: 4px;
+  padding: var(--space-3) var(--space-8);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
+  font-family: var(--font-body);
   align-self: flex-start;
+  transition: all var(--duration-fast) var(--ease-out);
 }
 
 .submitButton:hover:not(:disabled) {
-  opacity: 0.9;
+  background: var(--color-primary-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 .submitButton:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 .message {
-  font-size: 0.875rem;
-  padding: 0.5rem;
+  font-size: 0.85rem;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  font-weight: 500;
 }
 
 .success {
-  color: #22c55e;
+  color: var(--color-success);
+  background: var(--color-success-bg);
 }
 
 .error {
-  color: #ef4444;
+  color: var(--color-danger);
+  background: var(--color-danger-bg);
 }

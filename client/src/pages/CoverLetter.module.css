@@ -1,169 +1,230 @@
 .page {
   max-width: 800px;
   margin: 0 auto;
-  padding: 2rem;
+}
+
+.page > h1 {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-2);
 }
 
 .description {
   color: var(--color-muted);
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-6);
+  font-size: 1rem;
 }
 
 .form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
 }
 
 .field {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: var(--space-1);
 }
 
 .label {
   font-weight: 600;
-  font-size: 0.875rem;
+  font-size: 0.8rem;
   color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .select {
-  padding: 0.5rem;
-  border: 1px solid #e0e0e0;
-  border-radius: 4px;
-  font-family: inherit;
-  font-size: 1rem;
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
   color: var(--color-text);
   background: var(--color-surface);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238a839b' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 2.5rem;
 }
 
 .select:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+  box-shadow: var(--shadow-focus);
 }
 
 .generateButton {
   background: var(--color-primary);
   color: white;
   border: none;
-  padding: 0.75rem 2rem;
-  border-radius: 4px;
+  padding: var(--space-3) var(--space-8);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
+  font-family: var(--font-body);
   align-self: flex-start;
+  transition: all var(--duration-fast) var(--ease-out);
 }
 
 .generateButton:hover:not(:disabled) {
-  opacity: 0.9;
+  background: var(--color-primary-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 .generateButton:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
+/* Result card */
 .result {
-  margin-top: 2rem;
+  margin-top: var(--space-6);
   background: var(--color-surface);
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 1.5rem;
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
+  animation: fadeInUp var(--duration-slow) var(--ease-out);
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .paragraph {
-  line-height: 1.7;
+  line-height: 1.8;
   font-size: 1rem;
   white-space: pre-wrap;
-  color: var(--color-text);
+  color: var(--color-text-secondary);
 }
 
 .resultActions {
   display: flex;
-  gap: 1rem;
+  gap: var(--space-4);
   align-items: center;
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 1px solid #e0e0e0;
+  margin-top: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border-light);
 }
 
 .copyButton {
   background: transparent;
   color: var(--color-primary);
   border: 1px solid var(--color-primary);
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   font-weight: 600;
+  font-family: var(--font-body);
+  transition: all var(--duration-fast) var(--ease-out);
 }
 
 .copyButton:hover {
-  background: rgba(37, 99, 235, 0.05);
+  background: var(--color-primary);
+  color: white;
 }
 
 .meta {
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   color: var(--color-muted);
 }
 
 .error {
-  color: #ef4444;
-  font-size: 0.875rem;
+  color: var(--color-danger);
+  font-size: 0.85rem;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-danger-bg);
+  border-radius: var(--radius-sm);
 }
 
 .empty {
   text-align: center;
-  padding: 3rem;
+  padding: var(--space-10);
   color: var(--color-muted);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.empty p:first-child {
+  font-size: 1.1rem;
+  margin-bottom: var(--space-3);
 }
 
 .link {
   color: var(--color-primary);
-  text-decoration: underline;
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity var(--duration-fast);
 }
 
 .link:hover {
-  opacity: 0.8;
+  opacity: 0.7;
 }
 
 .saveButton {
-  background: #059669;
+  background: var(--color-success);
   color: white;
   border: none;
-  padding: 0.75rem 2rem;
-  border-radius: 4px;
+  padding: var(--space-3) var(--space-8);
+  border-radius: var(--radius-md);
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
-  margin-top: 1rem;
+  font-family: var(--font-body);
+  margin-top: var(--space-4);
+  transition: all var(--duration-fast) var(--ease-out);
 }
 
 .saveButton:hover:not(:disabled) {
-  background: #047857;
+  background: var(--color-success-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
 }
 
 .saveButton:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 .saved {
-  color: #059669;
-  font-size: 0.875rem;
+  color: var(--color-success);
+  font-size: 0.85rem;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-success-bg);
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  animation: fadeInUp var(--duration-normal) var(--ease-out);
 }
 
 .saved a {
-  color: #059669;
+  color: var(--color-success);
   text-decoration: underline;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .saved a:hover {
-  opacity: 0.8;
+  opacity: 0.7;
 }

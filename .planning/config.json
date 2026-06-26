@@ -12,17 +12,17 @@
   "jina": false,
   "git": {
     "branching_strategy": "none",
-    "create_tag": true,
+    "create_tag": false,
     "phase_branch_template": "gsd/phase-{phase}-{slug}",
     "milestone_branch_template": "gsd/{milestone}-{slug}",
     "quick_branch_template": null
   },
   "workflow": {
-    "research": false,
-    "plan_check": false,
+    "research": true,
+    "plan_check": true,
     "verifier": true,
-    "nyquist_validation": true,
-    "auto_advance": true,
+    "nyquist_validation": false,
+    "auto_advance": false,
     "node_repair": true,
     "node_repair_budget": 2,
     "ui_phase": true,
@@ -45,7 +45,10 @@
     "post_planning_gaps": true,
     "security_enforcement": true,
     "security_asvs_level": 1,
-    "security_block_on": "high"
+    "security_block_on": "high",
+    "tdd_mode": false,
+    "ui_review": true,
+    "use_worktrees": true
   },
   "ship": {
     "pr_body_sections": [
@@ -86,5 +89,12 @@
     "source_grounding_authority": "grep"
   },
   "mode": "interactive",
-  "granularity": "standard"
+  "granularity": "standard",
+  "intel": {
+    "enabled": false
+  },
+  "graphify": {
+    "enabled": false,
+    "auto_update": false
+  }
 }

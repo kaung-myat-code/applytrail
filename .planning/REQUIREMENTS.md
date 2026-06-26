@@ -111,16 +111,36 @@ Deferred to future release. Tracked but not in current roadmap.
 | APP-02 | Phase 4 | Complete |
 | APP-03 | Phase 4 | Complete |
 | APP-04 | Phase 4 | Complete |
-| DEPLOY-01 — DEPLOY-09 | — | Pending |
-| DEMO-01 — DEMO-04 | — | Pending |
-| PROD-01 — PROD-04 | — | Pending |
-| DOC-01 — DOC-07 | — | Pending |
+| DEPLOY-01 | Phase 5 | Pending |
+| DEPLOY-02 | Phase 5 | Pending |
+| DEPLOY-03 | Phase 5 | Pending |
+| DEPLOY-04 | Phase 5 | Pending |
+| DEPLOY-05 | Phase 5 | Pending |
+| DEPLOY-06 | Phase 5 | Pending |
+| DEPLOY-07 | Phase 5 | Pending |
+| DEPLOY-08 | Phase 5 | Pending |
+| DEPLOY-09 | Phase 5 | Pending |
+| DEMO-01 | Phase 6 | Pending |
+| DEMO-02 | Phase 6 | Pending |
+| DEMO-03 | Phase 6 | Pending |
+| DEMO-04 | Phase 6 | Pending |
+| PROD-01 | Phase 7 | Pending |
+| PROD-02 | Phase 7 | Pending |
+| PROD-03 | Phase 7 | Pending |
+| PROD-04 | Phase 7 | Pending |
+| DOC-01 | Phase 8 | Pending |
+| DOC-02 | Phase 8 | Pending |
+| DOC-03 | Phase 8 | Pending |
+| DOC-04 | Phase 8 | Pending |
+| DOC-05 | Phase 8 | Pending |
+| DOC-06 | Phase 8 | Pending |
+| DOC-07 | Phase 8 | Pending |
 
 **Coverage:**
 
 - v1 requirements: 12 total, 12 mapped, 0 unmapped
-- v1.1 requirements: 24 total, 0 mapped (to be filled by roadmap)
+- v1.1 requirements: 24 total, 24 mapped, 0 unmapped
 
 ---
 *Requirements defined: 2026-06-26*
-*Last updated: 2026-06-26 — v1.1 Release Polish requirements added*
+*Last updated: 2026-06-26 — v1.1 Release Polish roadmap created, all 24 requirements mapped*

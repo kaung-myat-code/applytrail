@@ -2,7 +2,12 @@
 
 ## Overview
 
-A local web MVP that migrates a CLI-based job application workflow into a React + Express web app. The roadmap follows the natural user journey: scaffold the app, enter resume and job details, generate a tailored cover letter, then save and track the application. Each phase delivers a complete, verifiable user capability.
+A local web MVP that migrates a CLI-based job application workflow into a React + Express web app. v1.0 (Phases 1-4) delivered the core workflow: resume editing, job posting input, cover letter generation, and application tracking. v1.1 Release Polish (Phases 5-8) transforms it into a publicly deployed portfolio piece with production server configuration, demo data, live deployment on Render, and polished documentation.
+
+## Milestones
+
+- [x] **v1.0 MVP** - Phases 1-4 (shipped 2026-06-26)
+- [ ] **v1.1 Release Polish** - Phases 5-8 (in progress)
 
 ## Phases
 
@@ -13,12 +18,27 @@ A local web MVP that migrates a CLI-based job application workflow into a React 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
+<details>
+<summary>v1.0 MVP (Phases 1-4) - SHIPPED 2026-06-26</summary>
+
 - [x] **Phase 1: Foundation** - Project scaffolding with React + Express, JSON file storage, and basic app shell (completed 2026-06-25)
 - [x] **Phase 2: Resume & Job Input** - User can edit resume content and paste job postings in the browser (completed 2026-06-26)
 - [x] **Phase 3: Cover Letter Generation** - User can generate a tailored cover letter paragraph from resume and job posting (completed 2026-06-26)
 - [x] **Phase 4: Application Tracking** - User can save, view, update, and follow up on job applications (completed 2026-06-26)
 
+</details>
+
+### v1.1 Release Polish (In Progress)
+
+- [ ] **Phase 5: Deployment Readiness** - Production server serves built React files with security headers, compression, and environment-based config
+- [ ] **Phase 6: Demo Data & Seeding** - App launches with realistic demo data so portfolio visitors see a populated interface
+- [ ] **Phase 7: Production Deployment** - App is live and fully functional on a public Render URL
+- [ ] **Phase 8: Documentation & Release** - Repository is polished with README, LICENSE, screenshots, and presentation materials
+
 ## Phase Details
+
+<details>
+<summary>v1.0 MVP (Phases 1-4) - SHIPPED 2026-06-26</summary>
 
 ### Phase 1: Foundation
 
@@ -105,14 +125,69 @@ Plans:
 
 **UI hint**: yes
 
+</details>
+
+### Phase 5: Deployment Readiness
+
+**Goal**: App runs in production mode with Express serving built React files, security headers, compression, and environment-based configuration
+**Depends on**: Phase 4
+**Requirements**: DEPLOY-01, DEPLOY-02, DEPLOY-03, DEPLOY-04, DEPLOY-05, DEPLOY-06, DEPLOY-07, DEPLOY-08, DEPLOY-09
+**Success Criteria** (what must be TRUE):
+  1. User can run `npm run build && npm start` at the project root and see the app at localhost:3000
+  2. All frontend pages and API endpoints work correctly when served from a single Express origin (no CORS errors, no blank pages)
+  3. `GET /api/health` returns a JSON status response
+  4. Security headers (helmet) and response compression are active when `NODE_ENV=production`
+  5. All frontend fetch calls use relative URLs (`/api/...`) with no hardcoded `localhost:3000`
+**Plans**: TBD
+
+### Phase 6: Demo Data & Seeding
+
+**Goal**: App launches with representative demo data so portfolio visitors see a populated interface
+**Depends on**: Phase 5
+**Requirements**: DEMO-01, DEMO-02, DEMO-03, DEMO-04
+**Success Criteria** (what must be TRUE):
+  1. App displays representative demo resume, job postings, and applications on first launch
+  2. Demo applications cover multiple statuses (drafted, applied, interviewing, rejected) to showcase tracking features
+  3. Demo data contains fictional or intentionally shared sample information suitable for a public repository
+**Plans**: TBD
+
+### Phase 7: Production Deployment
+
+**Goal**: App is live and fully functional on a public URL via Render free tier
+**Depends on**: Phase 6
+**Requirements**: PROD-01, PROD-02, PROD-03, PROD-04
+**Success Criteria** (what must be TRUE):
+  1. App is accessible at a public `*.onrender.com` URL
+  2. All features work end-to-end on the deployed instance (resume editing, job posting input, cover letter generation, application tracking)
+  3. Production health check endpoint returns a successful response
+  4. Pushing to the main branch triggers automatic redeployment on Render
+**Plans**: TBD
+
+### Phase 8: Documentation & Release
+
+**Goal**: Repository is polished for public consumption with comprehensive documentation, screenshots, and presentation materials
+**Depends on**: Phase 7
+**Requirements**: DOC-01, DOC-02, DOC-03, DOC-04, DOC-05, DOC-06, DOC-07
+**Success Criteria** (what must be TRUE):
+  1. README contains project description, features list, tech stack, local setup instructions, and a working live demo link
+  2. README displays 3+ screenshots and tech/deployment badges
+  3. MIT LICENSE file exists in the repository root
+  4. Marp slides at `slides/pitch.md` describe the web app (not the CLI workflow)
+  5. Architecture documentation, if included, accurately reflects the production deployment, OR remove it if DOC-05 is optional
+**Plans**: TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4
+Phases execute in numeric order: 5 -> 6 -> 7 -> 8
 
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Foundation | 1/1 | Complete   | 2026-06-25 |
-| 2. Resume & Job Input | 4/4 | Complete | 2026-06-26 |
-| 3. Cover Letter Generation | 2/2 | Complete | 2026-06-26 |
-| 4. Application Tracking | 1/1 | Complete   | 2026-06-26 |
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 1. Foundation | v1.0 | 1/1 | Complete | 2026-06-25 |
+| 2. Resume & Job Input | v1.0 | 4/4 | Complete | 2026-06-26 |
+| 3. Cover Letter Generation | v1.0 | 2/2 | Complete | 2026-06-26 |
+| 4. Application Tracking | v1.0 | 1/1 | Complete | 2026-06-26 |
+| 5. Deployment Readiness | v1.1 | 0/TBD | Not started | - |
+| 6. Demo Data & Seeding | v1.1 | 0/TBD | Not started | - |
+| 7. Production Deployment | v1.1 | 0/TBD | Not started | - |
+| 8. Documentation & Release | v1.1 | 0/TBD | Not started | - |

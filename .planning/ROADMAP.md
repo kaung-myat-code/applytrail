@@ -51,11 +51,11 @@ Plans:
   3. User can paste a job posting text along with company name and role title
   4. Job posting text is saved and retrievable for later use
 
-**Plans**: TBD
+**Plans**: 1 plan
 
 Plans:
 
-- [ ] 02-01: TBD
+- [ ] 02-01-PLAN.md — Resume editor and job posting input forms with API persistence
 
 ### Phase 3: Cover Letter Generation
 
@@ -109,6 +109,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 1/1 | Complete   | 2026-06-25 |
-| 2. Resume & Job Input | 0/1 | Not started | - |
+| 2. Resume & Job Input | 0/1 | Planned | - |
 | 3. Cover Letter Generation | 0/1 | Not started | - |
 | 4. Application Tracking | 0/1 | Not started | - |

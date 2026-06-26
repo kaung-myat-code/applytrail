@@ -154,7 +154,11 @@ Plans:
   1. App displays representative demo resume, job postings, and applications on first launch
   2. Demo applications cover multiple statuses (drafted, applied, interviewing, rejected) to showcase tracking features
   3. Demo data contains fictional or intentionally shared sample information suitable for a public repository
-**Plans**: TBD
+**Plans**: 1/1 plans complete
+
+Plans:
+
+- [ ] 06-01-PLAN.md — Demo data files and server seeding mechanism
 
 ### Phase 7: Production Deployment
 

@@ -8,28 +8,43 @@ A local web MVP that migrates an existing Claude Code job application workflow i
 
 End-to-end job application workflow in a local web UI — from resume to cover letter to application tracking — so the user can manage their job search without touching the CLI.
 
+## Current Milestone: v1.1 Release Polish
+
+**Goal:** Prepare ApplyTrail for public release and portfolio presentation without changing core functionality.
+
+**Target features:**
+- Deployment readiness (env config, build optimization, production-ready server)
+- Production deployment (evaluate hosting platforms, select suitable option, automate deployment)
+- Documentation and licensing (README polish, LICENSE, contributing guide)
+- Screenshots, presentation slides, and release assets
+
 ## Requirements
 
 ### Validated
 
 - [x] User can add and edit resume text in the browser (Phase 2)
 - [x] User can paste a job posting and associate it with an application (Phase 2)
+- [x] User can generate a tailored cover letter paragraph via keyword-matching heuristics (Phase 3)
+- [x] User can save an application (company, role, job posting, cover letter, status, date) (Phase 4)
+- [x] User can view all saved applications in a list (Phase 4)
+- [x] User can see which applications need follow-up (10+ days without status change) (Phase 4)
 
 ### Active
 
-- [ ] User can generate a tailored cover letter paragraph via keyword-matching heuristics (no external AI API)
-- [ ] User can save an application (company, role, job posting, cover letter, status, date)
-- [ ] User can view all saved applications in a list
-- [ ] User can see which applications need follow-up (10+ days without status change)
+- [ ] App is deployment-ready with production configuration
+- [ ] App is deployed to a public hosting platform
+- [ ] Documentation is polished for public consumption
+- [ ] Release assets (screenshots, slides) are created
 
 ### Out of Scope
 
 - Authentication — single-user local tool, no login needed
 - Job scraping — user pastes postings manually
 - Email sending — out of MVP scope
-- Payment/billing — no monetization in Phase 1
-- External AI API — heuristics only, real LLM integration deferred to Phase 2
+- Payment/billing — no monetization
+- External AI API — heuristics only, real LLM integration deferred
 - Mobile responsive design — desktop-first for MVP
+- Core functionality changes — v1.1 is polish only, not new features
 
 ## Context
 
@@ -61,8 +76,9 @@ End-to-end job application workflow in a local web UI — from resume to cover l
 |----------|-----------|---------|
 | React + Express | Fast MVP development, clear frontend/backend separation | — Implemented (Phase 1) |
 | JSON file storage | Minimal setup, human-readable, matches existing data format | — Implemented (Phase 1) |
-| Keyword-matching for cover letters | No external API dependency, simple to implement and replace later | — Pending (Phase 3) |
+| Keyword-matching for cover letters | No external API dependency, simple to implement and replace later | — Implemented (Phase 3) |
 | No auth | Single-user local tool, reduces complexity | — Implemented (Phase 1) |
+| v1.1 = polish only | Prepare for public release without changing core functionality | — Active (v1.1) |
 
 ## Evolution
 
@@ -82,4 +98,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-06-26 after Phase 2 completion*
+*Last updated: 2026-06-26 — Milestone v1.1 Release Polish started*

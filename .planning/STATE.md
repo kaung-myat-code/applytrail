@@ -87,6 +87,12 @@ Items acknowledged and carried forward from previous milestone close:
 |----------|------|--------|-------------|
 | *(none)* | | | |
 
+## Quick Tasks Completed
+
+| Task | Slug | Completed | Commit |
+|------|------|-----------|--------|
+| Refactor stale documentation | refactor-stale-docs | 2026-06-26 | 75a0fdc |
+
 ## Session Continuity
 
 Last session: 2026-06-26T16:57:00.000Z

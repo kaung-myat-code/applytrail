@@ -31,8 +31,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 ### v1.1 Release Polish (In Progress)
 
 - [x] **Phase 5: Deployment Readiness** - Production server serves built React files with security headers, compression, and environment-based config (completed 2026-06-27)
-- [ ] **Phase 6: Demo Data & Seeding** - App launches with realistic demo data so portfolio visitors see a populated interface
-- [ ] **Phase 7: Production Deployment** - App is live and fully functional on a public Render URL
+- [x] **Phase 6: Demo Data & Seeding** - App launches with realistic demo data so portfolio visitors see a populated interface (completed 2026-06-27)
+- [x] **Phase 7: Production Deployment** - App is live and fully functional on a public Render URL (completed 2026-06-27)
 - [ ] **Phase 8: Documentation & Release** - Repository is polished with README, LICENSE, screenshots, and presentation materials
 
 ## Phase Details
@@ -174,7 +174,7 @@ Plans:
 
 Plans:
 
-- [ ] 07-01-PLAN.md — Deploy to Render and verify end-to-end functionality
+- [x] 07-01-PLAN.md — Deploy to Render and verify end-to-end functionality
 
 ### Phase 8: Documentation & Release
 
@@ -200,7 +200,7 @@ Phases execute in numeric order: 5 -> 6 -> 7 -> 8
 | 2. Resume & Job Input | v1.0 | 4/4 | Complete | 2026-06-26 |
 | 3. Cover Letter Generation | v1.0 | 2/2 | Complete | 2026-06-26 |
 | 4. Application Tracking | v1.0 | 1/1 | Complete | 2026-06-26 |
-| 5. Deployment Readiness | v1.1 | 1/1 | Ready | - |
-| 6. Demo Data & Seeding | v1.1 | 1/1 | Planned | - |
-| 7. Production Deployment | v1.1 | 1/1 | Planned | - |
+| 5. Deployment Readiness | v1.1 | 1/1 | Complete | 2026-06-27 |
+| 6. Demo Data & Seeding | v1.1 | 1/1 | Complete | 2026-06-27 |
+| 7. Production Deployment | v1.1 | 1/1 | Complete | 2026-06-27 |
 | 8. Documentation & Release | v1.1 | 0/TBD | Not started | - |

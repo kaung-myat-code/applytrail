@@ -127,3 +127,43 @@
 .link:hover {
   opacity: 0.8;
 }
+
+.saveButton {
+  background: #059669;
+  color: white;
+  border: none;
+  padding: 0.75rem 2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-top: 1rem;
+}
+
+.saveButton:hover:not(:disabled) {
+  background: #047857;
+}
+
+.saveButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.saved {
+  color: #059669;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.saved a {
+  color: #059669;
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.saved a:hover {
+  opacity: 0.8;
+}

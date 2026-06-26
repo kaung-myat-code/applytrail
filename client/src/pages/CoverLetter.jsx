@@ -9,6 +9,8 @@ function CoverLetter() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
+  const [savedApplication, setSavedApplication] = useState(null)
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     fetch('/api/job-postings')
@@ -25,6 +27,7 @@ function CoverLetter() {
     setError('')
     setCoverLetter('')
     setCopied(false)
+    setSavedApplication(null)
 
     try {
       const res = await fetch('/api/generate-cover-letter', {
@@ -54,6 +57,32 @@ function CoverLetter() {
       setTimeout(() => setCopied(false), 2000)
     } catch {
       setError('Failed to copy to clipboard')
+    }
+  }
+
+  async function handleSave() {
+    setSaving(true)
+    setError('')
+    try {
+      const res = await fetch('/api/applications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          job_posting_id: selectedId,
+          cover_letter_paragraph: coverLetter,
+          status: 'drafted'
+        })
+      })
+      const data = await res.json()
+      if (data.ok) {
+        setSavedApplication(data.application)
+      } else {
+        setError(data.error || 'Failed to save application')
+      }
+    } catch {
+      setError('Failed to save application')
+    } finally {
+      setSaving(false)
     }
   }
 
@@ -89,7 +118,7 @@ function CoverLetter() {
             className={styles.select}
             id="posting"
             value={selectedId}
-            onChange={e => setSelectedId(e.target.value)}
+            onChange={e => { setSelectedId(e.target.value); setSavedApplication(null) }}
             required
           >
             <option value="">Select a job posting...</option>
@@ -125,6 +154,20 @@ function CoverLetter() {
               {coverLetter.length} characters · {countSentences(coverLetter)} sentences
             </span>
           </div>
+
+          {!savedApplication ? (
+            <button
+              className={styles.saveButton}
+              onClick={handleSave}
+              disabled={saving}
+            >
+              {saving ? 'Saving...' : 'Save Application'}
+            </button>
+          ) : (
+            <div className={styles.saved}>
+              Application saved — <Link to="/applications">View in Applications</Link>
+            </div>
+          )}
         </div>
       )}
     </div>

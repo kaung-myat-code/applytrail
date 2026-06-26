@@ -4,13 +4,18 @@ milestone: v1.1
 milestone_name: Release Polish
 status: executing
 last_updated: "2026-06-27"
-last_activity: 2026-06-27
+last_activity: "2026-06-27"
+uat:
+  phase: "06-demo-data-seeding"
+  status: complete
+  passed: 4
+  issues: 0
 progress:
   total_phases: 4
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 1
   completed_plans: 1
-  percent: 25
+  percent: 50
 ---
 
 # Project State
@@ -20,16 +25,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-06-26)
 
 **Core value:** End-to-end job application workflow in a local web UI -- from resume to cover letter to application tracking
-**Current focus:** Phase 5 -- Deployment Readiness
+**Current focus:** Phase 6 -- Demo Data & Seeding
 
 ## Current Position
 
 Phase: 6 of 8 (Demo Data & Seeding)
-Plan: —
-Status: Ready to plan
-Last activity: 2026-06-27 -- Phase 5 completed (production server setup)
+Plan: 06-01-PLAN.md
+Status: Complete
+Last activity: 2026-06-27 -- Phase 6 executed (demo data + seeding)
 
-Progress: [██░░░░░░░░] 25%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 
@@ -48,6 +53,7 @@ Progress: [██░░░░░░░░] 25%
 | 03 Cover Letter Generation | 2 | ~10 min | ~5 min |
 | 04 Application Tracking | 1 | ~5 min | ~5 min |
 | 05 Deployment Readiness | 1 | ~3 min | ~3 min |
+| 06 Demo Data & Seeding | 1 | ~3 min | ~3 min |
 
 **Recent Trend:**
 
@@ -88,5 +94,5 @@ Items acknowledged and carried forward from previous milestone close:
 ## Session Continuity
 
 Last session: 2026-06-27
-Stopped at: Phase 5 complete, ready for Phase 6 (Demo Data & Seeding)
+Stopped at: Phase 6 complete, ready for Phase 7
 Resume file: None

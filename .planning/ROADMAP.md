@@ -170,7 +170,11 @@ Plans:
   2. All features work end-to-end on the deployed instance (resume editing, job posting input, cover letter generation, application tracking)
   3. Production health check endpoint returns a successful response
   4. Pushing to the main branch triggers automatic redeployment on Render
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+
+- [ ] 07-01-PLAN.md — Deploy to Render and verify end-to-end functionality
 
 ### Phase 8: Documentation & Release
 

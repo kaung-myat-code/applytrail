@@ -138,7 +138,12 @@ Plans:
   3. `GET /api/health` returns a JSON status response
   4. Security headers (helmet) and response compression are active when `NODE_ENV=production`
   5. All frontend fetch calls use relative URLs (`/api/...`) with no hardcoded `localhost:3000`
-**Plans**: TBD
+
+**Plans**: 1/1 plans complete
+
+Plans:
+
+- [ ] 05-01-PLAN.md — Production server setup (helmet, compression, health endpoint, static serving) and deployment configuration (render.yaml, .env.example, build/start scripts)
 
 ### Phase 6: Demo Data & Seeding
 

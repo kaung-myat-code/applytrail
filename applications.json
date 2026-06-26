@@ -13,10 +13,10 @@
     "company": "BitLab Digital",
     "role": "Frontend Developer",
     "date_applied": "2026-06-18",
-    "status": "drafted",
+    "status": "applied",
     "cover_letter_paragraph": "My frontend experience maps directly onto your stack: at Tigerwave Apps, I maintained and extended a Vue.js application used daily by ~40 internal staff, giving me hands-on familiarity with Vue's component model, routing, and state patterns that translates naturally to the Vue 3 Composition API and Pinia you're using. At Brightlane Solutions, I deepened my TypeScript skills while building a React-based booking dashboard and designing 12 REST API endpoints — so I'm comfortable not just consuming APIs but understanding the contract from both sides. I'm drawn to this role's emphasis on accessibility and semantic HTML, and I'd welcome the chance to focus on a modern frontend toolchain (Vite, Tailwind, shadcn-vue) while collaborating closely with designers to ship polished, performant interfaces.",
     "id": "1782472365782povye1iqi",
-    "last_status_change": "2026-06-18",
+    "last_status_change": "2026-06-26",
     "job_posting_id": ""
   },
   {

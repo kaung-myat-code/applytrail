@@ -4,21 +4,113 @@
 
 ## Project Type
 
-This is a **Claude Code workflow project**, not a traditional codebase. It has no source code, build system, or runtime. Quality is maintained through consistent markdown/JSON structure and Claude Code configuration patterns.
+This is a **React + Express web application** with a monorepo structure. The frontend is a React SPA built with Vite, and the backend is an Express API that reads/writes JSON files.
 
 ## File Formats
 
 **Data files:**
-- `applications.json` — Flat JSON array of application objects. Use lowercase snake_case keys (`date_applied`, `cover_letter_paragraph`, `status`). No nested objects. No schema version field.
-- `resume.md` — Structured markdown with H2 sections (`## Summary`, `## Experience`, `## Skills`, `## Education`). Bullet points use `-` prefix with 4-space indent.
+- `server/data/resume.json` — Resume data object with contact fields, summary, and arrays for experience, projects, skills, education
+- `server/data/job_postings.json` — JSON array of job posting objects with `id`, `company`, `role`, `job_posting`, `created_at`
+- `server/data/applications.json` — JSON array of application objects with `company`, `role`, `date_applied`, `status`, `cover_letter_paragraph`
 
 **Configuration files:**
-- `.mcp.json` — MCP server definitions. Standard JSON format.
-- `.gitignore` — Minimal. Currently only excludes `.env`.
+- `package.json` — Root config with `concurrently` for running client + server
+- `client/package.json` — React frontend dependencies
+- `server/package.json` — Express backend dependencies
+- `client/vite.config.js` — Vite config with API proxy
+- `.gitignore` — Excludes `node_modules`, `.env`, `client/dist`, `.DS_Store`
 
 **Documentation:**
-- `README.md` — Project overview with ASCII flow diagrams, `## Section` headers, and fenced code blocks (`text` language).
+- `README.md` — Project overview with tech stack, setup instructions, and project structure
 - `slides/pitch.md` — Marp-format presentation. Uses YAML frontmatter (`marp: true`, `paginate: true`, `transition: fade`, `auto-advance`).
+
+## React Conventions
+
+**Component structure:**
+- Functional components with hooks
+- File naming: `ComponentName.jsx` for components, `ComponentName.module.css` for styles
+- Directory structure: `components/` for reusable, `pages/` for route components
+
+**State management:**
+- `useState` for form state
+- `useEffect` for data fetching on mount
+- Controlled inputs for all form fields
+
+**Styling:**
+- CSS Modules for component-scoped styling
+- Global styles in `client/src/index.css`
+- CSS custom properties for design tokens (colors, spacing)
+
+## Express Conventions
+
+**Route structure:**
+- RESTful API routes under `/api/`
+- GET for reading, POST for creating, PUT for updating
+- JSON request/response bodies
+
+**File naming:**
+- Single `server/index.js` file for all routes (small app)
+- JSON files in `server/data/` directory
+
+**Error handling:**
+- Try/catch around file operations
+- Return 500 with error message on failure
+- Console.log for debugging
+
+## JSON Data Conventions
+
+**`resume.json` schema:**
+```json
+{
+  "name": "string",
+  "email": "string",
+  "github": "string",
+  "location": "string",
+  "summary": "string",
+  "experience": [{ "title": "string", "organization": "string", "bullets": ["string"] }],
+  "projects": [{ "title": "string", "organization": "string", "bullets": ["string"] }],
+  "skills": ["string"],
+  "education": [{ "title": "string", "organization": "string", "bullets": ["string"] }]
+}
+```
+
+**`job_postings.json` schema:**
+```json
+{
+  "id": "string (Date.now().toString())",
+  "company": "string",
+  "role": "string",
+  "job_posting": "string",
+  "created_at": "ISO 8601 date string"
+}
+```
+
+**`applications.json` schema:**
+```json
+{
+  "company": "string",
+  "role": "string",
+  "date_applied": "YYYY-MM-DD",
+  "status": "drafted|applied|...",
+  "cover_letter_paragraph": "string"
+}
+```
+
+- Dates use ISO 8601 format (`YYYY-MM-DD` or full ISO string)
+- Status values are lowercase single words
+- `cover_letter_paragraph` is a single paragraph, 4-6 sentences
+
+## CSS Module Conventions
+
+**Naming:**
+- Class names: camelCase (e.g., `formGroup`, `submitButton`)
+- File names: `ComponentName.module.css`
+- Import as: `import styles from './ComponentName.module.css'`
+
+**Structure:**
+- Component-specific styles in module files
+- Shared styles in `index.css` (CSS custom properties)
+- No external CSS frameworks (Tailwind, Bootstrap)
 
 ## Markdown Style
 
@@ -37,79 +129,30 @@ This is a **Claude Code workflow project**, not a traditional codebase. It has n
 - Use ` ```text ``` ` for non-language-specific content (file trees, flow diagrams)
 - Use ` ```language ``` ` for syntax-highlighted code
 
-**Frontmatter:**
-- Skills and agents use YAML frontmatter delimited by `---`
-- Fields: `name`, `description`, `tools`, `model`, `color`
-- Some files use `---` as section separators (not frontmatter) — see `application-tracker.md` line 15
+## Legacy Conventions
 
-## Agent Conventions
+**Agent files in `.claude/agents/`:**
+- Lowercase kebab-case naming
+- YAML frontmatter with `name`, `description`, `tools`, `model`, `color`
+- Read-only by default
 
-**File location:** `.claude/agents/<agent-name>.md`
+**Skill files in `.claude/skills/`:**
+- Lowercase kebab-case directory, `SKILL.md` file inside
+- YAML frontmatter with `name`, `description`
 
-**Naming:** Lowercase kebab-case (e.g., `application-tracker.md`)
-
-**Structure:**
-1. YAML frontmatter with `name`, `description`, `tools`, `model`, `color`
-2. Role statement ("You are an X assistant.")
-3. `## Task` — What the agent does
-4. `## Rules` — Constraints and guardrails
-5. `## Output Format` — Structured output template
-
-**Key pattern:** Agents are read-only by default. The `application-tracker` explicitly states "Do not modify `applications.json`."
-
-## Skill Conventions
-
-**File location:** `.claude/skills/<skill-name>/SKILL.md`
-
-**Naming:** Lowercase kebab-case directory, `SKILL.md` file inside
-
-**Structure:**
-1. YAML frontmatter with `name`, `description`
-2. `## Goal` — What the skill produces
-3. `## Tone` / `## Style Rules` — Writing guidelines
-4. `## Structure` — Output format requirements
-5. `## Keyword Matching` / `## Resume Mapping` — Domain-specific logic
-
-## JSON Data Conventions
-
-**`applications.json` schema:**
-```json
-{
-  "company": "string",
-  "role": "string",
-  "date_applied": "YYYY-MM-DD",
-  "status": "drafted|applied|...",
-  "cover_letter_paragraph": "string"
-}
-```
-
-- Dates use ISO 8601 format (`YYYY-MM-DD`)
-- Status values are lowercase single words
-- `cover_letter_paragraph` is a single paragraph, 4-6 sentences
-
-## GSD Framework Conventions
-
-**Agent files in `.claude/agents/gsd-*.md`:**
-- Follow GSD framework naming: `gsd-<role>.md`
-- All use `model: inherit`
-- All grant `tools: Read, Grep, Glob` (or subset)
-
-**Hook files in `.claude/hooks/`:**
-- JavaScript: `.js` extension
-- Shell scripts: `.sh` extension
-- CommonJS modules: `.cjs` extension
-- Naming: `gsd-<purpose>.<ext>`
-
-**Command files in `.claude/commands/`:**
-- Naming: `gsd-<command>.md`
-- All lowercase kebab-case
+**GSD Framework:**
+- Agent files: `gsd-<role>.md`
+- Hook files: `gsd-<purpose>.js` or `.sh`
+- Command files: `gsd-<command>.md`
 
 ## Where to Add New Content
 
-**New application entry:** Append to array in `applications.json`
+**New page component:** Create `client/src/pages/PageName.jsx` and `PageName.module.css`
+**New reusable component:** Create `client/src/components/ComponentName.jsx` and `ComponentName.module.css`
+**New API route:** Add to `server/index.js`
+**New data file:** Create in `server/data/`
 **New agent:** Create `.claude/agents/<name>.md` with frontmatter
 **New skill:** Create `.claude/skills/<name>/SKILL.md`
-**New hook:** Create `.claude/hooks/gsd-<name>.js` or `.sh`
 
 ---
 

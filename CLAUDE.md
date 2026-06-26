@@ -24,56 +24,70 @@ A local web MVP that migrates an existing Claude Code job application workflow i
 
 ## Languages
 
-- Markdown — All content files: resume, README, skill definitions, agent definitions, Marp slides
-- JavaScript (Node.js) — GSD hooks (`/.claude/hooks/*.js`), utility scripts (`/.claude/scripts/`)
-- JSON — Application data (`/applications.json`), MCP config (`/.mcp.json`), Claude settings (`/.claude/settings.local.json`)
-- Shell (Bash) — GSD hooks (`/.claude/hooks/*.sh`), session management
+- JavaScript (JSX) — React components and Express API (`client/src/**/*.jsx`, `server/index.js`)
+- CSS — Component styles via CSS Modules (`client/src/**/*.module.css`)
+- JSON — Application data (`server/data/*.json`), configuration files
+- Markdown — Documentation, planning files, legacy skills/agents
 
 ## Runtime
 
-- Node.js — Required for MCP server (`npx`), GSD hooks, and scripts
-- Homebrew Node.js at `/opt/homebrew/bin/node` (referenced in hook configs)
-- npm/npx — Used to run MCP server (`npx -y @modelcontextprotocol/server-filesystem`)
-- Lockfile: Not present (no `package-lock.json` at project root)
+- Node.js — Required for Express server and Vite
+- npm — Package management and script runner
+- Vite — Frontend dev server and build tool
+- Express 4 — Backend API server
 
 ## Frameworks & Tools
 
+- React 18 — Frontend UI library
+- React Router 6 — Client-side routing
+- Vite — Frontend build tool and dev server
+- Express 4 — Backend API framework
+- CSS Modules — Component-scoped styling
+- concurrently — Run client and server in parallel
 - Claude Code — AI coding assistant; primary interface for all workflows
 - GSD (Get Stuff Done) — Workflow orchestration framework layered on Claude Code
-- Marp — Markdown-based slide framework
-- `@modelcontextprotocol/server-filesystem` — Filesystem access for Claude Code
 
 ## Key Dependencies
 
-- `@modelcontextprotocol/server-filesystem` — Enables Claude Code to read `resume.md` and modify `applications.json`
+- `react`, `react-dom` — Frontend UI library
+- `react-router-dom` — Client-side routing
+- `express` — Backend API framework
+- `cors` — Cross-origin resource sharing for API
+- `concurrently` — Run multiple npm scripts in parallel
 - GSD Core (`/.claude/gsd-core/`) — Full workflow framework with agents, hooks, templates, and commands
 - Git — Version control; repo is on `main` branch
-- GitHub (implied) — Referenced in resume and README for CI/CD workflows
 
 ## Configuration
 
 - `.env` file listed in `.gitignore` — present but contents not readable (forbidden)
-- No `.env.example` or environment variable documentation found
-- No build step required — this is a documentation/workflow project, not a compiled application
+- `client/vite.config.js` — Vite config with API proxy to Express
 - `/.claude/settings.local.json` — Local settings with MCP server enablement, hook registrations, and permission rules
 - `/.claude/package.json` — Declares `{"type":"commonjs"}` for hook script module resolution
 
 ## Data Formats
 
+**resume.json:**
+- Object with contact fields (name, email, github, location) and summary
+- Arrays: experience, projects, education (each with title, organization, bullets)
+- Array: skills (strings)
+
+**job_postings.json:**
+- Array of job posting objects
+- Fields: `id`, `company`, `role`, `job_posting`, `created_at`
+
+**applications.json:**
 - Array of job application objects
 - Fields: `company`, `role`, `date_applied`, `status`, `cover_letter_paragraph`
 - Statuses observed: `drafted`, `applied`
 - Extended by agent with: `last_status_change`, `status_updated_at`, `updated_at`, `applied_at`
-- Structured Markdown resume with sections: Summary, Experience, Projects, Skills, Education
-- Used as source material for cover letter generation
 
 ## Platform Requirements
 
 - macOS (current environment: Darwin 25.5.0, Apple Silicon via Homebrew)
-- Claude Code CLI installed
-- Node.js available via Homebrew
+- Node.js 18+ (for Express and Vite)
+- npm (for package management)
 - Git installed
-- Not applicable — this is a local Claude Code workflow, not a deployed application
+- Browser (Chrome, Firefox, Safari)
 
 <!-- GSD:stack-end -->
 
@@ -140,97 +154,185 @@ A local web MVP that migrates an existing Claude Code job application workflow i
 ## System Overview
 
 ```text
-
+┌─────────────────────────────────────────────────────────────┐
+│                      Browser (User)                          │
+│              React SPA on localhost:5173                      │
+└────────────────────────┬────────────────────────────────────┘
+                         │ HTTP (proxied)
+                         ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   Express API Server                          │
+│                  localhost:3000                               │
+│  GET/PUT /api/resume    — resume.json CRUD                   │
+│  GET/POST /api/job-postings — job_postings.json CRUD         │
+│  GET /api/applications  — applications.json (read-only)      │
+└──────────┬──────────────────────────────────┬───────────────┘
+           │                                  │
+           ▼                                  ▼
+┌─────────────────────────┐    ┌──────────────────────────────┐
+│    JSON File Storage     │    │    React Frontend (Vite)      │
+│    server/data/          │    │    client/src/                │
+│    - resume.json         │    │    - pages/ (Resume, etc.)   │
+│    - job_postings.json   │    │    - components/              │
+│    - applications.json   │    │    - App.jsx (Router)         │
+└─────────────────────────┘    └──────────────────────────────┘
 ```
 
 ## Component Responsibilities
 
 | Component | Responsibility | File |
 |-----------|----------------|------|
-| Filesystem MCP | Provide Claude read/write access to project files | `.mcp.json` |
-| Cover Letter Skill | Match resume to job posting, generate tailored paragraph | `.claude/skills/custom-cover-letter/SKILL.md` |
-| Application Tracker Agent | Scan applications.json, flag stale entries needing follow-up | `.claude/agents/application-tracker.md` |
-| applications.json | Persist all job application records | `applications.json` |
-| resume.md | Store user resume content as skill input | `resume.md` |
+| Express API Server | REST API for resume, job postings, applications | `server/index.js` |
+| React Frontend | SPA with form-based UI for all user interactions | `client/src/` |
+| Vite Dev Server | Dev server with API proxy to Express | `client/vite.config.js` |
+| Resume Page | Edit all resume sections | `client/src/pages/Resume.jsx` |
+| NewApplication Page | Paste job posting with company and role | `client/src/pages/NewApplication.jsx` |
+| SectionEditor | Reusable component for list-based resume sections | `client/src/components/SectionEditor.jsx` |
+| resume.json | Persist resume data | `server/data/resume.json` |
+| job_postings.json | Persist job posting entries | `server/data/job_postings.json` |
+| applications.json | Persist application records | `server/data/applications.json` |
 
 ## Pattern Overview
 
-- Skill and Agent are Markdown-based instruction sets, not executable code
-- MCP server is the only runtime component (stdio-based filesystem access)
-- Data is a flat JSON array with no schema enforcement
-- No server, no database, no framework — purely Claude Code orchestration
+- React SPA with React Router for navigation
+- Express REST API with JSON file read/write
+- CSS Modules for component-scoped styling
+- Vite proxy eliminates CORS in development
+- No database — flat JSON files on disk
+- No authentication — single-user local tool
 
 ## Layers
 
-- Purpose: Bridge Claude Code to local filesystem
-- Location: `.mcp.json`
-- Contains: MCP server configuration (stdio transport)
-- Depends on: `@modelcontextprotocol/server-filesystem` npm package
-- Used by: Both skill and agent (implicit via Claude Code)
-- Purpose: Generate tailored cover letter paragraphs
-- Location: `.claude/skills/custom-cover-letter/SKILL.md`
-- Contains: Tone rules, structure rules, keyword mapping, resume-to-requirement mapping
-- Depends on: `resume.md` (read via MCP), job posting (user input)
-- Used by: Claude Code when user invokes the skill
-- Purpose: Audit applications for follow-up needs
-- Location: `.claude/agents/application-tracker.md`
-- Contains: Follow-up rules, date priority logic, output format template
-- Depends on: `applications.json` (read via MCP)
-- Used by: Claude Code when user invokes the agent
-- Purpose: Persist application data and resume content
-- Location: Project root (`applications.json`, `resume.md`)
-- Contains: JSON application records, Markdown resume
+**Frontend Layer (client/):**
+- Purpose: User interface for resume editing, job posting input, cover letter generation, and application tracking
+- Location: `client/src/`
+- Contains: React components, pages, CSS modules
+- Depends on: Express API (via fetch)
+- Key files: `App.jsx` (layout + router), `pages/Resume.jsx`, `pages/NewApplication.jsx`
+
+**API Layer (server/):**
+- Purpose: REST API bridging frontend to JSON file storage
+- Location: `server/index.js`
+- Contains: Express routes for resume, job postings, applications
+- Depends on: JSON files in `server/data/`
+- Key routes: `GET/PUT /api/resume`, `GET/POST /api/job-postings`, `GET /api/applications`
+
+**Data Layer (server/data/):**
+- Purpose: Persist all application data as human-readable JSON
+- Location: `server/data/`
+- Contains: `resume.json`, `job_postings.json`, `applications.json`
 - Depends on: Nothing (static files)
-- Used by: Skill (reads resume), Agent (reads applications), Skill output (writes applications)
+- Used by: Express API routes
+
+**Legacy Layer (.claude/):**
+- Purpose: Claude Code skills and agents for CLI-based workflow (pre-web-app)
+- Location: `.claude/skills/`, `.claude/agents/`
+- Contains: Cover letter skill, application tracker agent
+- Status: Still present but superseded by web app for primary workflow
 
 ## Data Flow
 
-### Cover Letter Generation
+### Resume Editing
 
-### Follow-up Tracking
+1. User navigates to Resume page
+2. React fetches `GET /api/resume` on mount
+3. User edits fields (controlled inputs)
+4. On save, React sends `PUT /api/resume` with updated JSON
+5. Express writes to `server/data/resume.json`
 
-- All state lives in `applications.json` — a flat JSON array
+### Job Posting Input
+
+1. User navigates to New Application page
+2. User fills in company, role, and job posting text
+3. On submit, React sends `POST /api/job-postings`
+4. Express appends to `server/data/job_postings.json`
+
+### Cover Letter Generation (Phase 3 — planned)
+
+1. User selects a resume and job posting pair
+2. Client sends request to API
+3. Server matches resume skills/experience to job posting keywords
+4. Server returns tailored cover letter paragraph
+
+**State Management:**
+- All state lives in JSON files on disk
 - No in-memory state, no caching, no session persistence
-- Each Claude Code conversation is stateless; files are the source of truth
+- Frontend uses React useState for form state
+- Files are the source of truth
 
 ## Key Abstractions
 
+**Page Component:**
+- Purpose: Top-level route component with data fetching and form logic
+- Examples: `Resume.jsx`, `NewApplication.jsx`
+- Pattern: fetch-on-mount + controlled inputs + save handler
+
+**Section Editor:**
+- Purpose: Reusable wrapper for list-based resume sections (experience, projects, education)
+- Examples: `SectionEditor.jsx`
+- Pattern: Add/remove entries, add/remove bullets, controlled list
+
+**Legacy Skill (custom-cover-letter):**
 - Purpose: Declarative prompt that teaches Claude how to write cover letters
 - Examples: `.claude/skills/custom-cover-letter/SKILL.md`
 - Pattern: Markdown with frontmatter (name, description) + structured instructions
+
+**Legacy Agent (application-tracker):**
 - Purpose: Declarative prompt that teaches Claude how to audit applications
 - Examples: `.claude/agents/application-tracker.md`
 - Pattern: Markdown with frontmatter (name, description, tools, model, color) + task rules
 
 ## Entry Points
 
+**Web App:**
+- Location: `http://localhost:5173` (Vite dev server)
+- Triggers: Browser navigation
+- Routes: `/` (Dashboard), `/resume` (Resume Editor), `/applications/new` (Job Posting), `/applications` (Application List)
+
+**API Server:**
+- Location: `http://localhost:3000`
+- Routes: `/api/resume`, `/api/job-postings`, `/api/applications`
+
+**Legacy CLI (still available):**
 - Location: User pastes job posting in Claude Code CLI
 - Triggers: `/custom-cover-letter` skill invocation or natural language request
 - Responsibilities: Read resume, match skills, generate paragraph, log application
-- Location: User invokes `application-tracker` agent in Claude Code
-- Triggers: Explicit agent invocation
-- Responsibilities: Read applications, evaluate staleness, produce report
 
 ## Architectural Constraints
 
-- **No runtime code:** The project contains zero executable source files. All logic is encoded in Markdown prompts interpreted by Claude Code.
-- **Filesystem-only storage:** No database. `applications.json` is a flat file with no schema validation.
-- **MCP dependency:** Filesystem MCP must be running for Claude to read/write files. Configured in `.mcp.json`.
-- **No schema enforcement:** `applications.json` entries have inconsistent fields (e.g., some have `date_applied`, the agent expects `last_status_change`).
+- **JSON file storage:** No database. Data persists as flat JSON files with no schema validation.
+- **No authentication:** Single-user local tool. No login, no sessions.
+- **Monorepo structure:** Client and server in separate directories with separate package.json files.
+- **Vite proxy:** API requests from frontend are proxied through Vite to avoid CORS in development.
+- **No input validation:** API routes accept any JSON without schema validation.
 
 ## Anti-Patterns
 
 ### Inconsistent Date Fields
 
+**What happens:** `applications.json` uses `date_applied` but the agent expects `last_status_change`, `status_updated_at`, `updated_at`, or `applied_at`
+**Why it's wrong:** The agent cannot reliably determine staleness without a consistent date field
+**Do this instead:** Standardize on `date_applied` and `last_status_change` fields, update the agent to match
+
 ### No Schema Validation
+
+**What happens:** Any field can be added or omitted in JSON data files
+**Why it's wrong:** Frontend may break if expected fields are missing
+**Do this instead:** Define a minimal JSON schema or at least document required fields
 
 ## Error Handling
 
-- Agent flags entries with missing dates as "missing/unclear data" rather than crashing
-- Skill instructs Claude to "never invent skills, tools, industries, or achievements"
-- Agent rule: "Do not modify applications.json" (read-only audit)
+- API routes return 500 with error message on file read/write failure
+- Frontend uses alert() for save confirmation (to be improved)
+- No input validation on API routes
+- Legacy: Agent flags entries with missing dates as "missing/unclear data" rather than crashing
 
 ## Cross-Cutting Concerns
+
+**Logging:** Console.log in Express routes
+**Validation:** None — no schema validation on JSON files
+**Authentication:** None — local filesystem only, no auth needed
+**Styling:** CSS Modules for component scoping, shared CSS variables in index.css
 
 <!-- GSD:architecture-end -->
 

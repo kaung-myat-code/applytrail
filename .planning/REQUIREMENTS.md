@@ -7,12 +7,12 @@
 
 ### Resume Management
 
-- [ ] **RESUME-01**: User can add and edit resume text in the browser
-- [ ] **RESUME-02**: Resume content is stored persistently in a JSON file
+- [x] **RESUME-01**: User can add and edit resume text in the browser
+- [x] **RESUME-02**: Resume content is stored persistently in a JSON file
 
 ### Job Postings
 
-- [ ] **JOB-01**: User can paste a job posting text into an application
+- [x] **JOB-01**: User can paste a job posting text into an application
 - [ ] **JOB-02**: Job posting is associated with the application entry
 
 ### Cover Letter Generation
@@ -58,9 +58,9 @@ Deferred to future release. Tracked but not in current roadmap.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| RESUME-01 | Phase 2 | Pending |
-| RESUME-02 | Phase 1 | Pending |
-| JOB-01 | Phase 2 | Pending |
+| RESUME-01 | Phase 2 | Complete |
+| RESUME-02 | Phase 1 | Complete |
+| JOB-01 | Phase 2 | Complete |
 | JOB-02 | Phase 4 | Pending |
 | COVER-01 | Phase 3 | Pending |
 | COVER-02 | Phase 3 | Pending |
@@ -78,4 +78,4 @@ Deferred to future release. Tracked but not in current roadmap.
 
 ---
 *Requirements defined: 2026-06-26*
-*Last updated: 2026-06-26 after roadmap revision*
+*Last updated: 2026-06-26 after Phase 2 completion*

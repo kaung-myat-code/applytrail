@@ -1,19 +1,18 @@
-# applytrail
+# ApplyTrail
 
-A Claude Code workflow that generates tailored cover letter paragraphs, tracks job applications, and reminds users when applications need follow-up.
+A local web app for managing job applications — from resume editing to cover letter generation to application tracking.
 
 ---
 
 ## What It Does
 
-This project streamlines the job application process using Claude Code.
+ApplyTrail streamlines the job application process in a browser-based UI:
 
-Given a pasted job posting, Claude:
-
-1. Reads my resume from `resume.md`
-2. Generates a tailored cover letter paragraph
-3. Records the application in `applications.json`
-4. Tracks applications that need follow-up after 10 days without a status change
+1. Edit your resume with structured sections (experience, projects, skills, education)
+2. Paste job postings with company and role details
+3. Generate tailored cover letter paragraphs (Phase 3)
+4. Save and track applications with status updates (Phase 4)
+5. Get follow-up reminders for stale applications (Phase 4)
 
 ---
 
@@ -28,134 +27,94 @@ Job seekers who:
 
 ---
 
-## How It Works
+## Tech Stack
 
-```text
-Paste Job Posting
-        │
-        ▼
-Read resume.md
-        │
-        ▼
-Match skills & experience
-        │
-        ▼
-Generate cover letter
-        │
-        ▼
-Append entry to applications.json
-        │
-        ▼
-Application Tracker Agent
-        │
-        ▼
-Flag applications with no status change for 10+ days
-```
+* **Frontend:** React 18 + Vite + React Router
+* **Backend:** Express 4 + Node.js
+* **Storage:** JSON files on disk
+* **Styling:** CSS Modules
 
 ---
 
-## Project Files
+## Getting Started
+
+```bash
+# Install dependencies
+npm install
+
+# Start development servers (client + server)
+npm run dev
+```
+
+The app runs at:
+
+* Frontend: http://localhost:5173
+* API: http://localhost:3000
+
+---
+
+## Project Structure
 
 ```text
 .
-├── .mcp.json
-├── resume.md
-├── applications.json
-├── .claude/
-│   ├── skills/
-│   │   └── custom-cover-letter/
-│   │       └── SKILL.md
-│   └── agents/
-│       └── application-tracker.md
+├── client/                  # React frontend (Vite)
+│   └── src/
+│       ├── components/      # Reusable UI components
+│       │   ├── Navbar/      # Navigation bar
+│       │   └── SectionEditor.jsx  # Resume section wrapper
+│       ├── pages/           # Route pages
+│       │   ├── Dashboard.jsx
+│       │   ├── Resume.jsx   # Resume editor
+│       │   ├── NewApplication.jsx  # Job posting input
+│       │   └── Applications.jsx    # Application list (Phase 4)
+│       ├── App.jsx          # Layout + Router
+│       └── main.jsx         # Entry point
+├── server/                  # Express API
+│   ├── index.js             # API routes
+│   └── data/                # JSON file storage
+│       ├── resume.json
+│       ├── job_postings.json
+│       └── applications.json
+├── package.json             # Root config (concurrently)
 └── README.md
 ```
 
 ---
 
-## MCP / Skill / Agent
+## API Routes
 
-### Filesystem MCP
-
-Provides Claude Code with access to local project files.
-
-Used to:
-
-* Read `resume.md`
-* Read and update `applications.json`
-
----
-
-### Cover Letter Skill
-
-**File**
-
-```text
-.claude/skills/custom-cover-letter/SKILL.md
-```
-
-Purpose:
-
-* Match resume experience to job requirements
-* Follow my preferred tone and structure
-* Reuse relevant keywords naturally
-* Generate concise, professional cover letter paragraphs
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/resume` | Get resume data |
+| PUT | `/api/resume` | Update resume data |
+| GET | `/api/job-postings` | List job postings |
+| POST | `/api/job-postings` | Create job posting |
+| GET | `/api/applications` | List applications |
 
 ---
 
-### Application Tracker Agent
+## Roadmap
 
-**File**
-
-```text
-.claude/agents/application-tracker.md
-```
-
-Purpose:
-
-* Review `applications.json`
-* Detect applications with no status change for 10+ days
-* Recommend which applications need follow-up
+- [x] **Phase 1:** Foundation — React + Express scaffold, JSON storage, app shell
+- [x] **Phase 2:** Resume & Job Input — Resume editor, job posting form
+- [ ] **Phase 3:** Cover Letter Generation — Keyword-matching heuristics
+- [ ] **Phase 4:** Application Tracking — Save, view, update, follow-up
 
 ---
 
-## Example Workflow
+## Development
 
-```text
-Job Posting
-      │
-      ▼
-Claude reads resume.md
-      │
-      ▼
-Tailored Cover Letter
-      │
-      ▼
-Application Logged
-      │
-      ▼
-Later...
-      │
-      ▼
-Tracker Agent checks applications.json
-      │
-      ▼
-Follow-up reminder
-```
+This project uses a monorepo structure with concurrent development servers:
+
+* `npm run dev` — Start both client and server
+* `npm run client` — Start only Vite dev server
+* `npm run server` — Start only Express API
 
 ---
 
 ## What I Learned
 
-* How to use the Filesystem MCP to work with local files.
-* How a custom Skill improves writing consistency.
-* How a Subagent can automate a focused task.
-* The value of building one complete workflow before adding extra features.
-
----
-
-## Future Improvements
-
-* Import job postings from URLs.
-* Add customizable follow-up reminders.
-* Generate complete cover letters instead of a single paragraph.
-* Track interview dates and application outcomes.
+* How to structure a React + Express monorepo
+* How to use CSS Modules for component-scoped styling
+* How to build reusable form components (SectionEditor)
+* How to set up Vite proxy for API requests

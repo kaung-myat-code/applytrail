@@ -5,50 +5,78 @@
 ## Languages
 
 **Primary:**
-- Markdown — All content files: resume, README, skill definitions, agent definitions, Marp slides
+- JavaScript (JSX) — React components and Express API (`client/src/**/*.jsx`, `server/index.js`)
+- CSS — Component styles via CSS Modules (`client/src/**/*.module.css`)
 
 **Secondary:**
-- JavaScript (Node.js) — GSD hooks (`/.claude/hooks/*.js`), utility scripts (`/.claude/scripts/`)
-- JSON — Application data (`/applications.json`), MCP config (`/.mcp.json`), Claude settings (`/.claude/settings.local.json`)
-- Shell (Bash) — GSD hooks (`/.claude/hooks/*.sh`), session management
+- JSON — Application data (`server/data/*.json`), configuration files
+- Markdown — Documentation, planning files, legacy skills/agents
 
 ## Runtime
 
 **Environment:**
-- Node.js — Required for MCP server (`npx`), GSD hooks, and scripts
-- Homebrew Node.js at `/opt/homebrew/bin/node` (referenced in hook configs)
+- Node.js 18+ — Required for Express server and Vite
+- npm — Package management and script runner
 
 **Package Manager:**
-- npm/npx — Used to run MCP server (`npx -y @modelcontextprotocol/server-filesystem`)
-- Lockfile: Not present (no `package-lock.json` at project root)
+- npm — Used for dependency management and script execution
+- Lockfile: `package-lock.json` at project root
 
 ## Frameworks & Tools
 
-**Core Platform:**
+**Frontend:**
+- React 18 — Frontend UI library
+  - Config: `client/package.json`
+  - Entry point: `client/src/main.jsx`
+- React Router 6 — Client-side routing
+  - Routes: `/`, `/resume`, `/applications/new`, `/applications`
+- Vite — Frontend build tool and dev server
+  - Config: `client/vite.config.js`
+  - Dev server: `http://localhost:5173`
+  - API proxy to Express on port 3000
+
+**Backend:**
+- Express 4 — Backend API framework
+  - Config: `server/package.json`
+  - Entry point: `server/index.js`
+  - API server: `http://localhost:3000`
+- cors — Cross-origin resource sharing middleware
+
+**Styling:**
+- CSS Modules — Component-scoped styling
+  - Files: `client/src/**/*.module.css`
+  - Global styles: `client/src/index.css`
+
+**Development Tools:**
+- concurrently — Run client and server in parallel
+  - Config: Root `package.json` `dev` script
+
+**Legacy Tools (still present):**
 - Claude Code — AI coding assistant; primary interface for all workflows
 - GSD (Get Stuff Done) — Workflow orchestration framework layered on Claude Code
   - Version tracked in `/.claude/gsd-core/VERSION`
   - Provides agents, skills, hooks, commands, and planning infrastructure
-
-**Presentation:**
 - Marp — Markdown-based slide framework
-  - Config: YAML frontmatter in `/slides/pitch.md` (`marp: true`, `paginate: true`, `transition: fade`)
-  - Used for project pitch/demo slides
-
-**MCP (Model Context Protocol):**
+  - Config: YAML frontmatter in `/slides/pitch.md`
 - `@modelcontextprotocol/server-filesystem` — Filesystem access for Claude Code
   - Configured in `/.mcp.json`
-  - Grants Claude read/write access to project files
 
 ## Key Dependencies
 
-**Critical:**
-- `@modelcontextprotocol/server-filesystem` — Enables Claude Code to read `resume.md` and modify `applications.json`
-- GSD Core (`/.claude/gsd-core/`) — Full workflow framework with agents, hooks, templates, and commands
+**Frontend (client/package.json):**
+- `react`, `react-dom` — UI library
+- `react-router-dom` — Client-side routing
 
-**Infrastructure:**
-- Git — Version control; repo is on `main` branch
-- GitHub (implied) — Referenced in resume and README for CI/CD workflows
+**Backend (server/package.json):**
+- `express` — API framework
+- `cors` — CORS middleware
+
+**Root (package.json):**
+- `concurrently` — Run multiple npm scripts in parallel
+
+**Legacy:**
+- `@modelcontextprotocol/server-filesystem` — Enables Claude Code to read/write project files
+- GSD Core (`/.claude/gsd-core/`) — Full workflow framework with agents, hooks, templates, and commands
 
 ## Configuration
 
@@ -57,7 +85,8 @@
 - No `.env.example` or environment variable documentation found
 
 **Build:**
-- No build step required — this is a documentation/workflow project, not a compiled application
+- Vite builds frontend to `client/dist/`
+- Express serves from `server/` directly (no build step)
 
 **Claude Code Settings:**
 - `/.claude/settings.local.json` — Local settings with MCP server enablement, hook registrations, and permission rules
@@ -65,26 +94,32 @@
 
 ## Data Formats
 
-**`/applications.json`:**
+**`server/data/resume.json`:**
+- Object with contact fields (name, email, github, location) and summary
+- Arrays: experience, projects, education (each with title, organization, bullets)
+- Array: skills (strings)
+
+**`server/data/job_postings.json`:**
+- Array of job posting objects
+- Fields: `id`, `company`, `role`, `job_posting`, `created_at`
+
+**`server/data/applications.json`:**
 - Array of job application objects
 - Fields: `company`, `role`, `date_applied`, `status`, `cover_letter_paragraph`
 - Statuses observed: `drafted`, `applied`
 - Extended by agent with: `last_status_change`, `status_updated_at`, `updated_at`, `applied_at`
 
-**`/resume.md`:**
-- Structured Markdown resume with sections: Summary, Experience, Projects, Skills, Education
-- Used as source material for cover letter generation
-
 ## Platform Requirements
 
 **Development:**
 - macOS (current environment: Darwin 25.5.0, Apple Silicon via Homebrew)
-- Claude Code CLI installed
-- Node.js available via Homebrew
+- Node.js 18+ (for Express and Vite)
+- npm (for package management)
 - Git installed
+- Browser (Chrome, Firefox, Safari)
 
 **Production:**
-- Not applicable — this is a local Claude Code workflow, not a deployed application
+- Not applicable — this is a local development tool, not a deployed application
 
 ---
 

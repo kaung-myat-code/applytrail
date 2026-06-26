@@ -4,23 +4,29 @@
 
 ## APIs & External Services
 
-**MCP Filesystem Server:**
-- `@modelcontextprotocol/server-filesystem` — Provides Claude Code with local filesystem access
-  - Transport: stdio (local process, not network)
-  - Config: `/.mcp.json`
-  - Scope: Project root directory (`.`)
-  - Used for: Reading `resume.md`, reading/writing `applications.json`
+**Express API Server:**
+- REST API for resume, job postings, and applications
+  - Transport: HTTP (localhost:3000)
+  - Routes: `GET/PUT /api/resume`, `GET/POST /api/job-postings`, `GET /api/applications`
+  - Used by: React frontend via fetch
 
-**No other external APIs or services are directly integrated.** The project is a self-contained Claude Code workflow.
+**Vite Dev Server:**
+- Frontend development server with API proxy
+  - Transport: HTTP (localhost:5173)
+  - Proxy: `/api/*` requests forwarded to Express on port 3000
+  - Used by: Browser
+
+**No other external APIs or services are directly integrated.** The project is a self-contained local web app.
 
 ## Data Storage
 
-**Local JSON File:**
-- `/applications.json` — Primary data store for job applications
+**Local JSON Files:**
+- `server/data/resume.json` — Resume data (contact, summary, experience, projects, skills, education)
+- `server/data/job_postings.json` — Job posting entries (company, role, job posting text)
+- `server/data/applications.json` — Job application records (company, role, date, status, cover letter)
   - Format: JSON array of objects
-  - Fields: `company`, `role`, `date_applied`, `status`, `cover_letter_paragraph`
-  - Read by: Claude Code via MCP filesystem server, `application-tracker` agent
-  - Written by: Claude Code during cover letter workflow
+  - Read by: Express API routes
+  - Written by: Express API routes
 
 **No databases, file storage services, or caching layers.**
 
@@ -36,7 +42,7 @@
 
 **Error Tracking:** None
 
-**Logs:** None — no logging infrastructure
+**Logs:** Console.log in Express routes
 
 **GSD Hooks (observability-like):**
 - `/.claude/hooks/gsd-context-monitor.js` — Monitors Claude Code context usage
@@ -46,24 +52,24 @@
 
 ## CI/CD & Deployment
 
-**Hosting:** Not applicable — local workflow only
+**Hosting:** Not applicable — local development tool only
 
 **CI Pipeline:** None configured for this project
 
 **Version Control:**
 - Git repository on `main` branch
-- `.gitignore` excludes `.env` and `.DS_Store`
+- `.gitignore` excludes `node_modules`, `.env`, `client/dist`, `.DS_Store`
 
 ## Claude Code Integrations
 
-**Skills (1 active):**
+**Legacy Skills (1 active):**
 - `custom-cover-letter` (`/.claude/skills/custom-cover-letter/SKILL.md`)
   - Trigger: User provides a job posting
   - Reads: `resume.md`
   - Produces: Tailored cover letter paragraph
   - Writes to: `applications.json` (appends new entry)
 
-**Agents (1 active for this project):**
+**Legacy Agents (1 active for this project):**
 - `application-tracker` (`/.claude/agents/application-tracker.md`)
   - Tools: Read, Grep, Glob
   - Reads: `applications.json`

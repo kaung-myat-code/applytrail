@@ -14,7 +14,7 @@ A local web MVP that migrates a CLI-based job application workflow into a React 
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Project scaffolding with React + Express, JSON file storage, and basic app shell (completed 2026-06-25)
-- [ ] **Phase 2: Resume & Job Input** - User can edit resume content and paste job postings in the browser
+- [x] **Phase 2: Resume & Job Input** - User can edit resume content and paste job postings in the browser (completed 2026-06-26)
 - [ ] **Phase 3: Cover Letter Generation** - User can generate a tailored cover letter paragraph from resume and job posting
 - [ ] **Phase 4: Application Tracking** - User can save, view, update, and follow up on job applications
 
@@ -51,11 +51,14 @@ Plans:
   3. User can paste a job posting text along with company name and role title
   4. Job posting text is saved and retrievable for later use
 
-**Plans**: 1 plan
+**Plans**: 4/4 plans complete
 
 Plans:
 
-- [ ] 02-01-PLAN.md — Resume editor and job posting input forms with API persistence
+- [x] 02-01-PLAN.md — API verification for resume routes
+- [x] 02-02-PLAN.md — Basic resume editor UI
+- [x] 02-03-PLAN.md — Sections editor (experience, projects, skills, education)
+- [x] 02-04-PLAN.md — Job posting input form and API routes
 
 ### Phase 3: Cover Letter Generation
 
@@ -109,6 +112,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 1/1 | Complete   | 2026-06-25 |
-| 2. Resume & Job Input | 0/1 | Planned | - |
-| 3. Cover Letter Generation | 0/1 | Not started | - |
+| 2. Resume & Job Input | 4/4 | Complete | 2026-06-26 |
+| 3. Cover Letter Generation | 0/1 | Ready | - |
 | 4. Application Tracking | 0/1 | Not started | - |

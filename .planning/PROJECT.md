@@ -12,12 +12,11 @@ End-to-end job application workflow in a local web UI — from resume to cover l
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] User can add and edit resume text in the browser (Phase 2)
+- [x] User can paste a job posting and associate it with an application (Phase 2)
 
 ### Active
 
-- [ ] User can add and edit resume text in the browser
-- [ ] User can paste a job posting and associate it with an application
 - [ ] User can generate a tailored cover letter paragraph via keyword-matching heuristics (no external AI API)
 - [ ] User can save an application (company, role, job posting, cover letter, status, date)
 - [ ] User can view all saved applications in a list
@@ -60,10 +59,10 @@ End-to-end job application workflow in a local web UI — from resume to cover l
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| React + Express | Fast MVP development, clear frontend/backend separation | — Pending |
-| JSON file storage | Minimal setup, human-readable, matches existing data format | — Pending |
-| Keyword-matching for cover letters | No external API dependency, simple to implement and replace later | — Pending |
-| No auth | Single-user local tool, reduces complexity | — Pending |
+| React + Express | Fast MVP development, clear frontend/backend separation | — Implemented (Phase 1) |
+| JSON file storage | Minimal setup, human-readable, matches existing data format | — Implemented (Phase 1) |
+| Keyword-matching for cover letters | No external API dependency, simple to implement and replace later | — Pending (Phase 3) |
+| No auth | Single-user local tool, reduces complexity | — Implemented (Phase 1) |
 
 ## Evolution
 
@@ -83,4 +82,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-06-26 after initialization*
+*Last updated: 2026-06-26 after Phase 2 completion*

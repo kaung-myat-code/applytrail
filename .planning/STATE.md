@@ -24,7 +24,7 @@ current_phase_name: Cover Letter Generation
 See: .planning/PROJECT.md (updated 2026-06-26)
 
 **Core value:** End-to-end job application workflow in a local web UI -- from resume to cover letter to application tracking
-**Current focus:** Phase 01 — Foundation
+**Current focus:** Phase 03 — Cover Letter Generation
 
 ## Current Position
 

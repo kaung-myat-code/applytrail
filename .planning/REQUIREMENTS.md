@@ -29,6 +29,44 @@
 - [x] **APP-03**: User can update application status (e.g., applied, interviewing, offered, rejected)
 - [x] **APP-04**: User can see which applications need follow-up (10+ days without status change)
 
+## v1.1 Requirements — Release Polish
+
+### Deployment Readiness
+
+- [ ] **DEPLOY-01**: Express serves built React static files from `client/dist/` in production mode with SPA catch-all route for client-side routing
+- [ ] **DEPLOY-02**: Health check endpoint (`GET /api/health`) returns server status for hosting platform monitoring
+- [ ] **DEPLOY-03**: Security headers are applied via helmet middleware in production mode
+- [ ] **DEPLOY-04**: Response compression is applied via compression middleware in production mode
+- [ ] **DEPLOY-05**: Environment-based configuration separates dev and prod behavior (`NODE_ENV` toggles)
+- [ ] **DEPLOY-06**: Root-level `package.json` has `build` and `start` scripts that build client and run production server
+- [ ] **DEPLOY-07**: All frontend fetch calls use relative URLs (`/api/...`) instead of hardcoded `localhost:3000`
+- [ ] **DEPLOY-08**: `render.yaml` blueprint exists with build command, start command, and environment configuration
+- [ ] **DEPLOY-09**: `.env.example` documents all configurable environment variables
+
+### Demo Data
+
+- [ ] **DEMO-01**: Demo resume data file exists with realistic content (name, experience, skills, education)
+- [ ] **DEMO-02**: Demo job postings data file exists with 2-3 realistic entries
+- [ ] **DEMO-03**: Demo applications data file exists with entries in various statuses (drafted, applied, interviewing, rejected)
+- [ ] **DEMO-04**: Server seeds data from demo files when production data directory is empty on startup
+
+### Production Deployment
+
+- [ ] **PROD-01**: App is deployed to Render free tier as a web service with auto-deploy from GitHub
+- [ ] **PROD-02**: Configure required Render environment variables, or document that none are required
+- [ ] **PROD-03**: Health check endpoint is verified working on deployed instance
+- [ ] **PROD-04**: Live demo URL is accessible and all features work end-to-end
+
+### Documentation & Release
+
+- [ ] **DOC-01**: README is updated with project description, features, tech stack, setup instructions, and live demo link
+- [ ] **DOC-02**: README includes links to 3+ screenshots
+- [ ] **DOC-03**: README includes tech stack and deployment badges (shields.io)
+- [ ] **DOC-04**: MIT LICENSE file exists in repository root
+- [ ] **DOC-05**: Architecture diagram is added or confirmed current
+- [ ] **DOC-06**: `slides/pitch.md` is updated for web app (currently references CLI workflow)
+- [ ] **DOC-07**: Release assets include 3+ screenshot files and optional demo GIF
+
 ## v2 Requirements
 
 Deferred to future release. Tracked but not in current roadmap.
@@ -50,9 +88,12 @@ Deferred to future release. Tracked but not in current roadmap.
 | Authentication | Single-user local tool, no login needed |
 | Job scraping | User pastes postings manually |
 | Email sending | Out of MVP scope |
-| Payment/billing | No monetization in Phase 1 |
-| External AI API | Heuristics only, real LLM integration deferred to v2 |
-| Full mobile optimization | Basic responsive layout included; deep mobile polish deferred |
+| Payment/billing | No monetization |
+| External AI API | Heuristics only, real LLM integration deferred |
+| Core functionality changes | v1.1 is polish only, not new features |
+| Database migration | Violates core JSON file storage constraint |
+| Docker | Unnecessary complexity for single-service app |
+| GitHub Actions CI/CD | No tests to run yet, Render auto-deploy sufficient |
 
 ## Traceability
 
@@ -70,13 +111,16 @@ Deferred to future release. Tracked but not in current roadmap.
 | APP-02 | Phase 4 | Complete |
 | APP-03 | Phase 4 | Complete |
 | APP-04 | Phase 4 | Complete |
+| DEPLOY-01 — DEPLOY-09 | — | Pending |
+| DEMO-01 — DEMO-04 | — | Pending |
+| PROD-01 — PROD-04 | — | Pending |
+| DOC-01 — DOC-07 | — | Pending |
 
 **Coverage:**
 
-- v1 requirements: 12 total
-- Mapped to phases: 12
-- Unmapped: 0
+- v1 requirements: 12 total, 12 mapped, 0 unmapped
+- v1.1 requirements: 24 total, 0 mapped (to be filled by roadmap)
 
 ---
 *Requirements defined: 2026-06-26*
-*Last updated: 2026-06-26 after Phase 2 completion*
+*Last updated: 2026-06-26 — v1.1 Release Polish requirements added*

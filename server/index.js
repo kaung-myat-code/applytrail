@@ -1,6 +1,7 @@
 const express = require('express')
 const fs = require('fs')
 const path = require('path')
+const { generateCoverLetter } = require('./lib/cover-letter')
 
 const app = express()
 const DATA_DIR = path.join(__dirname, '..')
@@ -50,6 +51,26 @@ app.get('/api/resume', (req, res) => {
 app.put('/api/resume', (req, res) => {
   writeJSON('resume.json', req.body)
   res.json({ ok: true })
+})
+
+app.post('/api/generate-cover-letter', (req, res) => {
+  const { job_posting_id } = req.body
+
+  if (!job_posting_id) {
+    return res.status(400).json({ error: 'job_posting_id is required' })
+  }
+
+  const postings = readJSON('job_postings.json')
+  const posting = postings.find(p => p.id === job_posting_id)
+
+  if (!posting) {
+    return res.status(404).json({ error: 'Job posting not found' })
+  }
+
+  const resume = readJSON('resume.json')
+  const paragraph = generateCoverLetter(resume, posting)
+
+  res.json({ ok: true, cover_letter_paragraph: paragraph })
 })
 
 const PORT = process.env.PORT || 3000

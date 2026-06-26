@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 03
-status: verified
-stopped_at: Phase 02 verified
-last_updated: "2026-06-26T17:10:00.000Z"
+current_phase: 04
+status: ready
+stopped_at: Phase 03 complete
+last_updated: "2026-06-26T18:40:00.000Z"
 last_activity: 2026-06-26
-last_activity_desc: Phase 02 UAT passed (4/4) — resume editor and job posting input verified
+last_activity_desc: Phase 03 complete — cover letter engine and UI verified
 progress:
   total_phases: 4
-  completed_phases: 2
-  total_plans: 5
-  completed_plans: 5
-  percent: 50
-current_phase_name: Cover Letter Generation
+  completed_phases: 3
+  total_plans: 7
+  completed_plans: 7
+  percent: 75
+current_phase_name: Application Tracking
 ---
 
 # Project State
@@ -28,20 +28,20 @@ See: .planning/PROJECT.md (updated 2026-06-26)
 
 ## Current Position
 
-Phase: 03 — READY
+Phase: 04 — READY
 Plan: 0 of 0
-Status: Phase 02 verified (UAT 4/4 PASS), Phase 03 ready for planning
-Last activity: 2026-06-26 — Phase 02 UAT passed (4/4 tests)
+Status: Phase 03 complete (cover letter engine + UI verified), Phase 04 ready for planning
+Last activity: 2026-06-26 — Phase 03 executed and verified (2 plans, 3 tasks)
 
-Progress: [█████░░░░░] 50%
+Progress: [███████░░░] 75%
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 5
+- Total plans completed: 7
 - Average duration: ~5 min/plan
-- Total execution time: ~25 min
+- Total execution time: ~35 min
 
 **By Phase:**
 
@@ -49,11 +49,12 @@ Progress: [█████░░░░░] 50%
 |-------|-------|-------|----------|
 | 01 Foundation | 1 | ~10 min | ~10 min |
 | 02 Resume & Job Input | 4 | ~15 min | ~4 min |
+| 03 Cover Letter Generation | 2 | ~10 min | ~5 min |
 
 **Recent Trend:**
 
-- Last 5 plans: 02-01 (2min), 02-02 (2min), 02-03 (3min), 02-04 (3min)
-- Trend: Parallel execution (Wave 2 ran 02-02 + 02-04 concurrently)
+- Last 5 plans: 02-03 (3min), 02-04 (3min), 03-01 (5min), 03-02 (3min)
+- Trend: Sequential wave execution (Wave 1 → Wave 2)
 
 *Updated after each plan completion*
 
@@ -70,6 +71,10 @@ Recent decisions affecting current work:
 - Split Phase 02 into 4 microtasks for safer execution: API verification → basic UI → sections editor → job posting input
 - SectionEditor component created as reusable wrapper for resume sections
 - Skills field uses comma-separated text input (split on save, join on load) rather than a tag input
+- Cover letter engine in separate module (server/lib/cover-letter.js) for future LLM replaceability
+- Keyword matching uses case-insensitive substring matching against resume skills and bullets
+- Paragraph assembly prefers measurable achievements (bullets with numbers/percentages)
+- Cover letter UI uses dropdown selector for job postings rather than free-form input
 
 ### Pending Todos
 
@@ -95,6 +100,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-06-26T16:57:00.000Z
-Stopped at: Phase 02 complete
-Resume file: .planning/phases/02-resume-job-input/02-01-SUMMARY.md
+Last session: 2026-06-26T18:40:00.000Z
+Stopped at: Phase 03 complete
+Resume file: .planning/phases/03-cover-letter-generation/03-02-SUMMARY.md

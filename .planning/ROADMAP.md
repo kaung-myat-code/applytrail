@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Project scaffolding with React + Express, JSON file storage, and basic app shell (completed 2026-06-25)
 - [x] **Phase 2: Resume & Job Input** - User can edit resume content and paste job postings in the browser (completed 2026-06-26)
-- [ ] **Phase 3: Cover Letter Generation** - User can generate a tailored cover letter paragraph from resume and job posting
+- [x] **Phase 3: Cover Letter Generation** - User can generate a tailored cover letter paragraph from resume and job posting (completed 2026-06-26)
 - [ ] **Phase 4: Application Tracking** - User can save, view, update, and follow up on job applications
 
 ## Phase Details
@@ -74,11 +74,12 @@ Plans:
   4. Generated paragraph includes at least one measurable achievement from the resume when available
   5. User can copy the generated cover letter to the clipboard
 
-**Plans**: TBD
+**Plans**: 2/2 plans complete
 
 Plans:
 
-- [ ] 03-01: TBD
+- [x] 03-01-PLAN.md — Cover letter engine: keyword matching + paragraph assembly + API endpoint
+- [x] 03-02-PLAN.md — Cover letter UI: posting selector, generate button, paragraph display, copy to clipboard
 
 **UI hint**: yes
 
@@ -113,5 +114,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 |-------|----------------|--------|-----------|
 | 1. Foundation | 1/1 | Complete   | 2026-06-25 |
 | 2. Resume & Job Input | 4/4 | Complete | 2026-06-26 |
-| 3. Cover Letter Generation | 0/1 | Ready | - |
+| 3. Cover Letter Generation | 2/2 | Complete | 2026-06-26 |
 | 4. Application Tracking | 0/1 | Not started | - |

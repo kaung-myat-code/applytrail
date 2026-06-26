@@ -17,10 +17,10 @@
 
 ### Cover Letter Generation
 
-- [ ] **COVER-01**: User can generate a tailored cover letter paragraph from resume + job posting using keyword-matching heuristics
-- [ ] **COVER-02**: Cover letter logic matches resume skills and experience to job posting keywords
-- [ ] **COVER-03**: Generated cover letter is a concise, professional paragraph assembled from matching sections
-- [ ] **COVER-04**: User can copy generated cover letter to clipboard
+- [x] **COVER-01**: User can generate a tailored cover letter paragraph from resume + job posting using keyword-matching heuristics
+- [x] **COVER-02**: Cover letter logic matches resume skills and experience to job posting keywords
+- [x] **COVER-03**: Generated cover letter is a concise, professional paragraph assembled from matching sections
+- [x] **COVER-04**: User can copy generated cover letter to clipboard
 
 ### Application Tracking
 
@@ -62,10 +62,10 @@ Deferred to future release. Tracked but not in current roadmap.
 | RESUME-02 | Phase 1 | Complete |
 | JOB-01 | Phase 2 | Complete |
 | JOB-02 | Phase 4 | Pending |
-| COVER-01 | Phase 3 | Pending |
-| COVER-02 | Phase 3 | Pending |
-| COVER-03 | Phase 3 | Pending |
-| COVER-04 | Phase 3 | Pending |
+| COVER-01 | Phase 3 | Complete |
+| COVER-02 | Phase 3 | Complete |
+| COVER-03 | Phase 3 | Complete |
+| COVER-04 | Phase 3 | Complete |
 | APP-01 | Phase 4 | Pending |
 | APP-02 | Phase 4 | Pending |
 | APP-03 | Phase 4 | Pending |

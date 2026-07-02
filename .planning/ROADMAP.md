@@ -45,7 +45,7 @@ Archive: [v1.1-ROADMAP.md](milestones/v1.1-ROADMAP.md) | [v1.1-REQUIREMENTS.md](
 
 **Milestone Goal:** Build an end-to-end resume optimization workflow that analyzes a selected resume against a job posting, generates actionable improvement suggestions, lets users review every change, creates a new tailored resume version, and seamlessly starts a job application.
 
-- [ ] **Phase 9: Resume Library Foundation** - Multiple resume versions with CRUD, migration from single file, and selection for analysis
+- [x] **Phase 9: Resume Library Foundation** - Multiple resume versions with CRUD, migration from single file, and selection for analysis (completed 2026-07-02)
 - [ ] **Phase 10: Match Scoring and Gap Analysis** - Provider-agnostic analysis engine with compatibility score, keyword gaps, and section-level findings (analysis only, no suggestions)
 - [ ] **Phase 11: Section-by-Section Suggestions** - Per-section add/modify/remove suggestions with accept/reject workflow
 - [ ] **Phase 12: Tailored Resume Generation** - Apply accepted patches to create a new resume version with side-by-side diff review
@@ -230,7 +230,10 @@ Plans:
   2. User can create a new resume version, rename an existing one, and delete one they no longer need
   3. The existing resume data is preserved in the library after migration (no data loss on first launch)
   4. User can select any resume version as the base for analysis and tailoring
-**Plans**: TBD
+**Plans**: 1/1 plans complete
+
+Plans:
+- [x] 09-01-PLAN.md — Resume Library: migration, CRUD API, frontend page, and version selection
 
 ### Phase 10: Match Scoring and Gap Analysis
 **Goal**: Users can analyze a selected resume against a job posting and see a compatibility report with strengths, gaps, and keyword matches
@@ -299,7 +302,7 @@ Phases execute in numeric order: 9 -> 10 -> 11 -> 12 -> 13
 | 6. Demo Data & Seeding | v1.1 | 1/1 | Complete | 2026-06-27 |
 | 7. Production Deployment | v1.1 | 1/1 | Complete | 2026-06-27 |
 | 8. Documentation & Release | v1.1 | 1/1 | Complete | 2026-06-27 |
-| 9. Resume Library Foundation | v2.0 | 0/TBD | Not started | - |
+| 9. Resume Library Foundation | v2.0 | 1/1 | Complete | 2026-07-02 |
 | 10. Match Scoring and Gap Analysis | v2.0 | 0/TBD | Not started | - |
 | 11. Section-by-Section Suggestions | v2.0 | 0/TBD | Not started | - |
 | 12. Tailored Resume Generation | v2.0 | 0/TBD | Not started | - |

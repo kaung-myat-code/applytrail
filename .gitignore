@@ -24,6 +24,7 @@ yarn-error.log*
 
 # local data
 data/*.local.json
+resume_library/
 
 
 # GSD local installation artifacts

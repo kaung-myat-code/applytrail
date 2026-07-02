@@ -4,6 +4,7 @@ const path = require('path')
 const helmet = require('helmet')
 const compression = require('compression')
 const { generateCoverLetter } = require('./lib/cover-letter')
+const { getProvider } = require('./lib/analysis/engine')
 
 const app = express()
 const DATA_DIR = path.join(__dirname, '..')
@@ -423,6 +424,51 @@ app.post('/api/generate-cover-letter', (req, res) => {
   const paragraph = generateCoverLetter(resume, posting)
 
   res.json({ ok: true, cover_letter_paragraph: paragraph })
+})
+
+app.post('/api/analyze', (req, res) => {
+  const { job_posting_id, resume_version_id } = req.body
+
+  if (!job_posting_id) {
+    return res.status(400).json({ error: 'job_posting_id is required' })
+  }
+
+  const postings = readJSON('job_postings.json')
+  const posting = postings.find(p => p.id === job_posting_id)
+
+  if (!posting) {
+    return res.status(404).json({ error: 'Job posting not found' })
+  }
+
+  // Resolve resume: specific version, selected version, or legacy resume.json
+  let resume
+  if (resume_version_id) {
+    if (!VALID_ID.test(resume_version_id)) {
+      return res.status(400).json({ error: 'Invalid resume version ID' })
+    }
+    resume = readResumeVersion(resume_version_id)
+  } else {
+    const libraryIndex = readLibraryIndex()
+    if (libraryIndex.selected_id) {
+      resume = readResumeVersion(libraryIndex.selected_id)
+    }
+    if (!resume) {
+      resume = readJSON('resume.json')
+    }
+  }
+
+  if (!resume || (typeof resume === 'object' && Object.keys(resume).length === 0)) {
+    return res.status(400).json({ error: 'No resume content found. Add content to your resume first.' })
+  }
+
+  try {
+    const { analyzeResume } = getProvider('heuristic')
+    const report = analyzeResume(resume, posting)
+    res.json({ ok: true, report })
+  } catch (err) {
+    console.error('Analysis error:', err)
+    res.status(500).json({ error: 'Analysis failed: ' + err.message })
+  }
 })
 
 if (process.env.NODE_ENV === 'production') {

@@ -5,47 +5,7 @@
  * Designed to be replaceable — swap this module for an LLM API call later.
  */
 
-const STOP_WORDS = new Set([
-  'a', 'an', 'the', 'and', 'or', 'but', 'is', 'are', 'was', 'were', 'be',
-  'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would',
-  'could', 'should', 'may', 'might', 'shall', 'can', 'need', 'dare', 'ought',
-  'used', 'to', 'of', 'in', 'for', 'on', 'with', 'at', 'by', 'from', 'as',
-  'into', 'through', 'during', 'before', 'after', 'above', 'below', 'between',
-  'out', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here',
-  'there', 'when', 'where', 'why', 'how', 'all', 'each', 'every', 'both',
-  'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only',
-  'own', 'same', 'so', 'than', 'too', 'very', 'just', 'because', 'if', 'this',
-  'that', 'these', 'those', 'it', 'its', 'you', 'your', 'we', 'our', 'they',
-  'their', 'he', 'she', 'him', 'her', 'his', 'my', 'me', 'i', 'what', 'which',
-  'who', 'whom', 'while', 'about', 'up', 'down', 'also', 'any', 'much', 'well',
-  'get', 'got', 'make', 'made', 'take', 'took', 'come', 'came', 'go', 'went',
-  'give', 'gave', 'say', 'said', 'know', 'knew', 'think', 'thought', 'see',
-  'saw', 'want', 'look', 'use', 'find', 'found', 'work', 'working', 'etc',
-  'eg', 'ie', 'vs', 'per', 'via', 'new', 'one', 'two', 'first', 'second',
-  'within', 'across', 'along', 'among', 'upon', 'like', 'including', 'based',
-  'well', 'able', 'must', 'required', 'experience', 'working', 'knowledge',
-  'understanding', 'familiarity', 'proficiency', 'strong', 'good', 'excellent',
-  'great', 'solid', 'deep', 'proven', 'demonstrated', 'ability', 'skills',
-  'responsible', 'responsibilities', 'role', 'position', 'team', 'company',
-  'join', 'looking', 'seek', 'candidate', 'ideal', 'person', 'someone',
-  'ensure', 'including', 'related', 'relevant', 'minimum', 'preferred',
-  'plus', 'bonus', 'nice', 'have', 'years', 'year', 'plus', 'plus',
-])
-
-/**
- * Extract meaningful keywords from job posting text.
- * Returns deduplicated array of lowercase keyword strings.
- */
-function extractKeywords(postingText) {
-  if (!postingText || typeof postingText !== 'string') return []
-
-  const tokens = postingText
-    .toLowerCase()
-    .split(/[^a-z0-9.+#]+/)
-    .filter(t => t.length >= 2 && t.length <= 30 && !STOP_WORDS.has(t))
-
-  return [...new Set(tokens)]
-}
+const { STOP_WORDS, extractKeywords } = require('./analysis/keywords')
 
 /**
  * Match resume content to job posting keywords.

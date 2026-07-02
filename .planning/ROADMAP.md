@@ -133,6 +133,7 @@ Plans:
 **Depends on**: Phase 4
 **Requirements**: DEPLOY-01, DEPLOY-02, DEPLOY-03, DEPLOY-04, DEPLOY-05, DEPLOY-06, DEPLOY-07, DEPLOY-08, DEPLOY-09
 **Success Criteria** (what must be TRUE):
+
   1. User can run `npm run build && npm start` at the project root and see the app at localhost:3000
   2. All frontend pages and API endpoints work correctly when served from a single Express origin (no CORS errors, no blank pages)
   3. `GET /api/health` returns a JSON status response
@@ -151,9 +152,11 @@ Plans:
 **Depends on**: Phase 5
 **Requirements**: DEMO-01, DEMO-02, DEMO-03, DEMO-04
 **Success Criteria** (what must be TRUE):
+
   1. App displays representative demo resume, job postings, and applications on first launch
   2. Demo applications cover multiple statuses (drafted, applied, interviewing, rejected) to showcase tracking features
   3. Demo data contains fictional or intentionally shared sample information suitable for a public repository
+
 **Plans**: 1/1 plans complete
 
 Plans:
@@ -166,10 +169,12 @@ Plans:
 **Depends on**: Phase 6
 **Requirements**: PROD-01, PROD-02, PROD-03, PROD-04
 **Success Criteria** (what must be TRUE):
+
   1. App is accessible at a public `*.onrender.com` URL
   2. All features work end-to-end on the deployed instance (resume editing, job posting input, cover letter generation, application tracking)
   3. Production health check endpoint returns a successful response
   4. Pushing to the main branch triggers automatic redeployment on Render
+
 **Plans**: 1/1 plans complete
 
 Plans:
@@ -182,11 +187,13 @@ Plans:
 **Depends on**: Phase 7
 **Requirements**: DOC-01, DOC-02, DOC-03, DOC-04, DOC-05, DOC-06, DOC-07
 **Success Criteria** (what must be TRUE):
+
   1. README contains project description, features list, tech stack, local setup instructions, and a working live demo link
   2. README displays 3+ screenshots and tech/deployment badges
   3. MIT LICENSE file exists in the repository root
   4. Marp slides at `slides/pitch.md` describe the web app (not the CLI workflow)
   5. Architecture documentation, if included, accurately reflects the production deployment, OR remove it if DOC-05 is optional
+
 **Plans**: 1/1 plans complete
 
 Plans:
@@ -207,4 +214,4 @@ Phases execute in numeric order: 5 -> 6 -> 7 -> 8
 | 5. Deployment Readiness | v1.1 | 1/1 | Complete | 2026-06-27 |
 | 6. Demo Data & Seeding | v1.1 | 1/1 | Complete | 2026-06-27 |
 | 7. Production Deployment | v1.1 | 1/1 | Complete | 2026-06-27 |
-| 8. Documentation & Release | v1.1 | 1/1 | Complete | 2026-06-27 |
+| 8. Documentation & Release | v1.1 | 1/1 | Complete    | 2026-06-27 |

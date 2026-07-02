@@ -59,13 +59,13 @@
 
 ### Documentation & Release
 
-- [ ] **DOC-01**: README is updated with project description, features, tech stack, setup instructions, and live demo link
-- [ ] **DOC-02**: README includes links to 3+ screenshots
-- [ ] **DOC-03**: README includes tech stack and deployment badges (shields.io)
-- [ ] **DOC-04**: MIT LICENSE file exists in repository root
-- [ ] **DOC-05**: Architecture diagram is added or confirmed current
-- [ ] **DOC-06**: `slides/pitch.md` is updated for web app (currently references CLI workflow)
-- [ ] **DOC-07**: Release assets include 3+ screenshot files and optional demo GIF
+- [x] **DOC-01**: README is updated with project description, features, tech stack, setup instructions, and live demo link
+- [x] **DOC-02**: README includes links to 3+ screenshots
+- [x] **DOC-03**: README includes tech stack and deployment badges (shields.io)
+- [x] **DOC-04**: MIT LICENSE file exists in repository root
+- [x] **DOC-05**: Architecture diagram is added or confirmed current
+- [x] **DOC-06**: `slides/pitch.md` is updated for web app (currently references CLI workflow)
+- [x] **DOC-07**: Release assets include 3+ screenshot files and optional demo GIF
 
 ## v2 Requirements
 
@@ -128,13 +128,13 @@ Deferred to future release. Tracked but not in current roadmap.
 | PROD-02 | Phase 7 | Pending |
 | PROD-03 | Phase 7 | Pending |
 | PROD-04 | Phase 7 | Pending |
-| DOC-01 | Phase 8 | Pending |
-| DOC-02 | Phase 8 | Pending |
-| DOC-03 | Phase 8 | Pending |
-| DOC-04 | Phase 8 | Pending |
-| DOC-05 | Phase 8 | Pending |
-| DOC-06 | Phase 8 | Pending |
-| DOC-07 | Phase 8 | Pending |
+| DOC-01 | Phase 8 | Complete |
+| DOC-02 | Phase 8 | Complete |
+| DOC-03 | Phase 8 | Complete |
+| DOC-04 | Phase 8 | Complete |
+| DOC-05 | Phase 8 | Complete |
+| DOC-06 | Phase 8 | Complete |
+| DOC-07 | Phase 8 | Complete |
 
 **Coverage:**
 

@@ -29,12 +29,12 @@ End-to-end job application workflow in a local web UI — from resume to cover l
 - [x] User can view all saved applications in a list (Phase 4)
 - [x] User can see which applications need follow-up (10+ days without status change) (Phase 4)
 
-### Active
+### Validated (v1.1)
 
-- [ ] App is deployment-ready with production configuration
-- [ ] App is deployed to a public hosting platform
-- [ ] Documentation is polished for public consumption
-- [ ] Release assets (screenshots, slides) are created
+- [x] App is deployment-ready with production configuration (Phase 5)
+- [x] App is deployed to a public hosting platform (Phase 7)
+- [x] Documentation is polished for public consumption (Phase 8)
+- [x] Release assets (screenshots, slides) are created (Phase 8)
 
 ### Out of Scope
 
@@ -78,7 +78,9 @@ End-to-end job application workflow in a local web UI — from resume to cover l
 | JSON file storage | Minimal setup, human-readable, matches existing data format | — Implemented (Phase 1) |
 | Keyword-matching for cover letters | No external API dependency, simple to implement and replace later | — Implemented (Phase 3) |
 | No auth | Single-user local tool, reduces complexity | — Implemented (Phase 1) |
-| v1.1 = polish only | Prepare for public release without changing core functionality | — Active (v1.1) |
+| v1.1 = polish only | Prepare for public release without changing core functionality | — Complete (v1.1) |
+| Render free tier | Simple deployment, auto-deploy from GitHub, sufficient for portfolio | — Implemented (Phase 7) |
+| Demo data seeding | Portfolio visitors see populated interface on first visit | — Implemented (Phase 6) |
 
 ## Evolution
 
@@ -98,4 +100,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-06-26 — Milestone v1.1 Release Polish started*
+*Last updated: 2026-07-02 — Milestone v1.1 Release Polish complete*

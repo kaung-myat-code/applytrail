@@ -2,19 +2,20 @@
 
 ## Overview
 
-A local web MVP that migrates a CLI-based job application workflow into a React + Express web app. v1.0 (Phases 1-4) delivered the core workflow: resume editing, job posting input, cover letter generation, and application tracking. v1.1 Release Polish (Phases 5-8) transforms it into a publicly deployed portfolio piece with production server configuration, demo data, live deployment on Render, and polished documentation.
+A local web MVP that migrates a CLI-based job application workflow into a React + Express web app. v1.0 (Phases 1-4) delivered the core workflow: resume editing, job posting input, cover letter generation, and application tracking. v1.1 Release Polish (Phases 5-8) transformed it into a publicly deployed portfolio piece with production server configuration, demo data, live deployment on Render, and polished documentation. v2.0 Resume Tailoring Flow (Phases 9-13) adds an end-to-end resume optimization workflow: manage multiple resume versions, analyze against job postings, generate and review section-by-section suggestions, create tailored resumes, and export to PDF/JSON.
 
 ## Milestones
 
 - [x] **v1.0 MVP** - Phases 1-4 (shipped 2026-06-26)
 - [x] **v1.1 Release Polish** - Phases 5-8 (shipped 2026-06-27)
+- [ ] **v2.0 Resume Tailoring Flow** - Phases 9-13 (planned)
 
 ## Phases
 
 **Phase Numbering:**
 
-- Integer phases (1, 2, 3): Planned milestone work
-- Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
+- Integer phases (9, 10, 11): Planned milestone work
+- Decimal phases (9.1, 10.1): Urgent insertions (marked with INSERTED)
 
 Decimal phases appear between their surrounding integers in numeric order.
 
@@ -39,6 +40,16 @@ Decimal phases appear between their surrounding integers in numeric order.
 Archive: [v1.1-ROADMAP.md](milestones/v1.1-ROADMAP.md) | [v1.1-REQUIREMENTS.md](milestones/v1.1-REQUIREMENTS.md)
 
 </details>
+
+### v2.0 Resume Tailoring Flow (Planned)
+
+**Milestone Goal:** Build an end-to-end resume optimization workflow that analyzes a selected resume against a job posting, generates actionable improvement suggestions, lets users review every change, creates a new tailored resume version, and seamlessly starts a job application.
+
+- [ ] **Phase 9: Resume Library Foundation** - Multiple resume versions with CRUD, migration from single file, and selection for analysis
+- [ ] **Phase 10: Match Scoring and Gap Analysis** - Provider-agnostic analysis engine with compatibility score, keyword gaps, and section-level findings (analysis only, no suggestions)
+- [ ] **Phase 11: Section-by-Section Suggestions** - Per-section add/modify/remove suggestions with accept/reject workflow
+- [ ] **Phase 12: Tailored Resume Generation** - Apply accepted patches to create a new resume version with side-by-side diff review
+- [ ] **Phase 13: Application Pre-fill and Export** - Pre-fill application from job posting, export resume as PDF or JSON
 
 ## Phase Details
 
@@ -210,10 +221,73 @@ Plans:
 
 </details>
 
+### Phase 9: Resume Library Foundation
+**Goal**: Users can manage multiple resume versions -- create, rename, delete, and select which one to use for analysis
+**Depends on**: Phase 8 (v1.1 complete)
+**Requirements**: LIBRARY-01, LIBRARY-02, LIBRARY-04, LIBRARY-05
+**Success Criteria** (what must be TRUE):
+  1. User can see a list of all resume versions on a Resume Library page
+  2. User can create a new resume version, rename an existing one, and delete one they no longer need
+  3. The existing resume data is preserved in the library after migration (no data loss on first launch)
+  4. User can select any resume version as the base for analysis and tailoring
+**Plans**: TBD
+
+### Phase 10: Match Scoring and Gap Analysis
+**Goal**: Users can analyze a selected resume against a job posting and see a compatibility report with strengths, gaps, and keyword matches
+**Depends on**: Phase 9
+**Requirements**: ANALYSIS-01, ANALYSIS-02, ANALYSIS-03, ANALYSIS-04
+**Success Criteria** (what must be TRUE):
+  1. User can trigger analysis of a selected resume against a pasted job posting and see an overall compatibility score
+  2. Match report displays matched keywords, missing keywords, and bonus keywords as categorized groups
+  3. Match report shows section-level findings for Summary, Skills, Experience, Projects, and Education
+  4. The analysis engine uses a provider-agnostic interface so a different provider (AI, third-party) can be swapped without UI changes
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 11: Section-by-Section Suggestions
+**Goal**: Users can review actionable improvement suggestions for each resume section and accept, reject, or edit each one
+**Depends on**: Phase 10
+**Requirements**: SUGGEST-01, SUGGEST-02, SUGGEST-03, SUGGEST-04
+**Success Criteria** (what must be TRUE):
+  1. User sees section-level suggestions (add, modify, remove) with explanations after running analysis
+  2. User can accept or reject each suggestion individually
+  3. User can accept all or reject all suggestions with bulk controls
+  4. User can compare current and suggested content side-by-side in a diff view
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 12: Tailored Resume Generation
+**Goal**: Users can generate a new tailored resume from their accepted suggestions, review it before saving, and return to edit if needed
+**Depends on**: Phase 11
+**Requirements**: LIBRARY-03, TAILOR-01, TAILOR-02, TAILOR-03, TAILOR-04, TAILOR-05, TAILOR-06
+**Success Criteria** (what must be TRUE):
+  1. User can generate a tailored resume that applies only their accepted suggestions to a copy of the source resume
+  2. Tailored resume is saved as a new version with auto-naming ("Company - Role"), without overwriting the source
+  3. User can preview the tailored resume before final save
+  4. User can return to the suggestion review from preview without losing their accept/reject decisions
+  5. Generated resume conforms to the resume JSON schema before it can be saved
+  6. The source resume remains unchanged after generating a tailored resume
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 13: Application Pre-fill and Export
+**Goal**: Users can create a pre-filled application from the analyzed job posting and export any resume version as PDF or JSON
+**Depends on**: Phase 12
+**Requirements**: PREFILL-01, PREFILL-02, PREFILL-03, EXPORT-01, EXPORT-02
+**Success Criteria** (what must be TRUE):
+  1. User can create a new application pre-filled with company, role, and job posting text from the analysis
+  2. A confirmation dialog shows the pre-filled data before the application is created
+  3. Created application is linked to the tailored resume version
+  4. User can export any resume version as a PDF file
+  5. User can export any resume version as a JSON file
+  6. Applications reference a resume version by resume_version_id rather than duplicating resume data
+**Plans**: TBD
+**UI hint**: yes
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 5 -> 6 -> 7 -> 8
+Phases execute in numeric order: 9 -> 10 -> 11 -> 12 -> 13
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -224,4 +298,9 @@ Phases execute in numeric order: 5 -> 6 -> 7 -> 8
 | 5. Deployment Readiness | v1.1 | 1/1 | Complete | 2026-06-27 |
 | 6. Demo Data & Seeding | v1.1 | 1/1 | Complete | 2026-06-27 |
 | 7. Production Deployment | v1.1 | 1/1 | Complete | 2026-06-27 |
-| 8. Documentation & Release | v1.1 | 1/1 | Complete    | 2026-06-27 |
+| 8. Documentation & Release | v1.1 | 1/1 | Complete | 2026-06-27 |
+| 9. Resume Library Foundation | v2.0 | 0/TBD | Not started | - |
+| 10. Match Scoring and Gap Analysis | v2.0 | 0/TBD | Not started | - |
+| 11. Section-by-Section Suggestions | v2.0 | 0/TBD | Not started | - |
+| 12. Tailored Resume Generation | v2.0 | 0/TBD | Not started | - |
+| 13. Application Pre-fill and Export | v2.0 | 0/TBD | Not started | - |

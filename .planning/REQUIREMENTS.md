@@ -59,44 +59,44 @@
 
 ## Out of Scope
 
-- **Auto-optimize** — Removes user control, may produce dishonest content. Users must review every change.
-- **ATS format checking** — Irrelevant; JSON schema already guarantees parseability. Export templates use standard formats.
-- **Real-time score updates** — Expensive, creates score-chasing behavior. Analysis runs on demand.
-- **LinkedIn profile optimization** — Scope explosion. Focus on resume optimization first.
-- **AI resume writing from scratch** — Violates user-owns-content principle. System suggests improvements, never generates content the user hasn't reviewed.
-- **Authentication** — Single-user local tool, no login needed.
-- **Job scraping** — User pastes postings manually.
-- **Email sending** — Out of scope.
-- **Payment/billing** — No monetization.
+- **Auto-optimize** -- Removes user control, may produce dishonest content. Users must review every change.
+- **ATS format checking** -- Irrelevant; JSON schema already guarantees parseability. Export templates use standard formats.
+- **Real-time score updates** -- Expensive, creates score-chasing behavior. Analysis runs on demand.
+- **LinkedIn profile optimization** -- Scope explosion. Focus on resume optimization first.
+- **AI resume writing from scratch** -- Violates user-owns-content principle. System suggests improvements, never generates content the user hasn't reviewed.
+- **Authentication** -- Single-user local tool, no login needed.
+- **Job scraping** -- User pastes postings manually.
+- **Email sending** -- Out of scope.
+- **Payment/billing** -- No monetization.
 
 ## Traceability
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LIBRARY-01 | TBD | Pending |
-| LIBRARY-02 | TBD | Pending |
-| LIBRARY-03 | TBD | Pending |
-| LIBRARY-04 | TBD | Pending |
-| LIBRARY-05 | TBD | Pending |
-| ANALYSIS-01 | TBD | Pending |
-| ANALYSIS-02 | TBD | Pending |
-| ANALYSIS-03 | TBD | Pending |
-| ANALYSIS-04 | TBD | Pending |
-| SUGGEST-01 | TBD | Pending |
-| SUGGEST-02 | TBD | Pending |
-| SUGGEST-03 | TBD | Pending |
-| SUGGEST-04 | TBD | Pending |
-| TAILOR-01 | TBD | Pending |
-| TAILOR-02 | TBD | Pending |
-| TAILOR-03 | TBD | Pending |
-| TAILOR-04 | TBD | Pending |
-| TAILOR-05 | TBD | Pending |
-| TAILOR-06 | TBD | Pending |
-| PREFILL-01 | TBD | Pending |
-| PREFILL-02 | TBD | Pending |
-| PREFILL-03 | TBD | Pending |
-| EXPORT-01 | TBD | Pending |
-| EXPORT-02 | TBD | Pending |
+| LIBRARY-01 | Phase 9 | Pending |
+| LIBRARY-02 | Phase 9 | Pending |
+| LIBRARY-03 | Phase 12 | Pending |
+| LIBRARY-04 | Phase 9 | Pending |
+| LIBRARY-05 | Phase 9 | Pending |
+| ANALYSIS-01 | Phase 10 | Pending |
+| ANALYSIS-02 | Phase 10 | Pending |
+| ANALYSIS-03 | Phase 10 | Pending |
+| ANALYSIS-04 | Phase 10 | Pending |
+| SUGGEST-01 | Phase 11 | Pending |
+| SUGGEST-02 | Phase 11 | Pending |
+| SUGGEST-03 | Phase 11 | Pending |
+| SUGGEST-04 | Phase 11 | Pending |
+| TAILOR-01 | Phase 12 | Pending |
+| TAILOR-02 | Phase 12 | Pending |
+| TAILOR-03 | Phase 12 | Pending |
+| TAILOR-04 | Phase 12 | Pending |
+| TAILOR-05 | Phase 12 | Pending |
+| TAILOR-06 | Phase 12 | Pending |
+| PREFILL-01 | Phase 13 | Pending |
+| PREFILL-02 | Phase 13 | Pending |
+| PREFILL-03 | Phase 13 | Pending |
+| EXPORT-01 | Phase 13 | Pending |
+| EXPORT-02 | Phase 13 | Pending |
 
 ---
 *Requirements defined: 2026-07-02*

@@ -3,10 +3,10 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Resume Tailoring Flow
 status: planning
-last_updated: "2026-07-02T11:49:59.292Z"
+last_updated: "2026-07-02"
 last_activity: 2026-07-02
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -19,15 +19,17 @@ progress:
 
 See: .planning/PROJECT.md (updated 2026-07-02)
 
-**Core value:** End-to-end job application workflow in a web UI — from resume to cover letter to application tracking
-**Current focus:** Awaiting next milestone definition
+**Core value:** End-to-end job application workflow in a web UI -- from resume to cover letter to application tracking -- so the user can manage their job search from any browser.
+**Current focus:** v2.0 Resume Tailoring Flow -- roadmap created, ready to plan Phase 9
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-07-02 — Milestone v2.0 started
+Phase: 9 of 13 (Resume Library Foundation)
+Plan: 0 of TBD in current phase
+Status: Ready to plan
+Last activity: 2026-07-02 -- Roadmap created for v2.0 milestone (Phases 9-13)
+
+Progress: [░░░░░░░░░░] 0%
 
 ## Milestones Shipped
 
@@ -59,12 +61,30 @@ Last activity: 2026-07-02 — Milestone v2.0 started
 | 07 Production Deployment | 1 | ~5 min | ~5 min |
 | 08 Documentation & Release | 1 | ~5 min | ~5 min |
 
-## Next Steps
+## Accumulated Context
 
-Run `/gsd-new-milestone` to define the next milestone.
+### Decisions
+
+Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- [v2.0]: Provider-agnostic analysis engine -- heuristics first, swappable to AI/third-party later
+- [v2.0]: Structured patch workflow -- analysis never modifies resume directly, returns patches for user approval
+- [v2.0]: Resume library with separate files per version -- prevents overwrite, enables versioning
+
+### Pending Todos
+
+None yet.
+
+### Blockers/Concerns
+
+- Resume schema undocumented -- Phase 9 should formalize schema before building library around it
+- Heuristics quality needs definition during Phase 10 planning (what is "good enough" for v2.0)
+- Render free tier (512MB RAM) may constrain export libraries (pdfmake) -- test during Phase 13
+- react-diff-viewer-continued pulls in @emotion/css -- verify no CSS Module conflicts during Phase 11
 
 ## Session Continuity
 
 Last session: 2026-07-02
-Stopped at: v1.1 milestone archived
+Stopped at: v2.0 roadmap created, ready to plan Phase 9
 Resume file: None

@@ -462,9 +462,10 @@ app.post('/api/analyze', (req, res) => {
   }
 
   try {
-    const { analyzeResume } = getProvider('heuristic')
+    const { analyzeResume, generateSuggestions } = getProvider('heuristic')
     const report = analyzeResume(resume, posting)
-    res.json({ ok: true, report })
+    const suggestions = generateSuggestions(resume, report)
+    res.json({ ok: true, report, suggestions })
   } catch (err) {
     console.error('Analysis error:', err)
     res.status(500).json({ error: 'Analysis failed: ' + err.message })

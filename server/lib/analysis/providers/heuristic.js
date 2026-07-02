@@ -221,4 +221,127 @@ function computeSectionFindings(sectionName, sectionKeywords, postingKeywords) {
   }
 }
 
-module.exports = { analyzeResume }
+/**
+ * Capitalize the first letter of a string.
+ */
+function capitalize(str) {
+  if (!str) return ''
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+/**
+ * Generate per-section improvement suggestions from the match report.
+ * @param {object} resume - Resume data object
+ * @param {object} report - MatchReport from analyzeResume
+ * @returns {object[]} Array of suggestion objects
+ */
+function generateSuggestions(resume, report) {
+  const suggestions = []
+  let idCounter = 1
+
+  function nextId() {
+    return 's' + (idCounter++)
+  }
+
+  const missing = (report.keywords && report.keywords.missing) || []
+  const matched = (report.keywords && report.keywords.matched) || []
+
+  // If no missing keywords, no suggestions needed
+  if (missing.length === 0) {
+    return []
+  }
+
+  // Track which keywords have been used for experience/project suggestions
+  // to avoid duplicates across sections
+  const usedForExperience = new Set()
+  const usedForProjects = new Set()
+
+  // --- Summary suggestions (modify or add) ---
+  const summary = (resume.summary || '').trim()
+  const topMissingForSummary = missing.slice(0, 3)
+
+  if (topMissingForSummary.length > 0) {
+    if (summary) {
+      // Modify: append keywords to existing summary
+      const kwPhrase = topMissingForSummary.length === 1
+        ? capitalize(topMissingForSummary[0])
+        : topMissingForSummary.slice(0, -1).map(capitalize).join(', ') + ' and ' + capitalize(topMissingForSummary[topMissingForSummary.length - 1])
+      const suggested = summary + (summary.endsWith('.') ? ' ' : '. ') + 'Experienced in ' + kwPhrase + '.'
+      suggestions.push({
+        id: nextId(),
+        section: 'summary',
+        type: 'modify',
+        current: summary,
+        suggested,
+        reason: 'Your summary is missing key technologies mentioned in the job posting.',
+      })
+    } else {
+      // Add: no summary exists
+      const kwPhrase = matched.slice(0, 3).map(capitalize).join(', ')
+      const suggested = kwPhrase
+        ? 'Professional with experience in ' + kwPhrase + '.'
+        : 'Professional with relevant industry experience.'
+      suggestions.push({
+        id: nextId(),
+        section: 'summary',
+        type: 'add',
+        current: null,
+        suggested,
+        reason: 'Your resume has no summary. Adding one helps recruiters quickly understand your profile.',
+      })
+    }
+  }
+
+  // --- Skills suggestions (add) ---
+  const skills = (resume.skills || []).map(s => s.toLowerCase().trim())
+  const missingSkills = missing.filter(kw => {
+    // Only suggest skills not already in the skills list
+    return !skills.some(sk => sk.includes(kw) || kw.includes(sk))
+  }).slice(0, 5)
+
+  for (const kw of missingSkills) {
+    suggestions.push({
+      id: nextId(),
+      section: 'skills',
+      type: 'add',
+      current: null,
+      suggested: capitalize(kw),
+      reason: "'" + kw + "' appears in the job posting but is not in your skills list.",
+    })
+  }
+
+  // --- Experience suggestions (add) ---
+  const topMissingForExp = missing.slice(0, 3)
+  for (const kw of topMissingForExp) {
+    usedForExperience.add(kw)
+    suggestions.push({
+      id: nextId(),
+      section: 'experience',
+      type: 'add',
+      current: null,
+      suggested: 'Led ' + kw + ' initiatives that improved project delivery and team productivity.',
+      reason: 'No experience bullets mention ' + kw + ', which is a key requirement in this job posting.',
+    })
+  }
+
+  // --- Projects suggestions (add) ---
+  const remainingForProjects = missing.filter(kw => !usedForExperience.has(kw)).slice(0, 2)
+  for (const kw of remainingForProjects) {
+    usedForProjects.add(kw)
+    suggestions.push({
+      id: nextId(),
+      section: 'projects',
+      type: 'add',
+      current: null,
+      suggested: 'Implemented ' + kw + ' solutions to address real-world technical challenges.',
+      reason: 'Consider adding a project that demonstrates ' + kw + ' experience.',
+    })
+  }
+
+  // --- Education: skip (factual, not improved by heuristics) ---
+
+  // Cap total at 20
+  return suggestions.slice(0, 20)
+}
+
+module.exports = { analyzeResume, generateSuggestions }

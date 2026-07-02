@@ -28,12 +28,17 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 </details>
 
-### v1.1 Release Polish (In Progress)
+<details>
+<summary>v1.1 Release Polish (Phases 5-8) - SHIPPED 2026-06-27</summary>
 
 - [x] **Phase 5: Deployment Readiness** - Production server serves built React files with security headers, compression, and environment-based config (completed 2026-06-27)
 - [x] **Phase 6: Demo Data & Seeding** - App launches with realistic demo data so portfolio visitors see a populated interface (completed 2026-06-27)
 - [x] **Phase 7: Production Deployment** - App is live and fully functional on a public Render URL (completed 2026-06-27)
 - [x] **Phase 8: Documentation & Release** - Repository is polished with README, LICENSE, screenshots, and presentation materials (completed 2026-06-27)
+
+Archive: [v1.1-ROADMAP.md](milestones/v1.1-ROADMAP.md) | [v1.1-REQUIREMENTS.md](milestones/v1.1-REQUIREMENTS.md)
+
+</details>
 
 ## Phase Details
 
@@ -127,6 +132,9 @@ Plans:
 
 </details>
 
+<details>
+<summary>v1.1 Release Polish (Phases 5-8) - SHIPPED 2026-06-27</summary>
+
 ### Phase 5: Deployment Readiness
 
 **Goal**: App runs in production mode with Express serving built React files, security headers, compression, and environment-based configuration
@@ -199,6 +207,8 @@ Plans:
 Plans:
 
 - [x] 08-01-PLAN.md — LICENSE, README, Marp slides, and architecture diagram for public release
+
+</details>
 
 ## Progress
 

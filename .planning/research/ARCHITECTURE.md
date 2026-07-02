@@ -1,429 +1,276 @@
-# Architecture Research: Deployment and Release
+# Architecture Research
 
-**Domain:** Local web app deployment to public hosting
-**Researched:** 2026-06-26
+**Project:** ApplyTrail v2.0 Resume Tailoring Flow
+**Researched:** 2026-07-02
 **Confidence:** HIGH
 
-## Current Architecture (Dev Mode)
+## Executive Summary
+
+The v2.0 milestone requires significant architectural changes to support resume versioning, a provider-agnostic analysis pipeline, a side-by-side review interface, and multi-format export. The current architecture (single `resume.json`, sync I/O, no schema validation) must evolve into a resume library with separate files, an abstracted analysis engine, and a normalized export pipeline. All changes extend existing patterns rather than replacing them.
+
+## Current Architecture
+
+### Data Layer
+- **Single resume file:** `resume.json` — flat object with contact, summary, experience, projects, education, skills
+- **Flat arrays:** `applications.json`, `job_postings.json` — no relational links
+- **Sync I/O:** `readJSON()`/`writeJSON()` using `fs.readFileSync`/`fs.writeFileSync`
+- **No validation:** Any JSON accepted, no schema enforcement
+- **No concurrency control:** Race windows on concurrent writes
+
+### API Layer
+- **Express 4:** Single `server/index.js` with all routes
+- **REST endpoints:** `GET/PUT /api/resume`, `GET/POST /api/job-postings`, `GET/POST /api/applications`
+- **Cover letter engine:** `server/lib/cover-letter.js` — `extractKeywords()`, `matchResumeToJob()`, `generateCoverLetter()`
+
+### Frontend Layer
+- **React 18 + React Router 6:** SPA with page-based routing
+- **Pages:** Dashboard, Resume, NewApplication, Applications, CoverLetter
+- **Components:** SectionEditor (reusable list editor), Navbar
+- **CSS Modules:** Component-scoped styling
+
+## Architecture Changes for v2.0
+
+### 1. Resume Library (Data Model)
+
+**Current:** Single `resume.json` file, flat object.
+**Target:** Directory of resume files with metadata index.
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                     Browser (User)                          │
-│              React SPA on localhost:5173                      │
-└────────────────────────┬────────────────────────────────────┘
-                         │ HTTP (proxied via Vite)
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   Vite Dev Server                            │
-│                  localhost:5173                               │
-│  Serves React source files (HMR)                            │
-│  Proxies /api → localhost:3000                               │
-└─────────────────────────────────────────────────────────────┘
-                         │ proxy
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   Express API Server                          │
-│                  localhost:3000                               │
-│  GET/PUT /api/resume                                         │
-│  GET/POST /api/job-postings                                  │
-│  GET/POST/PUT /api/applications                              │
-│  POST /api/generate-cover-letter                             │
-└──────────┬──────────────────────────────────────────────────┘
-           │
-           ▼
-┌─────────────────────────────────────────────────────────────┐
-│                    JSON File Storage                          │
-│                    (project root)                             │
-│  applications.json  job_postings.json  resume.json           │
-└─────────────────────────────────────────────────────────────┘
+server/data/
+├── resume_library/
+│   ├── index.json          # Array of {id, name, created_at, source_id, application_id}
+│   ├── master-<id>.json    # Original resume (source of truth)
+│   └── tailored-<id>.json  # Tailored versions (linked to source)
+├── applications.json
+└── job_postings.json
 ```
 
-**Problem:** Two separate processes (Vite on 5173, Express on 3000) with a dev-only proxy. Not deployable as-is.
+**Key decisions:**
+- Each resume version is a separate JSON file (human-readable, atomic operations)
+- `index.json` provides fast list queries without reading all files
+- `source_id` links tailored versions to their parent
+- `application_id` links tailored versions to the application they were created for
+- Auto-naming: "Company - Role" format for tailored resumes
+- Master resume has `source_id: null`
 
-## Target Architecture (Production)
+**Migration path:**
+- Existing `resume.json` becomes `resume_library/master-<id>.json`
+- `GET /api/resume` redirects to `GET /api/resumes/:id` (master)
+- `PUT /api/resume` redirects to `PUT /api/resumes/:id` (master)
+- Old routes preserved for backward compatibility during transition
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     Browser (User)                          │
-│              React SPA on public URL                         │
-└────────────────────────┬────────────────────────────────────┘
-                         │ HTTPS
-                         ▼
-┌─────────────────────────────────────────────────────────────┐
-│                   Express Server (single process)            │
-│                   PORT (from env)                             │
-│                                                              │
-│  ┌─────────────────────────────────────────────────────┐    │
-│  │  Static File Serving (built React assets)            │    │
-│  │  GET /* → client/dist/index.html (SPA fallback)      │    │
-│  └─────────────────────────────────────────────────────┘    │
-│                                                              │
-│  ┌─────────────────────────────────────────────────────┐    │
-│  │  API Routes                                          │    │
-│  │  GET/PUT /api/resume                                 │    │
-│  │  GET/POST /api/job-postings                          │    │
-│  │  GET/POST/PUT /api/applications                      │    │
-│  │  POST /api/generate-cover-letter                     │    │
-│  └─────────────────────────────────────────────────────┘    │
-│                                                              │
-│  ┌─────────────────────────────────────────────────────┐    │
-│  │  Data Directory                                      │    │
-│  │  /data/applications.json (writable volume)           │    │
-│  │  /data/job_postings.json                             │    │
-│  │  /data/resume.json                                   │    │
-│  └─────────────────────────────────────────────────────┘    │
-└─────────────────────────────────────────────────────────────┘
-```
+### 2. Analysis Engine (Provider-Agnostic Pipeline)
 
-**Key change:** Single Express process serves both the built React assets and the API. No proxy needed.
-
-## Component Responsibilities (Modified)
-
-| Component | Dev Mode | Production Mode | Change |
-|-----------|----------|-----------------|--------|
-| Express Server | API only (port 3000) | API + static files (PORT from env) | **Modified** — add static serving |
-| Vite Dev Server | Serves React + proxies API | Not used | **Removed** in production |
-| React App | Served by Vite (HMR) | Pre-built static files served by Express | **Modified** — build step added |
-| JSON Storage | Project root directory | Configurable DATA_DIR (env var) | **Modified** — path configurable |
-| Build Process | None (Vite handles it) | `vite build` produces `client/dist/` | **New** — build step required |
-
-## New vs Modified Components
-
-### Modified Components
-
-**1. Express Server (`server/index.js`)**
-
-Changes needed:
-- Serve static files from `client/dist/` in production
-- Use `process.env.DATA_DIR` for JSON file storage location
-- Use `process.env.PORT` (already done)
-- SPA fallback: all non-API routes serve `index.html`
-- CORS only in development (not needed when same origin in production)
+**Current:** `cover-letter.js` with hardcoded heuristics.
+**Target:** Pluggable analysis engine with standard interface.
 
 ```javascript
-// Production static serving (add to server/index.js)
-const isProd = process.env.NODE_ENV === 'production'
+// server/lib/analysis-engine.js
+const ANALYSIS_PROVIDERS = {
+  heuristics: require('./providers/heuristics'),
+  // future: llm: require('./providers/llm'),
+}
 
-if (isProd) {
-  const clientDist = path.join(__dirname, '..', 'client', 'dist')
-  app.use(express.static(clientDist))
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(clientDist, 'index.html'))
-  })
+function getAnalysisProvider(name = 'heuristics') {
+  return ANALYSIS_PROVIDERS[name]
 }
 ```
 
-**2. Data Directory Path**
-
-Changes needed:
-- `DATA_DIR` should be configurable via environment variable
-- Default to project root for local dev, `/data` or similar for production
-
+**Standard interface (AnalysisResult schema):**
 ```javascript
-// Change from:
-const DATA_DIR = path.join(__dirname, '..')
-// To:
-const DATA_DIR = process.env.DATA_DIR || path.join(__dirname, '..')
-```
-
-**3. Root `package.json` Scripts**
-
-Changes needed:
-- Add `build` script that builds the client
-- Add `start` script that runs the server in production mode
-
-```json
 {
-  "scripts": {
-    "dev": "concurrently -n client,server -c blue,green \"npm run dev:client\" \"npm run dev:server\"",
-    "dev:client": "cd client && npm run dev",
-    "dev:server": "cd server && node index.js",
-    "build": "cd client && npm run build",
-    "start": "NODE_ENV=production node server/index.js",
-    "lint": "cd client && npm run lint",
-    "test": "cd client && npm run test"
-  }
+  provider: 'heuristics',
+  matchScore: {
+    overall: 72,           // 0-100 percentage
+    skills: 80,            // Per-category scores
+    experience: 65,
+    projects: 70,
+  },
+  gapAnalysis: {
+    matched: ['react', 'node.js', 'typescript'],
+    missing: ['kubernetes', 'aws', 'ci/cd'],
+    bonus: ['graphql', 'docker'],  // In resume but not in posting
+  },
+  sectionSuggestions: [
+    {
+      section: 'summary',
+      type: 'modify',       // add, modify, remove
+      current: '...',
+      suggested: '...',
+      reason: '...',
+    },
+    // ... per section
+  ],
 }
 ```
 
-**4. Vite Config (`client/vite.config.js`)**
+**Integration points:**
+- `server/lib/analysis-engine.js` — Factory + provider interface
+- `server/lib/providers/heuristics.js` — Current logic, refactored
+- `POST /api/resumes/:id/analyze` — Returns AnalysisResult
+- Future: `server/lib/providers/llm.js` — LLM-based analysis
 
-Changes needed:
-- Add base path configuration if deploying to a subdirectory
-- Add API_URL environment variable for production API endpoint (if different origin)
+### 3. Review Interface (Frontend)
 
+**Current:** No review workflow.
+**Target:** Side-by-side diff view with accept/reject/edit.
+
+**New components:**
+```
+client/src/
+├── pages/
+│   ├── ResumeLibrary.jsx      # List all resume versions
+│   ├── MatchReport.jsx        # Display AnalysisResult
+│   └── ReviewSuggestions.jsx  # Side-by-side review
+├── components/
+│   ├── ResumeDiffViewer.jsx   # react-diff-viewer-continued wrapper
+│   ├── SuggestionCard.jsx     # Individual suggestion with accept/reject/edit
+│   └── MatchScoreGauge.jsx    # Visual match score display
+```
+
+**State management:**
+- `useState` for suggestion accept/reject/edit state
+- `useReducer` for complex review workflow (if needed)
+- No external state library required
+
+### 4. Export Pipeline
+
+**Current:** No export.
+**Target:** PDF, DOCX, JSON export from structured data.
+
+**Architecture:**
+```
+server/lib/
+├── export-normalizer.js    # Resume JSON → normalized intermediate
+├── export-pdf.js           # pdfmake: normalized → PDF
+├── export-docx.js          # docx: normalized → DOCX
+└── export-json.js          # Direct JSON download
+```
+
+**Normalized intermediate representation:**
 ```javascript
-export default defineConfig({
-  plugins: [react()],
-  base: '/',  // Change if deploying to subdirectory
-  server: {
-    port: 5173,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3000',
-        changeOrigin: true,
-      },
+{
+  sections: [
+    {
+      type: 'summary',
+      title: 'Summary',
+      content: { text: '...' },
     },
-  },
-})
+    {
+      type: 'experience',
+      title: 'Experience',
+      items: [
+        {
+          title: 'Software Engineer',
+          organization: 'Acme Corp',
+          date: '2023-Present',
+          bullets: ['...'],
+        },
+      ],
+    },
+    // ... skills, education, projects
+  ],
+}
 ```
 
-### New Components
+**Key benefit:** Schema changes only affect `export-normalizer.js`, not the export templates.
 
-**1. Demo/Seed Data**
+### 5. New API Routes
 
-Purpose: Bundle sample data for portfolio demos so visitors can see the app in action without creating their own data.
+| Method | Route | Purpose |
+|--------|-------|---------|
+| GET | `/api/resumes` | List all resume versions (metadata only) |
+| GET | `/api/resumes/:id` | Get full resume version |
+| POST | `/api/resumes` | Create new resume version |
+| PUT | `/api/resumes/:id` | Update resume version |
+| DELETE | `/api/resumes/:id` | Delete resume version |
+| POST | `/api/resumes/:id/analyze` | Run analysis against job posting |
+| POST | `/api/resumes/:id/tailor` | Generate tailored resume from suggestions |
+| GET | `/api/resumes/:id/export/pdf` | Export as PDF |
+| GET | `/api/resumes/:id/export/docx` | Export as DOCX |
+| GET | `/api/resumes/:id/export/json` | Export as JSON |
 
-Files:
-- `server/data/demo/applications.json` — Sample applications with various statuses
-- `server/data/demo/job_postings.json` — Sample job postings
-- `server/data/demo/resume.json` — Sample resume
+**Backward compatibility:**
+- `GET /api/resume` → redirects to `GET /api/resumes/master`
+- `PUT /api/resume` → redirects to `PUT /api/resumes/master`
 
-Usage: Server seeds from demo data if production data directory is empty.
+### 6. New React Routes
 
-**2. Build Script / CI Configuration**
+| Path | Page | Purpose |
+|------|------|---------|
+| `/resumes` | ResumeLibrary | List all resume versions |
+| `/resumes/:id` | ResumeEditor | Edit a specific resume version |
+| `/resumes/:id/analyze` | MatchReport | View analysis results |
+| `/resumes/:id/review` | ReviewSuggestions | Side-by-side review |
+| `/resumes/:id/export` | ExportDialog | Choose export format |
 
-Purpose: Automate the build process for deployment.
-
-Options:
-- `package.json` scripts (simplest)
-- GitHub Actions workflow (for CI/CD)
-- Platform-specific build configuration (Render, Railway)
-
-**3. Health Check Endpoint**
-
-Purpose: Allow hosting platform to verify the service is running.
-
-```javascript
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() })
-})
-```
-
-## Data Flow (Production)
-
-### Static Asset Serving
+## Build Order (Dependencies)
 
 ```
-Browser requests /app.js
-    ↓
-Express static middleware
-    ↓
-Serves client/dist/app.js (with cache headers)
+Phase 1: Resume Library Foundation
+├── Resume data model (separate files, index.json)
+├── Resume CRUD API (GET/POST/PUT/DELETE /api/resumes)
+├── Resume Library page (list, create, rename, delete)
+├── Migration from single resume.json
+└── Concurrency control (updatedAt timestamp)
+
+Phase 2: Match Scoring & Gap Analysis
+├── Analysis engine interface (server/lib/analysis-engine.js)
+├── Heuristics provider (refactor cover-letter.js)
+├── Match scoring API (POST /api/resumes/:id/analyze)
+├── Match Report page (score gauge, gap analysis)
+└── keyword-extractor integration
+
+Phase 3: Section-by-Section Suggestions
+├── Suggestion generation in heuristics provider
+├── SuggestionCard component
+├── Review Suggestions page
+└── Accept/reject/edit state management
+
+Phase 4: Tailored Resume Generation
+├── Resume merge utility (apply suggestions to copy)
+├── Tailor API (POST /api/resumes/:id/tailor)
+├── Side-by-side review (react-diff-viewer-continued)
+└── Auto-naming (Company - Role format)
+
+Phase 5: Application Pre-fill & Export
+├── Application pre-fill from job posting
+├── Resume-application linking (resume_version_id)
+├── Export normalizer (resume → intermediate)
+├── PDF export (pdfmake)
+├── DOCX export (docx)
+└── Export dialog page
 ```
-
-### API Request (Production)
-
-```
-Browser requests /api/applications
-    ↓
-Express API route handler
-    ↓
-Reads DATA_DIR/applications.json
-    ↓
-Returns JSON response
-```
-
-### SPA Navigation (Production)
-
-```
-Browser requests /resume (direct URL or refresh)
-    ↓
-Express checks: not an API route, not a static file
-    ↓
-Serves client/dist/index.html (SPA fallback)
-    ↓
-React Router handles /resume client-side
-```
-
-## Platform Constraints
-
-### JSON File Storage Impact
-
-The JSON file storage constraint is the **primary architectural constraint** for deployment. Most cloud platforms have ephemeral filesystems — data written during one request may not persist after a container restart.
-
-| Platform | Filesystem | JSON Storage Impact | Recommendation |
-|----------|------------|---------------------|----------------|
-| Render (Web Service) | Ephemeral | Data lost on redeploy | Use persistent disk add-on |
-| Render (Static Site + Web Service) | Ephemeral | Data lost on redeploy | Use persistent disk add-on |
-| Railway | Ephemeral | Data lost on redeploy | Use volume mount |
-| Fly.io | Persistent (volume) | Data persists | Good fit, use volume |
-| Vercel | Serverless (ephemeral) | No filesystem writes | **Not suitable** |
-| Netlify | Serverless (ephemeral) | No filesystem writes | **Not suitable** |
-| GitHub Pages | Static only | No server | **Not suitable** (frontend only) |
-
-**Recommendation:** Use **Render** or **Railway** with a persistent disk/volume. Both support Node.js, allow mounting persistent storage, and have free/low-cost tiers suitable for portfolio projects.
-
-### Single-User Constraint Impact
-
-No auth means no session management, no cookies, no CSRF protection needed. This simplifies deployment significantly — no need for:
-- Session stores (Redis, etc.)
-- HTTPS cookie configuration
-- OAuth callback URLs
-- CORS credentials handling
 
 ## Integration Points
 
-### Build Pipeline Integration
+| Component | Integrates With | Change Type |
+|-----------|-----------------|-------------|
+| Resume Library | Existing `resume.json` | **New** — separate files + index |
+| Analysis Engine | Existing `cover-letter.js` | **Refactor** — extract to provider |
+| Match Report | Existing job postings API | **Extend** — new analysis endpoint |
+| Review Interface | New diff viewer component | **New** — React component |
+| Export Pipeline | New pdfmake/docx libraries | **New** — server modules |
+| Application Pre-fill | Existing applications API | **Extend** — add resume_version_id |
 
-```
-Source Code (git)
-    ↓
-npm install (dependencies)
-    ↓
-vite build (client/dist/)
-    ↓
-NODE_ENV=production node server/index.js
-    ↓
-Express serves API + static files
-```
+## Risk Mitigation
 
-### Environment Variables
-
-| Variable | Purpose | Default | Required |
-|----------|---------|---------|----------|
-| `PORT` | Server listen port | 3000 | No |
-| `NODE_ENV` | Environment mode | undefined | Yes (set to 'production') |
-| `DATA_DIR` | JSON data directory | Project root | No (set for production) |
-
-### GitHub Actions Integration (Optional)
-
-```yaml
-# .github/workflows/deploy.yml
-name: Deploy
-on:
-  push:
-    branches: [main]
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-      - run: npm install
-      - run: npm run build
-      - run: npm test
-      # Platform-specific deployment step
-```
-
-## Documentation Integration
-
-### README Updates Needed
-
-- Add deployment section with platform-specific instructions
-- Add environment variable documentation
-- Add demo data explanation
-- Update architecture diagram to show production mode
-- Add screenshots section placeholder
-
-### New Documentation Files
-
-| File | Purpose | Integration |
-|------|---------|-------------|
-| `LICENSE` | MIT license for open source | Root directory, referenced in README |
-| `CONTRIBUTING.md` | Contribution guidelines | Root directory, linked from README |
-| `docs/DEPLOYMENT.md` | Detailed deployment guide | Linked from README |
-| `.env.example` | Document required env vars | Root directory |
-
-## Release Assets Integration
-
-### Screenshots
-
-- Capture from running local instance (consistent, reproducible)
-- Store in `docs/screenshots/` or `assets/` directory
-- Reference from README with relative paths
-- Show key flows: resume editing, job posting, cover letter generation, application tracking
-
-### Demo Data
-
-- Seed data that showcases all features
-- Pre-populated resume, job postings, and applications
-- Applications in various statuses (drafted, applied, interviewing, offered, rejected)
-- Enables visitors to explore the app immediately
-
-### Presentation Slides
-
-- Already have `slides/pitch.md` (Marp format)
-- Update with deployment URL and screenshots
-- No architectural changes needed
-
-## Build Order (Dependency-Aware)
-
-```
-Phase 1: Deployment Readiness
-├── 1.1: Add production build scripts (package.json)
-├── 1.2: Modify Express to serve static files (server/index.js)
-├── 1.3: Make DATA_DIR configurable (server/index.js)
-├── 1.4: Add health check endpoint (server/index.js)
-├── 1.5: Add .env.example with documented vars
-└── 1.6: Test production build locally (npm run build && npm start)
-
-Phase 2: Production Deployment
-├── 2.1: Create demo/seed data files
-├── 2.2: Add seed logic to Express server
-├── 2.3: Configure hosting platform (Render/Railway)
-├── 2.4: Set environment variables on platform
-├── 2.5: Deploy and verify
-└── 2.6: Test with demo data on live URL
-
-Phase 3: Documentation
-├── 3.1: Add LICENSE file
-├── 3.2: Update README with deployment info
-├── 3.3: Add CONTRIBUTING.md
-├── 3.4: Add docs/DEPLOYMENT.md
-└── 3.5: Update architecture diagrams
-
-Phase 4: Release Assets
-├── 4.1: Capture screenshots
-├── 4.2: Update slides with deployment URL
-├── 4.3: Add screenshots to README
-└── 4.4: Final review and tag release
-```
-
-## Anti-Patterns
-
-### Anti-Pattern 1: Serving Dev and Prod from Same Config
-
-**What people do:** Use Vite proxy in production or try to run both Vite and Express.
-
-**Why it's wrong:** Vite dev server is not meant for production. Proxy adds latency. Two processes = two things to manage.
-
-**Do this instead:** Build the client once, serve static files from Express. Single process, single port.
-
-### Anti-Pattern 2: Hardcoding File Paths
-
-**What people do:** Use `__dirname + '/../data'` everywhere.
-
-**Why it's wrong:** Breaks when directory structure changes between dev and production environments.
-
-**Do this instead:** Use `process.env.DATA_DIR` with a sensible default. One variable controls all data paths.
-
-### Anti-Pattern 3: Ignoring Ephemeral Filesystem
-
-**What people do:** Deploy to Vercel/Netlify and expect JSON writes to persist.
-
-**Why it's wrong:** Serverless platforms destroy the filesystem after each request. Data is lost.
-
-**Do this instead:** Choose a platform with persistent storage (Render with disk, Railway with volume, Fly.io with volume). Or accept data loss for demo purposes and seed on startup.
-
-### Anti-Pattern 4: No SPA Fallback
-
-**What people do:** Only serve static files, forget about client-side routing.
-
-**Why it's wrong:** Direct URL navigation (e.g., `/resume`) returns 404 because no file exists at that path.
-
-**Do this instead:** Add a catch-all route that serves `index.html` for any non-API, non-static-file request. React Router handles the rest.
+| Risk | Mitigation |
+|------|------------|
+| Base resume overwrite | Separate files + source_id linking |
+| Concurrent writes | updatedAt timestamp + optimistic concurrency |
+| Analysis engine coupling | Provider interface defined before implementation |
+| Export breaks on schema change | Normalized intermediate representation |
+| Library becomes unmanageable | Auto-naming + filtering + application linkage |
 
 ## Sources
 
-- Express static file serving: https://expressjs.com/en/starter/static-files.html
-- Vite production build: https://vitejs.dev/guide/build.html
-- Render persistent disks: https://render.com/docs/disks
-- Railway volumes: https://docs.railway.app/guides/volumes
-- Fly.io volumes: https://fly.io/docs/reference/volumes/
+- Existing codebase: `server/index.js`, `server/lib/cover-letter.js`, `client/src/`
+- STACK.md: Library recommendations (pdfmake, docx, react-diff-viewer-continued, keyword-extractor)
+- PITFALLS.md: Critical pitfalls and integration gotchas
+- FEATURES.md: Feature dependencies and competitor analysis
+- PROJECT.md: Architectural constraints (provider-agnostic, structured JSON schema)
 
 ---
-*Architecture research for: ApplyTrail deployment readiness*
-*Researched: 2026-06-26*
+*Architecture research for: ApplyTrail v2.0 Resume Tailoring Flow*
+*Researched: 2026-07-02*

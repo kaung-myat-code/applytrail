@@ -1,183 +1,172 @@
-# Stack Research: ApplyTrail Deployment & Release
+# Technology Stack
 
-**Domain:** Portfolio-ready web app deployment and release polish
-**Researched:** 2026-06-26
-**Confidence:** HIGH
+**Project:** ApplyTrail v2.0 Resume Tailoring Flow
+**Researched:** 2026-07-02
+**Mode:** Ecosystem — Stack additions for resume optimization workflow
+
+## Executive Summary
+
+The v2.0 milestone adds five major capabilities: resume optimization, match scoring, section-by-section suggestions, side-by-side review, and multi-format export. The existing stack (React 19, Express 4, JSON file storage) remains unchanged. Three new server-side libraries are needed for export and analysis, one client-side library for the review interface, and the existing keyword-matching logic should be enhanced rather than replaced.
+
+**Total new dependencies:** 4 (3 server, 1 client)
+**Client bundle impact:** ~45 KB (diff viewer only, loaded on review page)
+**Server bundle impact:** ~2.7 MB (export and analysis libraries)
 
 ## Recommended Stack
 
-### Hosting Platform
+### Export: PDF Generation
 
-| Technology | Purpose | Why Recommended |
-|------------|---------|-----------------|
-| Render (Web Service) | Production hosting | Free tier available, native monorepo support via render.yaml, auto-deploy from GitHub, single service serves both Express API and Vite static build. No Dockerfile required. Simplest setup of all options. |
+| Technology | Version | Purpose | Why |
+|------------|---------|---------|-----|
+| pdfmake | 0.3.11 | Generate PDF resumes from JSON data | Declarative JSON document definition matches project's JSON-first architecture. No HTML templating required. Works server-side in Node.js. MIT license. 12.3k GitHub stars, actively maintained (last release June 2026). |
 
-**Why Render over alternatives:**
+**Why pdfmake over alternatives:**
 
-- **Railway** -- No permanent free tier (trial credits only, ~$5). Better DX but costs money from day one. Overkill for a single-user local tool being deployed as a portfolio piece.
-- **Fly.io** -- Free tier exists (3 shared VMs, 3GB storage) but requires Dockerfile and fly.toml configuration. More complex setup. Better suited for apps needing global edge distribution.
-- **Vercel** -- Excellent for frontend-only deploys. Express backend requires adaptation to serverless functions, which breaks the JSON file storage model (no persistent filesystem).
-- **Netlify** -- Static sites and serverless functions only. Same filesystem problem as Vercel.
+- **vs pdfkit (v0.19.1):** pdfkit is lower-level (canvas-like API). Requires manual positioning of every text element. pdfmake's declarative style maps naturally to resume sections — define content as JSON objects, get a formatted PDF. Less code for structured documents.
+- **vs @react-pdf/renderer (v4.5.1):** Requires React rendering pipeline on the server. Adds complexity for a server-side generation task. pdfmake is pure Node.js, no React dependency on the server.
+- **vs puppeteer/playwright:** Heavy dependency (headless browser). Overkill for structured document generation. pdfmake generates PDFs directly without browser overhead.
 
-Render wins because: free tier with persistent filesystem, single-service monorepo deploy, auto-deploy from GitHub, no Docker required, and the JSON file storage model works as-is.
+**Integration point:** New server module `server/lib/export-pdf.js` called from `GET /api/resumes/:id/export/pdf`.
 
-### Production Server Middleware
+### Export: DOCX Generation
 
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| helmet | ^8.0.0 | Security headers | Sets X-Content-Type-Options, X-Frame-Options, CSP, and other HTTP security headers. Zero config required for baseline protection. Standard for any Express app exposed to the internet. |
-| compression | ^1.7.5 | Gzip responses | Compresses API responses and static assets. Reduces payload size by 60-80% for JSON responses. Place before routes for maximum effect. |
-| dotenv | ^16.4.7 | Environment config | Loads .env files in development. In production, hosting platform sets env vars directly. Already in .gitignore pattern. |
+| Technology | Version | Purpose | Why |
+|------------|---------|---------|-----|
+| docx | 9.7.1 | Generate Word documents from resume JSON | Declarative API with paragraphs, tables, bullets, headers/footers. TypeScript support. Works in Node.js and browser. MIT license. 5.8k GitHub stars, 95 releases, actively maintained (last release May 2026). |
 
-**Why these three and nothing more:**
+**Why docx over alternatives:**
 
-- **morgan** (HTTP logging) -- Not needed. Render provides request logs in its dashboard. Adding morgan to a portfolio project adds noise without value.
-- **express-rate-limit** -- Not needed. Single-user local tool, no auth, no abuse vector. Would be premature hardening.
-- **cors** -- Already a dependency but not currently used in server/index.js. In production, Express serves both API and static files from the same origin, so CORS is not needed. Keep it as a dependency for dev mode (Vite on port 5173 needs it).
+- **vs docxtemplater:** docxtemplater requires a pre-existing .docx template file. docx generates documents from scratch with a programmatic API — better for dynamic resume structures.
+- **vs officegen:** Less mature, smaller community. docx has better documentation and more contributors (135).
 
-### Build & Serve Configuration
+**Integration point:** New server module `server/lib/export-docx.js` called from `GET /api/resumes/:id/export/docx`.
 
-| Technology | Version | Purpose | Why Recommended |
-|------------|---------|---------|-----------------|
-| Vite (build) | ^6.0.0 | Frontend production build | Already installed. `vite build` outputs to client/dist/. Tree-shaking, code splitting, asset hashing included by default. |
-| Express static serving | (built-in) | Serve Vite build | `express.static('client/dist')` plus SPA catch-all. No nginx, no separate static hosting. Single service, single port. |
+### Export: JSON
 
-**Production architecture:**
+No library needed. The resume data is already JSON. Export is a direct file download of the existing resume structure with a `.json` extension and `Content-Disposition: attachment` header.
 
-```text
-Browser --> Express (single port, assigned by Render)
-              |
-              |-- /api/* --> Express route handlers (JSON file read/write)
-              |-- /*      --> Static files from client/dist/ (Vite build)
-              |-- SPA catch-all --> client/dist/index.html
-```
+**Integration point:** New route `GET /api/resumes/:id/export/json` that streams the file.
 
-This eliminates the Vite dev proxy entirely in production. Express serves everything from one origin.
+### Review Interface: Side-by-Side Diff
 
-### Documentation & Release Tools
+| Technology | Version | Purpose | Why |
+|------------|---------|---------|-----|
+| react-diff-viewer-continued | 4.2.2 | Show original vs suggested resume content side-by-side | Maintained fork of react-diff-viewer. Supports React 19 (peer dependency includes ^19.0.0). Split view, word-level diffing, syntax highlighting, dark/light themes. MIT license. |
 
-| Technology | Version | Purpose | When to Use |
-|------------|---------|---------|-------------|
-| @marp-team/marp-cli | ^4.0.0 | Export slides to PDF/PPTX | One-time use: export slides/pitch.md to PDF for release assets. Use via npx, no install needed. |
-| shields.io | (web service) | README badges | Add tech stack badges, deployment status badge, license badge to README. No install -- just markdown image URLs. |
-| capture-website-cli | ^4.0.0 | Screenshot tool | Capture portfolio screenshots of deployed app. Use via npx. Supports viewport sizing, wait-for-load, custom CSS. |
+**Why react-diff-viewer-continued over alternatives:**
 
-**Why npx for Marp and capture-website-cli:** These are one-time or occasional-use tools. No reason to add them as project dependencies. `npx @marp-team/marp-cli slides/pitch.md --pdf` works without install.
+- **vs react-diff-viewer (original):** Abandoned since May 2020. No React 19 support. react-diff-viewer-continued is the community-maintained fork with active development.
+- **vs building custom diff with `diff` library (v9.0.0):** The diff library provides the algorithm but not the UI. react-diff-viewer-continued wraps diff with a polished React component — saves significant UI development time.
+- **vs CodeMonaco diff editor:** Heavy dependency (Monaco editor). Overkill for displaying text diffs in a review interface.
 
-### CI/CD
+**Note:** This library pulls in `@emotion/css` and `@emotion/react` as dependencies. Since the project uses CSS Modules, there may be minor styling considerations, but emotion is scoped to the diff component and won't conflict with existing styles.
 
-| Technology | Purpose | Why Recommended |
-|------------|---------|-----------------|
-| Render auto-deploy | Deploy on push to main | Native GitHub integration. No workflow YAML needed. Render detects the render.yaml blueprint and deploys automatically. |
-| GitHub Actions (optional) | Lint + test before deploy | Only if you want a quality gate. Run `npm run lint` and `npm test` before allowing merge to main. Not required for a portfolio project. |
+**Integration point:** New component `client/src/components/ResumeDiffViewer.jsx` used in the review page.
 
-**Recommendation:** Use Render auto-deploy only. Skip GitHub Actions for this milestone. The project has no CI pipeline today and adding one is not part of the "release polish" scope.
+### Match Scoring: Enhanced Keyword Extraction
+
+| Technology | Version | Purpose | Why |
+|------------|---------|---------|-----|
+| keyword-extractor | 0.0.28 | Extract meaningful keywords from job postings | Lightweight (zero heavy dependencies). Simple API. Complements existing keyword matching by providing better extraction with configurable stop-word lists. |
+
+**Why keyword-extractor over alternatives:**
+
+- **vs natural (v8.1.1):** natural pulls in mongoose, pg, redis, and other heavy dependencies. Massive overkill for keyword extraction. keyword-extractor does one thing well.
+- **vs compromise (v14.15.1):** compromise is a full NLP toolkit (tokenization, POS tagging, sentiment). We only need keyword extraction. keyword-extractor is purpose-built and lighter.
+
+**Integration point:** Enhance existing `server/lib/cover-letter.js` with better keyword extraction. The `extractKeywords` function currently uses simple tokenization — keyword-extractor provides better stop-word filtering.
+
+### Match Scoring: Similarity Calculation
+
+No external library needed. The match scoring algorithm can be implemented with:
+- Term frequency counting (how often keywords appear)
+- Coverage ratio (what percentage of job keywords appear in resume)
+- Section-level scoring (per-section match percentages)
+
+This keeps the analysis engine provider-agnostic as specified in PROJECT.md. A simple scoring module in `server/lib/match-scorer.js` can be swapped for an LLM-based scorer later.
+
+### State Management: Accept/Reject/Edit Workflow
+
+No external library needed. React's built-in `useState` and `useReducer` are sufficient for:
+- Tracking which suggestions are accepted, rejected, or edited
+- Storing edited text for modified suggestions
+- Generating the final tailored resume from accepted/edited suggestions
+
+**Why not use-undo or immer:**
+- The review workflow is linear (review suggestions, make decisions, generate resume). Full undo/redo history is unnecessary complexity.
+- State is per-section, not deeply nested. Standard React state handles this fine.
+
+## Alternatives Considered
+
+| Category | Recommended | Alternative | Why Not |
+|----------|-------------|-------------|---------|
+| PDF generation | pdfmake 0.3.11 | pdfkit 0.19.1 | Lower-level API requires more code for structured documents |
+| PDF generation | pdfmake 0.3.11 | @react-pdf/renderer 4.5.1 | Requires React on server, adds complexity |
+| DOCX generation | docx 9.7.1 | docxtemplater | Requires template file, less flexible for dynamic structures |
+| Diff viewer | react-diff-viewer-continued 4.2.2 | Custom diff UI | More development time for same result |
+| Diff viewer | react-diff-viewer-continued 4.2.2 | Monaco diff editor | Heavy dependency, overkill |
+| Keyword extraction | keyword-extractor 0.0.28 | natural 8.1.1 | Too many heavy dependencies (mongoose, pg, redis) |
+| Keyword extraction | keyword-extractor 0.0.28 | compromise 14.15.1 | Full NLP toolkit when we only need extraction |
+| State management | React useState/useReducer | use-undo 1.2.0 | Unnecessary complexity for linear workflow |
+| State management | React useState/useReducer | immer 11.1.9 | State isn't deeply nested enough to warrant it |
 
 ## Installation
 
 ```bash
-# Production middleware (root package.json)
-npm install helmet compression dotenv
+# Server dependencies (PDF export)
+cd server && npm install pdfmake@^0.3.11
 
-# Release tools (use via npx, no install)
-npx @marp-team/marp-cli slides/pitch.md --pdf
-npx capture-website-cli http://localhost:5173 --output=screenshot.png
+# Server dependencies (DOCX export)
+cd server && npm install docx@^9.7.1
 
-# Shields.io badges (no install -- markdown image URLs in README)
+# Server dependencies (keyword extraction)
+cd server && npm install keyword-extractor@^0.0.28
+
+# Client dependencies (diff viewer)
+cd client && npm install react-diff-viewer-continued@^4.2.2
 ```
 
-## Alternatives Considered
+## What NOT to Add
 
-| Recommended | Alternative | When to Use Alternative |
-|-------------|-------------|-------------------------|
-| Render | Railway | If you want better DX and are willing to pay ~$5/month from day one |
-| Render | Fly.io | If you need global edge distribution or want to learn Docker-based deploys |
-| Express static serving | Nginx reverse proxy | If you deploy to a VPS (DigitalOcean, Linode) instead of a PaaS |
-| dotenv | Platform env vars only | dotenv is only needed in development; production uses Render dashboard |
-| capture-website-cli | Manual screenshots | If you only need 2-3 screenshots, manual browser screenshots are faster |
-| Marp CLI | Google Slides / Keynote | If you prefer GUI-based slide editors |
+| Technology | Why Not |
+|------------|---------|
+| Database (PostgreSQL, MongoDB) | PROJECT.md specifies JSON file storage. No auth, single-user tool. |
+| AI/LLM API (OpenAI, Anthropic) | PROJECT.md specifies no external APIs. Analysis engine is heuristics-based, swappable later. |
+| State management library (Redux, Zustand) | React built-in state is sufficient. Adding a library increases bundle size for no benefit. |
+| Template engine (Handlebars, EJS) | Resume structure is JSON-driven. pdfmake and docx use declarative APIs, not templates. |
+| CSS framework (Tailwind, Bootstrap) | Project uses CSS Modules. Adding a framework would require restyling everything. |
+| Testing library additions | Vitest and Testing Library already configured. No new test dependencies needed. |
 
-## What NOT to Use
+## Bundle Size Impact
 
-| Avoid | Why | Use Instead |
-|-------|-----|-------------|
-| Vercel | No persistent filesystem. JSON file writes fail on serverless. Breaks the core data model. | Render (persistent disk) |
-| Netlify | Same filesystem problem as Vercel. Serverless functions cannot write to disk reliably. | Render |
-| PM2 | Process manager for VPS deployments. Render handles process management automatically. | Render built-in |
-| Docker | Unnecessary complexity for a single-service Node.js app. Render detects Node.js and runs `npm start` automatically. | render.yaml blueprint |
-| nginx | Not needed when Express serves static files directly. Adds a configuration layer with no benefit for this architecture. | Express static middleware |
-| next.js migration | Would require rewriting the entire frontend. React + Vite + Express is the correct stack for this project. | Current stack |
+| Package | Size | Impact |
+|---------|------|--------|
+| pdfmake | ~2.5 MB (server only) | Zero client bundle impact |
+| docx | ~150 KB (server only) | Zero client bundle impact |
+| keyword-extractor | ~15 KB (server only) | Zero client bundle impact |
+| react-diff-viewer-continued | ~45 KB (client) | Moderate, loaded only on review page |
+
+**Total client bundle increase:** ~45 KB (diff viewer only). All export and analysis libraries run server-side.
 
 ## Version Compatibility
 
 | Package | Compatible With | Notes |
 |---------|-----------------|-------|
-| helmet@8.x | express@4.x | helmet 8 requires Express 4+. Works out of the box. |
-| compression@1.7.x | express@4.x | No compatibility issues. Standard Express middleware interface. |
-| dotenv@16.x | node@18+ | Works with the Node.js 18+ requirement already in place. |
-| vite@6.x | node@18+ | Vite 6 requires Node.js 18+. Already satisfied. |
-
-## Production Configuration Changes Required
-
-### server/index.js modifications
-
-```javascript
-// Add at top (before routes)
-const helmet = require('helmet')
-const compression = require('compression')
-const path = require('path')
-
-app.use(helmet())
-app.use(compression())
-
-// Add after API routes (production static serving)
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '..', 'client', 'dist')))
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'client', 'dist', 'index.html'))
-  })
-}
-```
-
-### Root package.json scripts additions
-
-```json
-{
-  "scripts": {
-    "build": "cd client && npm run build",
-    "start": "cd server && node index.js",
-    "render-build": "npm install --prefix client && npm run build && npm install --prefix server"
-  }
-}
-```
-
-### render.yaml blueprint
-
-```yaml
-services:
-  - type: web
-    name: applytrail
-    runtime: node
-    buildCommand: npm run render-build
-    startCommand: npm start
-    envVars:
-      - key: NODE_ENV
-        value: production
-```
+| pdfmake@0.3.x | node@18+ | Pure JavaScript, no native dependencies |
+| docx@9.x | node@18+ | Pure JavaScript, no native dependencies |
+| keyword-extractor@0.0.x | node@18+ | Pure JavaScript, no native dependencies |
+| react-diff-viewer-continued@4.x | react@19.x | Peer dependency includes ^19.0.0 |
+| react-diff-viewer-continued@4.x | react-dom@19.x | Peer dependency includes ^19.0.0 |
 
 ## Sources
 
-- Render monorepo docs: https://docs.render.com/monorepo
-- Railway monorepo docs: https://docs.railway.com/guides/monorepo-support
-- Fly.io monorepo docs: https://fly.io/docs/apps/guides/monorepo/
-- Express production best practices: https://expressjs.com/en/advanced/best-practice-security.html
-- helmet npm: https://www.npmjs.com/package/helmet
-- compression npm: https://www.npmjs.com/package/compression
-- dotenv npm: https://www.npmjs.com/package/dotenv
-- Marp CLI: https://github.com/marp-team/marp-cli
-- shields.io: https://shields.io
-- capture-website-cli: https://github.com/sindresorhus/capture-website-cli
+- PDFKit GitHub: https://github.com/foliojs/pdfkit (verified 2026-07-02)
+- docx GitHub: https://github.com/dolanmiu/docx (verified 2026-07-02)
+- pdfmake GitHub: https://github.com/bpampuch/pdfmake (verified 2026-07-02)
+- react-diff-viewer GitHub: https://github.com/praneshr/react-diff-viewer (verified 2026-07-02)
+- npm registry: All versions verified via `npm info` on 2026-07-02
+- PROJECT.md: Project constraints and architectural decisions
 
 ---
-*Stack research for: ApplyTrail deployment readiness and release polish*
-*Researched: 2026-06-26*
+*Stack research for: ApplyTrail v2.0 Resume Tailoring Flow*
+*Researched: 2026-07-02*

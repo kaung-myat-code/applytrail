@@ -1,185 +1,176 @@
 # Feature Research
 
-**Domain:** Deployment readiness, production deployment, documentation, and release assets for a React+Express local web app
-**Researched:** 2026-06-26
+**Domain:** Resume Optimization Workflow
+**Researched:** 2026-07-02
 **Confidence:** MEDIUM
 
 ## Feature Landscape
 
 ### Table Stakes (Users Expect These)
 
-Features that a portfolio project must have to look professional and be usable. Missing any of these makes the project feel incomplete or amateurish.
+Features users assume exist. Missing these = product feels incomplete.
 
 | Feature | Why Expected | Complexity | Notes |
 |---------|--------------|------------|-------|
-| Production build serving | App must work outside `npm run dev` | LOW | Express serves `client/dist` via `express.static` + catch-all SPA route. Already partially in place (dist exists). |
-| Health check endpoint | Hosting platforms need to verify the app is alive | LOW | Add `GET /api/health` returning `{ status: "ok" }`. Single line of code. |
-| Environment-based configuration | Production needs different settings than dev | LOW | Use `process.env.NODE_ENV` to toggle CORS, logging, static serving. Already uses `process.env.PORT`. |
-| Production security headers | Browsers/users expect secure defaults | LOW | `helmet` middleware adds X-Content-Type-Options, X-Frame-Options, HSTS, CSP. One `require` + one `app.use`. |
-| Response compression | Uncompressed responses waste bandwidth | LOW | `compression` middleware for gzip. One `require` + one `app.use`. |
-| README with screenshots | No visual = no credibility on GitHub | MEDIUM | Capture screenshots of each page (Dashboard, Resume, Applications, Cover Letter). Place hero image at top. |
-| LICENSE file | Open-source projects without licenses are legally ambiguous | LOW | MIT license is standard for portfolio projects. Single file. |
-| Accurate project structure in README | Contributors/users need to understand the codebase | LOW | Update existing README to reflect current file structure (it's stale — references Phase 3/4 as future). |
-| Working Getting Started instructions | Users must be able to clone and run | LOW | Existing README has this but needs verification against current state. |
+| Resume Match Score | Every major tool (Jobscan, Resume Worded, Enhancv, SkillSyncer) provides a percentage or numerical score. Users expect to see how well their resume matches a job posting before investing time tailoring. | LOW | Extend existing `matchResumeToJob()` in `cover-letter.js`. Count matched vs total keywords. Return percentage. Display as colored progress indicator (red < 50%, yellow 50-75%, green > 75%). |
+| Gap Analysis | Users expect to see what's missing -- hard skills, soft skills, keywords -- before they start editing. Jobscan and SkillSyncer both surface missing keywords prominently. | LOW | Extract keywords from job posting, compare to resume skills/experience. Return lists: `matched`, `missing`, `bonus` (present in resume but not in posting). Display as categorized keyword chips. |
+| Section-by-Section Suggestions | Resume Worded provides per-bullet feedback. Enhancv analyzes 27 checks across content, layout, and keywords. Users expect granular, actionable advice, not a single score. | MEDIUM | Generate improvement suggestions per resume section (Summary, Skills, Experience, Projects, Education). Each suggestion should have a `type` (add, modify, remove), `section`, `current` (if modifying), and `suggested` content. |
+| Tailored Resume Version Creation | Teal and Enhancv both create tailored resumes per application. Users expect the output to be a new file, not a modification of their original. | MEDIUM | Copy base resume, apply accepted suggestions, save as new version with auto-generated name (e.g., "Software Developer at Acme Corp"). Link to application record. |
+| Accept/Reject Workflow | Users expect control over suggestions. Kickresume offers before/after toggle. Rezi offers inline accept/reject. Users want to review each change individually. | MEDIUM | Each suggestion has accept/reject state. User can accept all, reject all, or toggle individually. Accepted changes apply to the new resume version. Rejected changes are discarded. |
 
 ### Differentiators (Competitive Advantage)
 
-Features that make this project stand out from typical portfolio projects. These align with the core value: end-to-end job application workflow.
+Features that set the product apart. Not required, but valuable.
 
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|
-| Live demo URL | Reviewers can click and try immediately without cloning | MEDIUM | Deploy to Render free tier. Single service: Express serves React build. render.yaml blueprint. |
-| Animated demo GIF | Shows interactivity better than static screenshots | MEDIUM | Record 10-15 second GIF showing: paste job posting, generate cover letter, view in application list. Use LICEcap or ScreenToGif. |
-| Architecture diagram in README | Shows system design thinking, not just code | LOW | Update existing ASCII diagram to reflect production state (static serving, health check). |
-| Deployment badge | Shows the app is live and maintained | LOW | shields.io badge linking to live demo. `![Deploy](https://img.shields.io/badge/deploy-live-brightgreen)` |
-| Tech stack badges | Quick visual scan of technologies used | LOW | shields.io badges for React, Express, Vite, Node.js. |
-| Production-ready Express middleware stack | Demonstrates awareness of production concerns | MEDIUM | helmet + compression + CORS config + rate limiting + centralized error handling. Shows backend maturity. |
-| Marp presentation slides | Already exists; polish for web presentation | LOW | Existing `slides/pitch.md` needs updating to reflect web app (currently references CLI workflow). |
+| Side-by-Side Review | Most competitors show suggestions inline or in a list. A true side-by-side diff view (original vs. suggested) is rare -- Jobscan shows score changes, not content diffs. This would be a significant UX advantage. | HIGH | Split-pane layout: left = original resume section, right = suggested version. Highlight additions (green), removals (red), modifications (yellow). User can edit the right pane directly before accepting. |
+| Provider-Agnostic Analysis Engine | PROJECT.md specifies this as a key decision. Users can switch between heuristics, AI models, or third-party services without changing the UI. Most competitors are locked to their own engine. | MEDIUM | Analysis engine as a pluggable interface. Default: keyword-matching heuristics (extend existing `cover-letter.js` logic). Future: swap in OpenAI, Anthropic, or Jobscan API without UI changes. Define a standard `AnalysisResult` schema. |
+| Resume Version Library | Teal organizes tailored resumes per application. Enhancv tracks them in a job tracker. A dedicated version library with search, rename, delete, and compare is uncommon in competitors. | MEDIUM | Store resume versions in `resume_versions/` directory. Each version has metadata: `id`, `name`, `created_at`, `base_resume_id`, `job_posting_id`, `application_id`. Library page with grid/list view, search, rename, delete. |
+| Keyword Density Visualization | Jobscan shows keyword match rate but not density. Showing where keywords appear in the resume (and where they're missing) would help users optimize placement. | LOW | For each matched keyword, highlight which section it appears in. For missing keywords, suggest which section to add them to. Visual: keyword chips with section badges. |
+| Export to PDF/DOCX | PROJECT.md lists this as a target feature. Most competitors offer export. This is table-stakes for a complete tool but differentiating here because structured JSON as source of truth is unusual. | MEDIUM | Generate PDF from structured JSON resume. Use a library like `pdfkit` or `puppeteer`. DOCX via `docx` npm package. Preserve formatting and section structure. |
 
 ### Anti-Features (Commonly Requested, Often Problematic)
 
-Features that seem like good ideas but create problems for this project's scope.
+Features that seem good but create problems.
 
 | Feature | Why Requested | Why Problematic | Alternative |
 |---------|---------------|-----------------|-------------|
-| Docker containerization | "Industry standard" for deployment | Adds complexity for a simple single-service app. Render builds from source. No database to containerize. Overkill for JSON file storage. | Use Render's native Node.js build. Add Docker later only if multi-service deployment is needed. |
-| CI/CD pipeline (GitHub Actions) | "Automate everything" | The app has no tests to run in CI (vitest exists but passWithNoTests). Auto-deploy on push to main via Render is sufficient. Adding CI now means maintaining empty pipelines. | Use Render's auto-deploy. Add GitHub Actions when tests actually exist. |
-| Custom domain + SSL | "Professional URL" | Costs money, requires DNS config. `onrender.com` subdomain has HTTPS by default. Overkill for a portfolio demo. | Use Render's free `.onrender.com` URL. |
-| Monitoring/alerting (Sentry, Datadog) | "Production observability" | Single-user local tool with no traffic. Adds dependency weight and configuration. Console.log is sufficient. | Add Sentry only if the app gains real users. |
-| Database migration (PostgreSQL) | "JSON files aren't real storage" | Violates core constraint (JSON file storage). Adds hosting cost (managed DB), migration complexity, and changes the data layer fundamentally. | Keep JSON files. This is a portfolio project, not a production SaaS. |
-| Multi-language support (i18n) | "Global audience" | Single-user tool. Adds translation overhead for zero benefit. | Not needed. |
-| PWA/offline support | "Works without internet" | Complex service worker setup for a tool that needs a running server anyway. | Not applicable — app requires server. |
-| Rate limiting on all routes | "Security best practice" | Rate limiting a single-user local tool adds no value. Only needed if deployed publicly, and even then only on write endpoints. | Add rate limiting only to POST/PUT endpoints if deployed. |
+| Auto-Optimize (Auto-Insert Keywords) | SkillSyncer offers this. Users want one-click tailoring. | Removes user control. May insert keywords in unnatural positions. Creates resume content the user didn't write or approve. Violates the "review every change" principle. | Provide suggestions with accept/reject. Let user control what goes in. Show preview before generating. |
+| ATS Format Checking | Jobscan checks for ATS-compatible formatting. Users worry about parsing. | ApplyTrail uses structured JSON as source of truth, not a document format. Format checking is irrelevant when the data model is already structured. Would add complexity without value. | Skip. The JSON schema guarantees parseability. Export formats (PDF/DOCX) will use standard templates. |
+| Real-Time Score Updates | Jobscan shows score changes as you edit. Users want instant feedback. | Requires re-analyzing on every keystroke. Expensive if using an AI engine. Creates pressure to optimize for score rather than quality. | Show score after generation, not during editing. Let user re-analyze manually when ready. |
+| LinkedIn Profile Optimization | Resume Worded offers this. Users want to optimize their LinkedIn too. | Different data format, different platform, different audience. Massive scope expansion. Not related to the core resume tailoring workflow. | Defer entirely. Focus on resume optimization first. |
+| AI Resume Writing from Scratch | Kickresume and Enhancv offer full AI resume generation. Users want to start from zero. | Violates the "user owns the content" principle. Creates resumes the user may not accurately represent their experience. High risk of hallucination. | Provide suggestions to improve existing content. Never generate content the user hasn't reviewed. |
 
 ## Feature Dependencies
 
 ```
-Production Build Serving
-    └──requires──> Environment-Based Configuration
-                       └──requires──> Production Security Headers
+Resume Match Score
+    └──requires──> Keyword Extraction (exists in cover-letter.js)
 
-Live Demo URL
-    └──requires──> Production Build Serving
-                       └──requires──> Health Check Endpoint
+Gap Analysis
+    └──requires──> Keyword Extraction
+    └──requires──> Resume Skills/Experience Data (exists in resume.json)
 
-README with Screenshots
-    └──requires──> Live Demo URL (for real screenshots, not localhost)
+Section-by-Section Suggestions
+    └──requires──> Gap Analysis
+    └──requires──> Provider-Agnostic Analysis Engine Interface
 
-Animated Demo GIF
-    └──requires──> Live Demo URL (for realistic demo)
+Accept/Reject Workflow
+    └──requires──> Section-by-Section Suggestions
 
-Marp Presentation Polish
-    └──requires──> README with Screenshots (shared assets)
+Tailored Resume Version Creation
+    └──requires──> Accept/Reject Workflow
+    └──requires──> Resume Version Storage
 
-Deployment Badge
-    └──requires──> Live Demo URL
+Side-by-Side Review
+    └──enhances──> Accept/Reject Workflow
+
+Resume Version Library
+    └──requires──> Tailored Resume Version Creation
+
+Application Pre-fill
+    └──requires──> Tailored Resume Version Creation
+    └──enhances──> Existing Application Tracking
+
+Export (PDF/DOCX)
+    └──requires──> Tailored Resume Version Creation (or any resume version)
 ```
 
 ### Dependency Notes
 
-- **Production Build Serving requires Environment-Based Configuration:** The server needs to know if it's in production to serve static files, enable compression, and set security headers. Without this, the same code runs in both modes.
-- **Live Demo URL requires Production Build Serving:** The deployed app must serve the React build from Express. The current dev setup uses Vite proxy, which doesn't exist in production.
-- **Live Demo URL requires Health Check Endpoint:** Render (and most platforms) ping a health endpoint to verify the service is alive. Without it, the platform may mark the service as failed.
-- **README Screenshots require Live Demo URL:** Screenshots from localhost look unprofessional. A live URL proves the app works and provides real screenshots.
-- **Deployment Badge requires Live Demo URL:** The badge links to the live demo. No URL = no badge target.
+- **Keyword Extraction already exists:** `extractKeywords()` in `cover-letter.js` does exactly what's needed for match scoring and gap analysis. Extend, don't rebuild.
+- **Resume Version Storage is new infrastructure:** Currently `resume.json` is a single file. Need a `resume_versions/` directory or a `resume_versions.json` index file. This is the biggest structural change.
+- **Provider-Agnostic Engine is an interface, not a feature:** Define the `AnalysisResult` schema first, then implement heuristics against it. Future providers (AI, third-party) implement the same interface.
+- **Side-by-Side Review enhances Accept/Reject:** Can ship without it (list-based review), then add the diff view later as a UX upgrade.
+- **Application Pre-fill reuses existing infrastructure:** The `applications.json` schema already supports `company`, `role`, `job_posting`. Add `resume_version_id` field to link to the tailored version.
 
 ## MVP Definition
 
-### Launch With (v1.1)
+### Launch With (v2.0)
 
-Minimum for a polished portfolio release. These are non-negotiable.
+Minimum viable product -- what's needed to validate the resume tailoring workflow.
 
-- [ ] Production build serving (Express serves React dist with SPA catch-all) -- makes app deployable
-- [ ] Health check endpoint (`GET /api/health`) -- required by hosting platforms
-- [ ] Environment-based configuration (NODE_ENV toggles) -- separates dev from prod behavior
-- [ ] Production security headers (helmet) -- baseline security expectation
-- [ ] Response compression (compression middleware) -- performance baseline
-- [ ] render.yaml blueprint -- declarative deployment config
-- [ ] README update (screenshots, accurate structure, live demo link, badges) -- first impression
-- [ ] LICENSE file (MIT) -- legal clarity
-- [ ] Animated demo GIF -- shows interactivity
-- [ ] Marp slides update -- reflects web app, not CLI workflow
+- [ ] Resume Match Score -- Users need to see alignment before investing time. Extends existing keyword extraction. LOW complexity.
+- [ ] Gap Analysis -- Users need to see what's missing. Same keyword extraction, different output. LOW complexity.
+- [ ] Section-by-Section Suggestions -- Core value of the feature. Generates actionable improvements per section. MEDIUM complexity.
+- [ ] Accept/Reject Workflow -- Users must control what goes into their resume. MEDIUM complexity.
+- [ ] Tailored Resume Version Creation -- The output of the workflow. Creates a new version without overwriting the original. MEDIUM complexity.
+- [ ] Application Pre-fill -- Seamless handoff from tailoring to application tracking. LOW complexity.
 
-### Add After Validation (v1.x)
+### Add After Validation (v2.1)
 
-Features to add once the core release is out and the app is live.
+Features to add once core tailoring workflow is working.
 
-- [ ] CORS origin whitelist -- tighten security once domain is known
-- [ ] Rate limiting on write endpoints -- protect against abuse on public URL
-- [ ] Centralized error handling middleware -- cleaner error responses
-- [ ] Request logging (morgan) -- debug production issues
-- [ ] README contributing guide -- if accepting contributions
+- [ ] Side-by-Side Review -- UX upgrade to the accept/reject workflow. HIGH complexity but high value.
+- [ ] Resume Version Library -- Manage, search, rename, delete versions. MEDIUM complexity.
+- [ ] Provider-Agnostic Engine Interface -- Define the schema for swappable analysis engines. MEDIUM complexity. Important for future AI integration.
+- [ ] Keyword Density Visualization -- Show where keywords appear and where they're missing. LOW complexity.
 
-### Future Consideration (v2+)
+### Future Consideration (v2.2+)
 
-Features to defer until there's a reason to build them.
+Features to defer until core workflow is validated.
 
-- [ ] GitHub Actions CI/CD -- defer until tests exist
-- [ ] Docker containerization -- defer until multi-service deployment needed
-- [ ] Custom domain -- defer until the project has real users
-- [ ] Database migration -- defer forever (violates core constraint)
+- [ ] Export to PDF/DOCX -- Valuable but not core to the tailoring workflow. MEDIUM complexity.
+- [ ] Batch Tailoring -- Tailor resume for multiple jobs at once. HIGH complexity. Low priority until single-job workflow is solid.
+- [ ] Resume Templates -- Different visual layouts for exported resumes. HIGH complexity. Scope expansion.
 
 ## Feature Prioritization Matrix
 
 | Feature | User Value | Implementation Cost | Priority |
 |---------|------------|---------------------|----------|
-| Production build serving | HIGH | LOW | P1 |
-| Health check endpoint | HIGH | LOW | P1 |
-| Environment-based config | HIGH | LOW | P1 |
-| Security headers (helmet) | MEDIUM | LOW | P1 |
-| Response compression | MEDIUM | LOW | P1 |
-| render.yaml blueprint | HIGH | LOW | P1 |
-| README update with screenshots | HIGH | MEDIUM | P1 |
-| LICENSE file | MEDIUM | LOW | P1 |
-| Animated demo GIF | HIGH | MEDIUM | P1 |
-| Marp slides update | MEDIUM | LOW | P1 |
-| CORS whitelist | MEDIUM | LOW | P2 |
-| Rate limiting (write endpoints) | LOW | LOW | P2 |
-| Centralized error handling | LOW | MEDIUM | P2 |
-| Request logging (morgan) | LOW | LOW | P2 |
-| Contributing guide | LOW | LOW | P2 |
-| GitHub Actions CI/CD | LOW | MEDIUM | P3 |
-| Docker containerization | LOW | HIGH | P3 |
-| Custom domain | LOW | MEDIUM | P3 |
+| Resume Match Score | HIGH | LOW | P1 |
+| Gap Analysis | HIGH | LOW | P1 |
+| Section-by-Section Suggestions | HIGH | MEDIUM | P1 |
+| Accept/Reject Workflow | HIGH | MEDIUM | P1 |
+| Tailored Resume Version Creation | HIGH | MEDIUM | P1 |
+| Application Pre-fill | MEDIUM | LOW | P1 |
+| Side-by-Side Review | HIGH | HIGH | P2 |
+| Resume Version Library | MEDIUM | MEDIUM | P2 |
+| Provider-Agnostic Engine | MEDIUM | MEDIUM | P2 |
+| Keyword Density Visualization | MEDIUM | LOW | P2 |
+| Export to PDF/DOCX | MEDIUM | MEDIUM | P3 |
 
 **Priority key:**
-- P1: Must have for v1.1 release
-- P2: Should have, add when possible
+- P1: Must have for v2.0 launch
+- P2: Should have, add in v2.1
 - P3: Nice to have, future consideration
 
 ## Existing Assets to Leverage
 
-The project already has several assets that reduce implementation effort:
+The project already has infrastructure that reduces implementation effort:
 
-| Asset | Current State | What It Needs |
-|-------|---------------|---------------|
-| `client/dist/` | Exists with built output | Verify it's current; add to build pipeline |
-| `package.json` scripts | Has `dev`, `lint`, `test` | Add `build` and `start` scripts for production |
-| `server/index.js` | Working Express API | Add static file serving, health check, middleware |
-| `slides/pitch.md` | Marp presentation exists | Update content to reflect web app (currently CLI-focused) |
-| `README.md` | Exists with structure | Update screenshots, badges, live demo link, accurate roadmap |
-| `.gitignore` | Covers dist, node_modules, .env | Already correct for production |
+| Asset | Current State | Reuse Potential |
+|-------|---------------|-----------------|
+| `extractKeywords()` in `cover-letter.js` | Extracts keywords from job posting text, filters stop words | Direct reuse for match scoring and gap analysis |
+| `matchResumeToJob()` in `cover-letter.js` | Matches resume skills/experience to job posting keywords | Extend to return match percentage and missing keywords |
+| `resume.json` schema | Structured JSON with summary, experience, projects, skills, education | Base for resume versioning -- copy and modify |
+| `applications.json` schema | Stores company, role, job_posting, cover_letter_paragraph, status | Add `resume_version_id` field for pre-fill |
+| React SPA with React Router | Working frontend with page-based routing | Add new routes for match report, review, version library |
+| Express API with JSON file I/O | `readJSON()`/`writeJSON()` helpers | Reuse for resume version CRUD |
+| CSS Modules | Component-scoped styling | Consistent styling for new components |
 
 ## Competitor Feature Analysis
 
-Portfolio projects in the job search space typically include:
-
-| Feature | Typical Portfolio | ApplyTrail Approach |
-|---------|-------------------|---------------------|
-| Live demo | Rare (most are localhost-only) | Deploy to Render -- instant differentiator |
-| Screenshots | Static, often outdated | Animated GIF + live URL -- proves it works |
-| README quality | Often auto-generated | Hand-crafted with architecture diagram -- shows communication skill |
-| Deployment | "Clone and run locally" | One-click live demo -- removes friction |
-| Documentation | README only | README + architecture docs + presentation slides -- shows thoroughness |
+| Feature | Jobscan | Resume Worded | Teal | SkillSyncer | Enhancv | ApplyTrail (Planned) |
+|---------|---------|---------------|------|-------------|---------|---------------------|
+| Match Score | Yes (75% target) | Yes (out of 100) | Yes | Yes | Yes (27 checks) | Yes (percentage + color coding) |
+| Gap Analysis | Missing keywords | Missing keywords | Missing keywords | Missing keywords | Keyword gaps | Missing + bonus keywords |
+| Section Feedback | Formatting checks | Per-bullet feedback | AI suggestions | Auto-optimize | 27 checks | Per-section suggestions with accept/reject |
+| Side-by-Side | Score delta only | No | No | No | No | Yes (split-pane diff) |
+| Versioning | No | No | Per-application | No | Per-application | Full version library |
+| Export | No | No | No | No | Yes | PDF/DOCX/JSON |
+| Provider Lock | Yes (their engine) | Yes (their engine) | Yes (their engine) | Yes (their engine) | Yes (their engine) | No (pluggable) |
 
 ## Sources
 
-- Express production best practices: [expressjs.com/en/advanced/best-practice-security](https://expressjs.com/en/advanced/best-practice-security.html), [expressjs.com/en/advanced/best-practice-performance](https://expressjs.com/en/advanced/best-practice-performance.html)
-- Helmet.js documentation: [helmetjs.github.io](https://helmetjs.github.io/)
-- Render deployment docs: [docs.render.com](https://docs.render.com)
-- Shields.io badge generation: [shields.io](https://shields.io)
-- Research confidence: MEDIUM (web-sourced best practices, verified against project structure)
+- Jobscan (https://www.jobscan.co/) -- Match score calculation, gap analysis, ATS-specific detection, keyword matching. Confidence: MEDIUM.
+- Resume Worded (https://www.resumeworded.com/) -- Scoring system, per-bullet feedback, section analysis, resume targeting. Confidence: MEDIUM.
+- SkillSyncer (https://skillsyncer.com/) -- Match score, gap analysis, auto-optimize, bullet point generator. Confidence: MEDIUM.
+- Enhancv (https://enhancv.com/) -- Tailoring score, 27 checks, keyword gaps, job tracker integration. Confidence: MEDIUM.
+- Teal -- Unable to fetch (certificate error). Known features from training data: match score, keyword analysis, version control. Confidence: LOW.
+- Training data on UX patterns for side-by-side comparison and accept/reject workflows. Confidence: MEDIUM.
 
 ---
-*Feature research for: ApplyTrail deployment readiness and release polish*
-*Researched: 2026-06-26*
+*Feature research for: Resume Optimization Workflow*
+*Researched: 2026-07-02*

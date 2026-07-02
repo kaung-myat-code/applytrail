@@ -297,7 +297,7 @@ Plans:
 
 Plans:
 
-- [ ] 11-5-01-PLAN.md -- AI provider backend: install Vercel AI SDK, create provider module with Zod validation, register in engine, update API with fallback
+- [x] 11-5-01-PLAN.md -- AI provider backend: install Vercel AI SDK, create provider module with Zod validation, register in engine, update API with fallback
 - [ ] 11-5-02-PLAN.md -- Provider selector UI: dropdown on Analysis page, fallback banner, provider sent to API
 
 **UI hint**: yes
@@ -353,7 +353,7 @@ Phases execute in numeric order: 9 -> 10 -> 11 -> 11.5 -> 12 -> 13
 | 8. Documentation & Release | v1.1 | 1/1 | Complete | 2026-06-27 |
 | 9. Resume Library Foundation | v2.0 | 1/1 | Complete | 2026-07-02 |
 | 10. Match Scoring and Gap Analysis | v2.0 | 1/1 | Complete | 2026-07-02 |
-| 11. Section-by-Section Suggestions | v2.0 | 1/1 | Planned | - |
-| 11.5 AI Analysis Provider 🔶 INSERTED | v2.0 | 0/TBD | Not started | - |
+| 11. Section-by-Section Suggestions | v2.0 | 1/1 | Complete   | 2026-07-02 |
+| 11.5 AI Analysis Provider 🔶 INSERTED | v2.0 | 1/2 | In Progress | - |
 | 12. Tailored Resume Generation | v2.0 | 0/TBD | Not started | - |
 | 13. Application Pre-fill and Export | v2.0 | 0/TBD | Not started | - |

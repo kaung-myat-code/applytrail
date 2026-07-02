@@ -3,18 +3,18 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Resume Tailoring Flow
 current_phase: 11.5
-current_phase_name: AI Analysis Provider (INSERTED)
+current_phase_name: AI Analysis Provider
 status: ready
 stopped_at: Phase 11 complete
-last_updated: "2026-07-03T12:00:00.000Z"
+last_updated: "2026-07-02T20:25:45.830Z"
 last_activity: 2026-07-03
-last_activity_desc: Phase 11 complete, Phase 11.5 AI Analysis Provider INSERTED
+last_activity_desc: Phase 11 section-by-section suggestions completed
 progress:
   total_phases: 14
-  completed_phases: 5
-  total_plans: 5
-  completed_plans: 5
-  percent: 35
+  completed_phases: 2
+  total_plans: 4
+  completed_plans: 3
+  percent: 14
 ---
 
 # Project State
@@ -29,9 +29,9 @@ See: .planning/PROJECT.md (updated 2026-07-02)
 ## Current Position
 
 Phase: 11.5 of 14 (AI Analysis Provider)
-Plan: 11-01 complete
-Status: Phase 11 complete, Phase 11.5 AI Analysis Provider INSERTED — ready for planning
-Last activity: 2026-07-03 -- Phase 11 section-by-section suggestions completed
+Plan: 11-5-01 complete
+Status: Phase 11.5 plan 01 complete (AI provider backend), plan 02 ready (frontend toggle)
+Last activity: 2026-07-02 -- Phase 11.5 plan 01 AI analysis provider backend completed
 
 Progress: [████░░░░░░░] 35%
 
@@ -66,7 +66,7 @@ Progress: [████░░░░░░░] 35%
 | 08 Documentation & Release | 1 | ~5 min | ~5 min |
 | Phase 10-match-scoring P01 | 6min | 2 tasks | 9 files |
 | Phase 11-suggestions P01 | 5min | 4 tasks | 11 files |
-| Phase 11.5-ai-analysis (planned) | TBD | TBD | TBD |
+| Phase 11.5-ai-analysis P01 | 3min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -82,11 +82,12 @@ Recent decisions affecting current work:
 - [Phase ?]: Provider registry pattern: engine.js maps provider name to module, getProvider() returns it; new providers need only a file + registry entry
 - [Phase 11]: Suggestions returned alongside report from POST /api/analyze (not a separate endpoint) -- avoids redundant computation
 - [Phase 11]: Accept/reject state is ephemeral (React useState), not persisted -- workflow designed for single-session completion
-- [Phase 11.5]: AI analysis provider INSERTED between Phases 11 and 12 -- Claude API via Anthropic SDK, provider selector in UI, fallback to heuristic -- no renumbering of existing phases
+- [Phase 11.5]: AI analysis provider INSERTED between Phases 11 and 12 -- Google Gemini via Vercel AI SDK, provider selector in UI, fallback to heuristic -- no renumbering of existing phases
+- [Phase 11.5]: Used generateObject exclusively (not generateText) for all AI calls to guarantee structured output matches Zod schema
 
 ### Pending Todos
 
-- Plan and execute Phase 11.5 (AI Analysis Provider) before Phase 12
+- Execute Phase 11.5 plan 02 (frontend provider toggle) before Phase 12
 
 ### Blockers/Concerns
 
@@ -97,6 +98,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-07-03T00:00:00.000Z
-Stopped at: Phase 11 complete, Phase 11.5 INSERTED (planning ready)
+Last session: 2026-07-02T20:25:45.824Z
+Stopped at: Phase 11.5 plan 01 complete (AI provider backend)
 Resume file: None

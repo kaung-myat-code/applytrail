@@ -7,6 +7,7 @@ const navLinks = [
   { to: '/resume-library', label: 'Resume Library' },
   { to: '/new', label: 'New Application' },
   { to: '/cover-letter', label: 'Cover Letter' },
+  { to: '/analysis', label: 'Analysis' },
   { to: '/applications', label: 'Applications' },
 ]
 

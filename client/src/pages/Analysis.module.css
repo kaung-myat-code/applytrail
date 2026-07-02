@@ -1,0 +1,413 @@
+.page {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.page > h1 {
+  font-family: var(--font-display);
+  font-size: 2.25rem;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-2);
+}
+
+.description {
+  color: var(--color-muted);
+  margin-bottom: var(--space-6);
+  font-size: 1rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.label {
+  font-weight: 600;
+  font-size: 0.8rem;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.select {
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-text);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out);
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%238a839b' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 2.5rem;
+}
+
+.select:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-focus);
+}
+
+.analyzeButton {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: var(--space-3) var(--space-8);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  align-self: flex-start;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.analyzeButton:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.analyzeButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.error {
+  color: var(--color-danger);
+  font-size: 0.85rem;
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-danger-bg);
+  border-radius: var(--radius-sm);
+}
+
+.empty {
+  text-align: center;
+  padding: var(--space-10);
+  color: var(--color-muted);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.empty p:first-child {
+  font-size: 1.1rem;
+  margin-bottom: var(--space-3);
+}
+
+.link {
+  color: var(--color-primary);
+  text-decoration: none;
+  font-weight: 600;
+  transition: opacity var(--duration-fast);
+}
+
+.link:hover {
+  opacity: 0.7;
+}
+
+/* Report container */
+.report {
+  margin-top: var(--space-6);
+  animation: fadeInUp var(--duration-slow) var(--ease-out);
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Score section */
+.scoreSection {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--space-5);
+}
+
+.scoreHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-6);
+  margin-bottom: var(--space-5);
+}
+
+.scoreCircle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 3px solid;
+}
+
+.scoreGreen {
+  border-color: var(--color-success);
+  background: var(--color-success-bg);
+}
+
+.scoreYellow {
+  border-color: var(--color-warning);
+  background: var(--color-warning-bg);
+}
+
+.scoreRed {
+  border-color: var(--color-danger);
+  background: var(--color-danger-bg);
+}
+
+.scoreNumber {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.scoreLabel {
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.scoreSummary {
+  font-size: 1rem;
+  color: var(--color-text-secondary);
+  line-height: 1.6;
+}
+
+.subheading {
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+  margin-bottom: var(--space-2);
+}
+
+.strengths ul,
+.gaps ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.strengths li,
+.gaps li {
+  font-size: 0.9rem;
+  color: var(--color-text-secondary);
+  padding-left: var(--space-4);
+  position: relative;
+}
+
+.strengths li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-success);
+}
+
+.gaps li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.5em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-danger);
+}
+
+.strengths {
+  margin-bottom: var(--space-4);
+}
+
+/* Keyword section */
+.keywordSection {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--space-5);
+}
+
+.sectionTitle {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-bottom: var(--space-5);
+}
+
+.keywordGroup {
+  margin-bottom: var(--space-5);
+}
+
+.keywordGroup:last-child {
+  margin-bottom: 0;
+}
+
+.keywordGroupHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.keywordGroupLabel {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.badgeCount {
+  background: var(--color-border-light);
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.1em 0.6em;
+  border-radius: 999px;
+}
+
+.keywordBadges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.keywordBadge {
+  display: inline-block;
+  padding: 0.2em 0.7em;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.badgeMatched {
+  background: var(--color-success-bg);
+  color: var(--color-success);
+  border: 1px solid var(--color-success);
+}
+
+.badgeMissing {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+  border: 1px solid var(--color-danger);
+}
+
+.badgeBonus {
+  background: var(--color-info-bg, #e8f0fe);
+  color: var(--color-info, #1a73e8);
+  border: 1px solid var(--color-info, #1a73e8);
+}
+
+.noKeywords {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  font-style: italic;
+}
+
+/* Section findings */
+.sectionsSection {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
+}
+
+.sectionCard {
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--color-border-light);
+}
+
+.sectionCard:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.sectionCard:first-of-type {
+  padding-top: 0;
+}
+
+.sectionCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-2);
+}
+
+.sectionName {
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.sectionPercent {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.matchRateBar {
+  height: 8px;
+  background: var(--color-border-light);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: var(--space-3);
+}
+
+.matchRateFill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width var(--duration-normal) var(--ease-out);
+}
+
+.sectionSummaryText {
+  font-size: 0.85rem;
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.sectionItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+  margin-top: var(--space-2);
+}
+
+.itemsLabel {
+  font-size: 0.78rem;
+  color: var(--color-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}

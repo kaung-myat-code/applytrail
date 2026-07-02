@@ -46,7 +46,7 @@ Archive: [v1.1-ROADMAP.md](milestones/v1.1-ROADMAP.md) | [v1.1-REQUIREMENTS.md](
 **Milestone Goal:** Build an end-to-end resume optimization workflow that analyzes a selected resume against a job posting, generates actionable improvement suggestions, lets users review every change, creates a new tailored resume version, and seamlessly starts a job application.
 
 - [x] **Phase 9: Resume Library Foundation** - Multiple resume versions with CRUD, migration from single file, and selection for analysis (completed 2026-07-02)
-- [ ] **Phase 10: Match Scoring and Gap Analysis** - Provider-agnostic analysis engine with compatibility score, keyword gaps, and section-level findings (analysis only, no suggestions)
+- [x] **Phase 10: Match Scoring and Gap Analysis** - Provider-agnostic analysis engine with compatibility score, keyword gaps, and section-level findings (analysis only, no suggestions) (completed 2026-07-02)
 - [ ] **Phase 11: Section-by-Section Suggestions** - Per-section add/modify/remove suggestions with accept/reject workflow
 - [ ] **Phase 12: Tailored Resume Generation** - Apply accepted patches to create a new resume version with side-by-side diff review
 - [ ] **Phase 13: Application Pre-fill and Export** - Pre-fill application from job posting, export resume as PDF or JSON
@@ -271,7 +271,12 @@ Plans:
   3. User can accept all or reject all suggestions with bulk controls
   4. User can compare current and suggested content side-by-side in a diff view
 
-**Plans**: TBD
+**Plans**: 1/1 plans complete
+
+Plans:
+
+- [ ] 11-01-PLAN.md — Suggestion generation, review page with accept/reject/edit, and diff viewer
+
 **UI hint**: yes
 
 ### Phase 12: Tailored Resume Generation
@@ -324,7 +329,7 @@ Phases execute in numeric order: 9 -> 10 -> 11 -> 12 -> 13
 | 7. Production Deployment | v1.1 | 1/1 | Complete | 2026-06-27 |
 | 8. Documentation & Release | v1.1 | 1/1 | Complete | 2026-06-27 |
 | 9. Resume Library Foundation | v2.0 | 1/1 | Complete | 2026-07-02 |
-| 10. Match Scoring and Gap Analysis | v2.0 | 1/1 | Complete   | 2026-07-02 |
-| 11. Section-by-Section Suggestions | v2.0 | 0/TBD | Not started | - |
+| 10. Match Scoring and Gap Analysis | v2.0 | 1/1 | Complete | 2026-07-02 |
+| 11. Section-by-Section Suggestions | v2.0 | 1/1 | Planned | - |
 | 12. Tailored Resume Generation | v2.0 | 0/TBD | Not started | - |
 | 13. Application Pre-fill and Export | v2.0 | 0/TBD | Not started | - |

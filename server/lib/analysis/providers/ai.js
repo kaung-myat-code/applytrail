@@ -11,8 +11,15 @@ const { z } = require('zod')
 
 // --- Zod Schemas ---
 
+const sectionFindingsSchema = z.object({
+  matchRate: z.number(),
+  matchedItems: z.array(z.string()),
+  missingItems: z.array(z.string()),
+  summary: z.string(),
+})
+
 const matchReportSchema = z.object({
-  score: z.number().min(0).max(100),
+  score: z.number(),
   summary: z.string(),
   strengths: z.array(z.string()),
   gaps: z.array(z.string()),
@@ -22,36 +29,11 @@ const matchReportSchema = z.object({
     bonus: z.array(z.string()),
   }),
   sections: z.object({
-    summary: z.object({
-      matchRate: z.number().min(0).max(1),
-      matchedItems: z.array(z.string()),
-      missingItems: z.array(z.string()),
-      summary: z.string(),
-    }),
-    skills: z.object({
-      matchRate: z.number().min(0).max(1),
-      matchedItems: z.array(z.string()),
-      missingItems: z.array(z.string()),
-      summary: z.string(),
-    }),
-    experience: z.object({
-      matchRate: z.number().min(0).max(1),
-      matchedItems: z.array(z.string()),
-      missingItems: z.array(z.string()),
-      summary: z.string(),
-    }),
-    projects: z.object({
-      matchRate: z.number().min(0).max(1),
-      matchedItems: z.array(z.string()),
-      missingItems: z.array(z.string()),
-      summary: z.string(),
-    }),
-    education: z.object({
-      matchRate: z.number().min(0).max(1),
-      matchedItems: z.array(z.string()),
-      missingItems: z.array(z.string()),
-      summary: z.string(),
-    }),
+    summary: sectionFindingsSchema,
+    skills: sectionFindingsSchema,
+    experience: sectionFindingsSchema,
+    projects: sectionFindingsSchema,
+    education: sectionFindingsSchema,
   }),
 })
 
@@ -113,6 +95,9 @@ async function analyzeResume(resume, jobPosting) {
       'Be strict — only count a keyword as matched if the resume genuinely demonstrates competence.',
       'Provide detailed section summaries citing specific resume content.',
       '',
+      'IMPORTANT FORMAT: matchRate must be a decimal between 0 and 1 (e.g. 0.85, not 85).',
+      'score must be a number between 0 and 100.',
+      '',
       '## Resume',
       JSON.stringify(resume, null, 2),
       '',
@@ -125,6 +110,19 @@ async function analyzeResume(resume, jobPosting) {
       schema: matchReportSchema,
       prompt,
     })
+
+    // Normalize matchRate from percentage (0-100) to decimal (0-1)
+    // Some models return percentages, so we normalize both ways
+    for (const key of ['summary', 'skills', 'experience', 'projects', 'education']) {
+      const section = object.sections[key]
+      if (section && section.matchRate != null) {
+        if (section.matchRate > 1) {
+          section.matchRate = section.matchRate / 100
+        }
+        // Clamp to 0-1
+        section.matchRate = Math.max(0, Math.min(1, section.matchRate))
+      }
+    }
 
     return object
   } catch (err) {

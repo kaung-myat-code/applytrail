@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Resume Tailoring Flow
-current_phase: 11.5
-current_phase_name: AI Analysis Provider
+current_phase: 12
+current_phase_name: Tailored Resume Generation
 status: ready
-stopped_at: Phase 11 complete
-last_updated: "2026-07-02T20:25:45.830Z"
+stopped_at: Phase 11.5 complete
+last_updated: "2026-07-03T04:55:00.000Z"
 last_activity: 2026-07-03
-last_activity_desc: Phase 11 section-by-section suggestions completed
+last_activity_desc: Phase 11.5 AI Analysis Provider completed (backend + frontend)
 progress:
   total_phases: 14
-  completed_phases: 2
-  total_plans: 4
-  completed_plans: 3
-  percent: 14
+  completed_phases: 3
+  total_plans: 5
+  completed_plans: 5
+  percent: 21
 ---
 
 # Project State
@@ -24,16 +24,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-02)
 
 **Core value:** End-to-end job application workflow in a web UI -- from resume to cover letter to application tracking -- so the user can manage their job search from any browser.
-**Current focus:** v2.0 Resume Tailoring Flow -- Phase 11.5 plan ready for planning
+**Current focus:** v2.0 Resume Tailoring Flow -- Phase 11.5 complete, Phase 12 next
 
 ## Current Position
 
-Phase: 11.5 of 14 (AI Analysis Provider)
-Plan: 11-5-01 complete
-Status: Phase 11.5 plan 01 complete (AI provider backend), plan 02 ready (frontend toggle)
-Last activity: 2026-07-02 -- Phase 11.5 plan 01 AI analysis provider backend completed
+Phase: 12 of 14 (Tailored Resume Generation)
+Plan: None yet
+Status: Phase 11.5 complete (AI Analysis Provider backend + UI)
+Last activity: 2026-07-03 -- Phase 11.5 both plans complete, AI provider working with fallback
 
-Progress: [████░░░░░░░] 35%
+Progress: [██████░░░░░] 50%
 
 ## Milestones Shipped
 
@@ -48,7 +48,7 @@ Progress: [████░░░░░░░] 35%
 
 **Velocity:**
 
-- Total plans completed: 13 (across both milestones, Phase 11.5 TBD)
+- Total plans completed: 15 (across both milestones, Phase 11.5 complete)
 - Average duration: ~5 min/plan
 - Total execution time: ~50 min
 
@@ -67,6 +67,7 @@ Progress: [████░░░░░░░] 35%
 | Phase 10-match-scoring P01 | 6min | 2 tasks | 9 files |
 | Phase 11-suggestions P01 | 5min | 4 tasks | 11 files |
 | Phase 11.5-ai-analysis P01 | 3min | 3 tasks | 5 files |
+| Phase 11.5-ai-analysis P02 | 2min | 1 task + verification | 2 files |
 
 ## Accumulated Context
 
@@ -84,20 +85,20 @@ Recent decisions affecting current work:
 - [Phase 11]: Accept/reject state is ephemeral (React useState), not persisted -- workflow designed for single-session completion
 - [Phase 11.5]: AI analysis provider INSERTED between Phases 11 and 12 -- Google Gemini via Vercel AI SDK, provider selector in UI, fallback to heuristic -- no renumbering of existing phases
 - [Phase 11.5]: Used generateObject exclusively (not generateText) for all AI calls to guarantee structured output matches Zod schema
+- [Phase 11.5]: matchRate normalization required -- AI sometimes returns 0-100 instead of 0-1, added post-processing in ai.js
 
 ### Pending Todos
 
-- Execute Phase 11.5 plan 02 (frontend provider toggle) before Phase 12
+- Plan Phase 12: Tailored Resume Generation
 
 ### Blockers/Concerns
 
 - Resume schema undocumented -- Phase 9 should formalize schema before building library around it
 - Render free tier (512MB RAM) may constrain export libraries (pdfmake) -- test during Phase 13
-- AI Analysis Provider needs an ANALYSIS_API_KEY mechanism — ensure .env is documented but not committed
 - AI API calls introduce latency and potential cost — user must opt in intentionally
 
 ## Session Continuity
 
-Last session: 2026-07-02T20:25:45.824Z
-Stopped at: Phase 11.5 plan 01 complete (AI provider backend)
+Last session: 2026-07-03T04:55:00.000Z
+Stopped at: Phase 11.5 complete (AI Analysis Provider)
 Resume file: None

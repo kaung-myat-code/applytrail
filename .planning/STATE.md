@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Resume Tailoring Flow
-current_phase: 12
-current_phase_name: Tailored Resume Generation
+current_phase: 11.5
+current_phase_name: AI Analysis Provider (INSERTED)
 status: ready
 stopped_at: Phase 11 complete
-last_updated: "2026-07-03T00:00:00.000Z"
+last_updated: "2026-07-03T12:00:00.000Z"
 last_activity: 2026-07-03
-last_activity_desc: Phase 11 section-by-section suggestions completed
+last_activity_desc: Phase 11 complete, Phase 11.5 AI Analysis Provider INSERTED
 progress:
-  total_phases: 13
+  total_phases: 14
   completed_phases: 5
   total_plans: 5
   completed_plans: 5
-  percent: 38
+  percent: 35
 ---
 
 # Project State
@@ -24,16 +24,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-02)
 
 **Core value:** End-to-end job application workflow in a web UI -- from resume to cover letter to application tracking -- so the user can manage their job search from any browser.
-**Current focus:** v2.0 Resume Tailoring Flow -- Phase 11 plan ready for execution
+**Current focus:** v2.0 Resume Tailoring Flow -- Phase 11.5 plan ready for planning
 
 ## Current Position
 
-Phase: 12 of 13 (Tailored Resume Generation)
+Phase: 11.5 of 14 (AI Analysis Provider)
 Plan: 11-01 complete
-Status: Phase 11 complete, ready for Phase 12
+Status: Phase 11 complete, Phase 11.5 AI Analysis Provider INSERTED — ready for planning
 Last activity: 2026-07-03 -- Phase 11 section-by-section suggestions completed
 
-Progress: [█████░░░░░] 38%
+Progress: [████░░░░░░░] 35%
 
 ## Milestones Shipped
 
@@ -48,7 +48,7 @@ Progress: [█████░░░░░] 38%
 
 **Velocity:**
 
-- Total plans completed: 13 (across both milestones)
+- Total plans completed: 13 (across both milestones, Phase 11.5 TBD)
 - Average duration: ~5 min/plan
 - Total execution time: ~50 min
 
@@ -66,6 +66,7 @@ Progress: [█████░░░░░] 38%
 | 08 Documentation & Release | 1 | ~5 min | ~5 min |
 | Phase 10-match-scoring P01 | 6min | 2 tasks | 9 files |
 | Phase 11-suggestions P01 | 5min | 4 tasks | 11 files |
+| Phase 11.5-ai-analysis (planned) | TBD | TBD | TBD |
 
 ## Accumulated Context
 
@@ -81,20 +82,21 @@ Recent decisions affecting current work:
 - [Phase ?]: Provider registry pattern: engine.js maps provider name to module, getProvider() returns it; new providers need only a file + registry entry
 - [Phase 11]: Suggestions returned alongside report from POST /api/analyze (not a separate endpoint) -- avoids redundant computation
 - [Phase 11]: Accept/reject state is ephemeral (React useState), not persisted -- workflow designed for single-session completion
+- [Phase 11.5]: AI analysis provider INSERTED between Phases 11 and 12 -- Claude API via Anthropic SDK, provider selector in UI, fallback to heuristic -- no renumbering of existing phases
 
 ### Pending Todos
 
-None yet.
+- Plan and execute Phase 11.5 (AI Analysis Provider) before Phase 12
 
 ### Blockers/Concerns
 
 - Resume schema undocumented -- Phase 9 should formalize schema before building library around it
-- Heuristics quality needs definition during Phase 10 planning (what is "good enough" for v2.0)
 - Render free tier (512MB RAM) may constrain export libraries (pdfmake) -- test during Phase 13
-- react-diff-viewer-continued pulls in @emotion/css -- verify no CSS Module conflicts during Phase 11
+- AI Analysis Provider needs an ANALYSIS_API_KEY mechanism — ensure .env is documented but not committed
+- AI API calls introduce latency and potential cost — user must opt in intentionally
 
 ## Session Continuity
 
 Last session: 2026-07-03T00:00:00.000Z
-Stopped at: Phase 11 complete
+Stopped at: Phase 11 complete, Phase 11.5 INSERTED (planning ready)
 Resume file: None

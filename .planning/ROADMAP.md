@@ -8,7 +8,7 @@ A local web MVP that migrates a CLI-based job application workflow into a React 
 
 - [x] **v1.0 MVP** - Phases 1-4 (shipped 2026-06-26)
 - [x] **v1.1 Release Polish** - Phases 5-8 (shipped 2026-06-27)
-- [ ] **v2.0 Resume Tailoring Flow** - Phases 9-13 (planned)
+- [ ] **v2.0 Resume Tailoring Flow** - Phases 9-14 (planned)
 
 ## Phases
 
@@ -48,6 +48,7 @@ Archive: [v1.1-ROADMAP.md](milestones/v1.1-ROADMAP.md) | [v1.1-REQUIREMENTS.md](
 - [x] **Phase 9: Resume Library Foundation** - Multiple resume versions with CRUD, migration from single file, and selection for analysis (completed 2026-07-02)
 - [x] **Phase 10: Match Scoring and Gap Analysis** - Provider-agnostic analysis engine with compatibility score, keyword gaps, and section-level findings (analysis only, no suggestions) (completed 2026-07-02)
 - [x] **Phase 11: Section-by-Section Suggestions** - Per-section add/modify/remove suggestions with accept/reject workflow (completed 2026-07-03)
+- [ ] **Phase 11.5: AI Analysis Provider 🔶 INSERTED** - AI-powered analysis provider via LLM API with provider selection toggle, API key config, and automatic fallback to heuristic
 - [ ] **Phase 12: Tailored Resume Generation** - Apply accepted patches to create a new resume version with side-by-side diff review
 - [ ] **Phase 13: Application Pre-fill and Export** - Pre-fill application from job posting, export resume as PDF or JSON
 
@@ -279,10 +280,27 @@ Plans:
 
 **UI hint**: yes
 
+### Phase 11.5: AI Analysis Provider 🔶 INSERTED
+
+**Goal:** Users can choose between the heuristic keyword-matching analysis and an AI-powered LLM-based analysis, with provider selection in the UI and automatic fallback if the AI provider is unavailable
+**Depends on**: Phase 11
+**Requirements**: AI-ANALYSIS-01, AI-ANALYSIS-02, AI-ANALYSIS-03, AI-ANALYSIS-04
+**Success Criteria** (what must be TRUE):
+
+  1. User can select "AI Analysis" from a provider dropdown on the Analysis page
+  2. Without ANALYSIS_API_KEY set, AI provider shows a clear configuration message
+  3. With ANALYSIS_API_KEY set, AI provider returns a valid match report covering score, keywords, and section findings
+  4. If AI analysis fails, the system auto-fallbacks to heuristic with a visible banner
+  5. Heuristic provider continues to work identically when selected
+
+**Plans**: TBD
+
+**UI hint**: yes
+
 ### Phase 12: Tailored Resume Generation
 
 **Goal**: Users can generate a new tailored resume from their accepted suggestions, review it before saving, and return to edit if needed
-**Depends on**: Phase 11
+**Depends on**: Phase 11.5
 **Requirements**: LIBRARY-03, TAILOR-01, TAILOR-02, TAILOR-03, TAILOR-04, TAILOR-05, TAILOR-06
 **Success Criteria** (what must be TRUE):
 
@@ -316,7 +334,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 9 -> 10 -> 11 -> 12 -> 13
+Phases execute in numeric order: 9 -> 10 -> 11 -> 11.5 -> 12 -> 13
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -331,5 +349,6 @@ Phases execute in numeric order: 9 -> 10 -> 11 -> 12 -> 13
 | 9. Resume Library Foundation | v2.0 | 1/1 | Complete | 2026-07-02 |
 | 10. Match Scoring and Gap Analysis | v2.0 | 1/1 | Complete | 2026-07-02 |
 | 11. Section-by-Section Suggestions | v2.0 | 1/1 | Planned | - |
+| 11.5 AI Analysis Provider 🔶 INSERTED | v2.0 | 0/TBD | Not started | - |
 | 12. Tailored Resume Generation | v2.0 | 0/TBD | Not started | - |
 | 13. Application Pre-fill and Export | v2.0 | 0/TBD | Not started | - |

@@ -23,10 +23,10 @@
 
 ### Section-by-Section Suggestions
 
-- [ ] **SUGGEST-01**: Generate section-level suggestions (add, modify, remove) with explanation for each recommendation
-- [ ] **SUGGEST-02**: User can accept, reject, or manually edit each suggestion individually
-- [ ] **SUGGEST-03**: User can accept all or reject all suggestions with bulk controls
-- [ ] **SUGGEST-04**: User can compare current and suggested content side-by-side in a diff view
+- [x] **SUGGEST-01**: Generate section-level suggestions (add, modify, remove) with explanation for each recommendation
+- [x] **SUGGEST-02**: User can accept, reject, or manually edit each suggestion individually
+- [x] **SUGGEST-03**: User can accept all or reject all suggestions with bulk controls
+- [x] **SUGGEST-04**: User can compare current and suggested content side-by-side in a diff view
 
 ### Tailored Resume Generation
 
@@ -82,10 +82,10 @@
 | ANALYSIS-02 | Phase 10 | Complete |
 | ANALYSIS-03 | Phase 10 | Complete |
 | ANALYSIS-04 | Phase 10 | Complete |
-| SUGGEST-01 | Phase 11 | Pending |
-| SUGGEST-02 | Phase 11 | Pending |
-| SUGGEST-03 | Phase 11 | Pending |
-| SUGGEST-04 | Phase 11 | Pending |
+| SUGGEST-01 | Phase 11 | Complete |
+| SUGGEST-02 | Phase 11 | Complete |
+| SUGGEST-03 | Phase 11 | Complete |
+| SUGGEST-04 | Phase 11 | Complete |
 | TAILOR-01 | Phase 12 | Pending |
 | TAILOR-02 | Phase 12 | Pending |
 | TAILOR-03 | Phase 12 | Pending |

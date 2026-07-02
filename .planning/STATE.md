@@ -4,17 +4,17 @@ milestone: v2.0
 milestone_name: Resume Tailoring Flow
 current_phase: 11
 current_phase_name: Section-by-Section Suggestions
-status: planned
-stopped_at: Phase 11 plan complete
-last_updated: "2026-07-03T00:00:00.000Z"
-last_activity: 2026-07-03
-last_activity_desc: Phase 11 section-by-section suggestions plan created
+status: in-progress
+stopped_at: Phase 11 plan 01 complete
+last_updated: "2026-07-02T17:18:07.000Z"
+last_activity: 2026-07-02
+last_activity_desc: Phase 11 plan 01 section-by-section suggestions completed
 progress:
   total_phases: 13
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 4
-  completed_plans: 3
-  percent: 23
+  completed_plans: 4
+  percent: 31
 ---
 
 # Project State
@@ -28,12 +28,12 @@ See: .planning/PROJECT.md (updated 2026-07-02)
 
 ## Current Position
 
-Phase: 11 of 13 (Resume Tailoring)
-Plan: 11-01-PLAN.md ready for execution
-Status: Phase 11 plan complete, ready to execute
-Last activity: 2026-07-03 -- Phase 11 section-by-section suggestions plan created
+Phase: 11 of 13 (Section-by-Section Suggestions)
+Plan: 11-01 complete
+Status: Phase 11 plan 01 executed, ready for Phase 12
+Last activity: 2026-07-02 -- Phase 11 plan 01 section-by-section suggestions completed
 
-Progress: [███░░░░░░░] 23%
+Progress: [████░░░░░░] 31%
 
 ## Milestones Shipped
 
@@ -65,6 +65,7 @@ Progress: [███░░░░░░░] 23%
 | 07 Production Deployment | 1 | ~5 min | ~5 min |
 | 08 Documentation & Release | 1 | ~5 min | ~5 min |
 | Phase 10-match-scoring P01 | 6min | 2 tasks | 9 files |
+| Phase 11-suggestions P01 | 5min | 4 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -78,6 +79,8 @@ Recent decisions affecting current work:
 - [v2.0]: Resume library with separate files per version -- prevents overwrite, enables versioning
 - [Phase ?]: Extracted STOP_WORDS and extractKeywords into shared keywords module to eliminate duplication between cover-letter and analysis
 - [Phase ?]: Provider registry pattern: engine.js maps provider name to module, getProvider() returns it; new providers need only a file + registry entry
+- [Phase 11]: Suggestions returned alongside report from POST /api/analyze (not a separate endpoint) -- avoids redundant computation
+- [Phase 11]: Accept/reject state is ephemeral (React useState), not persisted -- workflow designed for single-session completion
 
 ### Pending Todos
 
@@ -92,6 +95,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-07-03T00:00:00.000Z
-Stopped at: Phase 11 plan complete (11-01-PLAN.md)
+Last session: 2026-07-02T17:18:07.000Z
+Stopped at: Phase 11 plan 01 complete
 Resume file: None

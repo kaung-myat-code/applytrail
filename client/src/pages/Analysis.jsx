@@ -155,6 +155,7 @@ function Analysis() {
   const [postings, setPostings] = useState([])
   const [selectedPostingId, setSelectedPostingId] = useState('')
   const [report, setReport] = useState(null)
+  const [suggestions, setSuggestions] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -196,6 +197,7 @@ function Analysis() {
       }
 
       setReport(data.report)
+      setSuggestions(data.suggestions || [])
     } catch (err) {
       setError(err.message || 'Failed to analyze. Please try again.')
     } finally {
@@ -298,6 +300,17 @@ function Analysis() {
           <KeywordGroups keywords={report.keywords} />
 
           <SectionFindings sections={report.sections} />
+        </div>
+      )}
+
+      {report && suggestions.length > 0 && (
+        <div className={styles.reviewLink}>
+          <Link
+            to={`/analysis/review?resume=${selectedResumeId}&posting=${selectedPostingId}`}
+            className={styles.reviewButton}
+          >
+            Review {suggestions.length} Suggestions
+          </Link>
         </div>
       )}
     </div>

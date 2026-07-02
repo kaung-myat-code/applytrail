@@ -9,6 +9,7 @@ import Applications from './pages/Applications.jsx'
 import ResumeLibrary from './pages/ResumeLibrary.jsx'
 import CoverLetter from './pages/CoverLetter.jsx'
 import Analysis from './pages/Analysis.jsx'
+import ReviewSuggestions from './pages/ReviewSuggestions.jsx'
 import './index.css'
 
 const router = createBrowserRouter([
@@ -23,6 +24,7 @@ const router = createBrowserRouter([
       { path: 'applications', element: <Applications /> },
       { path: 'cover-letter', element: <CoverLetter /> },
       { path: 'analysis', element: <Analysis /> },
+      { path: 'analysis/review', element: <ReviewSuggestions /> },
     ],
   },
 ])

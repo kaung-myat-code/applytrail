@@ -1,20 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: Release Polish
-current_phase: archived
-current_phase_name: Milestone archived
-status: archived
-stopped_at: v1.1 milestone archived
-last_updated: "2026-07-02T19:30:00.000Z"
+milestone: v2.0
+milestone_name: Resume Tailoring Flow
+status: planning
+last_updated: "2026-07-02T11:49:59.292Z"
 last_activity: 2026-07-02
-last_activity_desc: v1.1 milestone archived
 progress:
-  total_phases: 8
-  completed_phases: 8
-  total_plans: 13
-  completed_plans: 13
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -28,11 +24,10 @@ See: .planning/PROJECT.md (updated 2026-07-02)
 
 ## Current Position
 
-Phase: Archived (all 8 phases complete)
-Status: Both milestones shipped
-Last activity: 2026-07-02 — v1.1 milestone archived
-
-Progress: [██████████] 100%
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-07-02 — Milestone v2.0 started
 
 ## Milestones Shipped
 

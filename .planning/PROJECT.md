@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A deployed web application for managing job applications. Users can edit their resume, paste job postings, generate tailored cover letter paragraphs using keyword-matching heuristics, save applications, and track which ones need follow-up. Live at https://applytrail.onrender.com
+A deployed web application for managing job applications and optimizing resumes. Users can manage a library of resume versions, analyze job postings against their resume, generate actionable improvement suggestions, create tailored resume versions, and track applications. Live at https://applytrail.onrender.com
 
 ## Core Value
 
@@ -34,15 +34,19 @@ A local web MVP that migrated an existing Claude Code job application workflow i
 
 </details>
 
-## Next Milestone Goals
+## Current Milestone: v2.0 Resume Tailoring Flow
 
-Not yet defined. Run `/gsd-new-milestone` to define the next milestone.
+**Goal:** Build an end-to-end resume optimization workflow that analyzes a selected resume against a job posting, generates actionable improvement suggestions, lets users review every change, creates a new tailored resume version, and seamlessly starts a job application.
 
-**Potential directions** (from requirements backlog):
-- Replace keyword heuristics with real LLM API for cover letter generation
-- Import resume from PDF/DOCX
-- Export applications to CSV
-- Customizable cover letter tone/style
+**Target features:**
+- Resume Library — Manage multiple resume versions (select, create, rename, delete, organize)
+- Job Posting Analysis — Paste a job posting and analyze it against the selected resume
+- Resume Match Report — Display overall compatibility with the job posting, including strengths, gaps, missing keywords, and section-level analysis before suggestions are generated
+- Section-by-Section Suggestions — Generate improvements for Summary, Skills, Experience, Projects, Education, etc.
+- Review Interface — Compare the current and suggested content side-by-side, then accept, reject, or manually edit each suggestion before generating the tailored resume
+- Tailored Resume Generation — Create a new resume version (auto-named by target position) without overwriting the original
+- Application Pre-fill — Create a new application from the analyzed job posting with the tailored resume linked automatically
+- Export — Export any resume version as PDF, DOCX, or JSON
 
 ## Requirements
 
@@ -69,9 +73,7 @@ Not yet defined. Run `/gsd-new-milestone` to define the next milestone.
 - Job scraping — user pastes postings manually
 - Email sending — out of MVP scope
 - Payment/billing — no monetization
-- External AI API — heuristics only, real LLM integration deferred
 - Mobile responsive design — desktop-first for MVP
-- Core functionality changes — v1.1 is polish only, not new features
 
 ## Tech Stack
 
@@ -80,15 +82,15 @@ Not yet defined. Run `/gsd-new-milestone` to define the next milestone.
 - Storage: JSON files (applications.json, resume.json, job_postings.json)
 - Build: Vite (frontend), npm scripts (backend)
 - Deployment: Render free tier
-- Cover letter generation: Simple keyword-matching heuristics (designed to swap in LLM later)
+- Analysis engine: Provider-agnostic pipeline (heuristics, AI models, or third-party services)
 
 ## Constraints
 
 - **No auth**: Single-user local tool
-- **No external APIs**: No job scraping, no AI API calls, no email
 - **JSON file storage**: Keep data human-readable and easy to inspect/edit
 - **Commit after each working milestone**: Incremental progress, not big-bang
-- **Simple heuristics**: Cover letter logic must be replaceable — designed to swap in a real LLM service later
+- **Provider-agnostic analysis**: Analysis engine must be swappable — heuristics, AI models, or third-party services without UI changes
+- **Structured JSON schema**: Resume data uses a structured JSON schema as the single source of truth; PDF, DOCX, Markdown are generated from this representation
 
 ## Key Decisions
 
@@ -101,6 +103,9 @@ Not yet defined. Run `/gsd-new-milestone` to define the next milestone.
 | v1.1 = polish only | Prepare for public release without changing core functionality | Complete (v1.1) |
 | Render free tier | Simple deployment, auto-deploy from GitHub, sufficient for portfolio | Implemented (Phase 7) |
 | Demo data seeding | Portfolio visitors see populated interface on first visit | Implemented (Phase 6) |
+| Provider-agnostic analysis | Analysis engine swappable without UI changes — heuristics, AI, or third-party | Planned (v2.0) |
+| Structured JSON schema | Single source of truth for resume data; formats generated from schema | Planned (v2.0) |
+| Resume library | Multiple immutable resume versions; tailoring creates new version | Planned (v2.0) |
 
 ## Milestones
 
@@ -108,6 +113,7 @@ Not yet defined. Run `/gsd-new-milestone` to define the next milestone.
 |-----------|--------|--------|---------|
 | v1.0 MVP | 1-4 | Complete | 2026-06-26 |
 | v1.1 Release Polish | 5-8 | Complete | 2026-06-27 |
+| v2.0 Resume Tailoring Flow | TBD | Planning | — |
 
 **Archives:** [v1.0](milestones/v1.0-phases/) | [v1.1 Roadmap](milestones/v1.1-ROADMAP.md) | [v1.1 Requirements](milestones/v1.1-REQUIREMENTS.md)
 
@@ -129,4 +135,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-02 — Milestone v1.1 archived, both milestones shipped*
+*Last updated: 2026-07-02 — Milestone v2.0 Resume Tailoring Flow started*

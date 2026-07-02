@@ -293,7 +293,12 @@ Plans:
   4. If AI analysis fails, the system auto-fallbacks to heuristic with a visible banner
   5. Heuristic provider continues to work identically when selected
 
-**Plans**: TBD
+**Plans**: 2/2 plans
+
+Plans:
+
+- [ ] 11-5-01-PLAN.md -- AI provider backend: install Vercel AI SDK, create provider module with Zod validation, register in engine, update API with fallback
+- [ ] 11-5-02-PLAN.md -- Provider selector UI: dropdown on Analysis page, fallback banner, provider sent to API
 
 **UI hint**: yes
 

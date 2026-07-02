@@ -160,6 +160,7 @@ function Analysis() {
   const [error, setError] = useState('')
   const [provider, setProvider] = useState('heuristic')
   const [fallbackInfo, setFallbackInfo] = useState(null)
+  const [loadError, setLoadError] = useState('')
 
   useEffect(() => {
     Promise.all([
@@ -171,7 +172,10 @@ function Analysis() {
         setSelectedResumeId(libraryData.selected_id || '')
         setPostings(postingsData)
       })
-      .catch(err => console.error('Failed to load data:', err))
+      .catch(err => {
+        console.error('Failed to load data:', err)
+        setLoadError('Failed to connect to server. Is it running?')
+      })
   }, [])
 
   async function handleAnalyze(e) {
@@ -211,6 +215,15 @@ function Analysis() {
     } finally {
       setLoading(false)
     }
+  }
+
+  if (loadError) {
+    return (
+      <div className={styles.page}>
+        <h1>Match Analysis</h1>
+        <div className={styles.error}>{loadError}</div>
+      </div>
+    )
   }
 
   if (resumeVersions.length === 0) {

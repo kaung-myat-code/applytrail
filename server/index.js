@@ -474,7 +474,9 @@ app.post('/api/analyze', async (req, res) => {
         const report = heuristicProvider.analyzeResume(resume, posting)
         const suggestions = heuristicProvider.generateSuggestions(resume, report)
         // Sanitize fallback_reason: strip potential API key fragments
-        const sanitizedReason = (err.message || 'Unknown error').replace(/[A-Za-z0-9_-]{20,}/g, '[redacted]')
+        const sanitizedReason = (err.message || 'Unknown error')
+          .replace(/AIza[A-Za-z0-9_-]{30,}/g, '[redacted]')
+          .replace(/sk-[A-Za-z0-9]{20,}/g, '[redacted]')
         res.json({ ok: true, report, suggestions, provider: 'heuristic', fallback: true, fallback_reason: sanitizedReason })
       } catch (fallbackErr) {
         console.error('Heuristic fallback also failed:', fallbackErr)
@@ -482,7 +484,7 @@ app.post('/api/analyze', async (req, res) => {
       }
     } else {
       console.error('Analysis error:', err)
-      res.status(500).json({ error: 'Analysis failed: ' + err.message })
+      res.status(500).json({ error: 'Analysis failed. Check server logs for details.' })
     }
   }
 })

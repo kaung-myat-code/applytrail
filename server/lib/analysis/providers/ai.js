@@ -12,15 +12,15 @@ const { z } = require('zod')
 // --- Zod Schemas ---
 
 const sectionFindingsSchema = z.object({
-  matchRate: z.number(),
+  matchRate: z.number().min(0).max(1),
   matchedItems: z.array(z.string()),
   missingItems: z.array(z.string()),
-  summary: z.string(),
+  summary: z.string().min(1),
 })
 
 const matchReportSchema = z.object({
-  score: z.number(),
-  summary: z.string(),
+  score: z.number().min(0).max(100),
+  summary: z.string().min(1),
   strengths: z.array(z.string()),
   gaps: z.array(z.string()),
   keywords: z.object({
@@ -57,9 +57,25 @@ function getModel() {
 
 function sanitizeError(err) {
   let message = err.message || 'Unknown AI error'
-  // Strip any potential API key fragments (long alphanumeric strings)
-  message = message.replace(/[A-Za-z0-9_-]{20,}/g, '[redacted]')
+  // Only strip patterns that look like API keys
+  message = message.replace(/AIza[A-Za-z0-9_-]{30,}/g, '[redacted]')  // Google API key prefix
+  message = message.replace(/sk-[A-Za-z0-9]{20,}/g, '[redacted]')     // OpenAI-style keys
   return message
+}
+
+// --- Shared error handler ---
+
+function handleAIError(err, operation) {
+  if (err instanceof LoadAPIKeyError) {
+    throw new Error('AI analysis requires GOOGLE_GENERATIVE_AI_API_KEY. Set it in your .env file or use the heuristic provider.')
+  }
+  if (err instanceof APICallError) {
+    throw new Error(`AI ${operation} failed: ` + sanitizeError(err))
+  }
+  if (err instanceof NoObjectGeneratedError) {
+    throw new Error(`AI returned invalid ${operation} format. Falling back to heuristic.`)
+  }
+  throw err
 }
 
 // --- Provider functions ---
@@ -111,31 +127,29 @@ async function analyzeResume(resume, jobPosting) {
       prompt,
     })
 
-    // Normalize matchRate from percentage (0-100) to decimal (0-1)
-    // Some models return percentages, so we normalize both ways
+    // Normalize matchRate: if model returned percentage (e.g. 85), convert to decimal (0.85)
+    // Then clamp to valid 0-1 range regardless
     for (const key of ['summary', 'skills', 'experience', 'projects', 'education']) {
-      const section = object.sections[key]
+      const section = object.sections?.[key]
       if (section && section.matchRate != null) {
         if (section.matchRate > 1) {
           section.matchRate = section.matchRate / 100
         }
-        // Clamp to 0-1
         section.matchRate = Math.max(0, Math.min(1, section.matchRate))
       }
     }
 
+    // Normalize score: if model returned 0-1 scale, convert to 0-100
+    if (object.score != null) {
+      if (object.score <= 1 && object.score >= 0) {
+        object.score = Math.round(object.score * 100)
+      }
+      object.score = Math.max(0, Math.min(100, Math.round(object.score)))
+    }
+
     return object
   } catch (err) {
-    if (err instanceof LoadAPIKeyError) {
-      throw new Error('AI analysis requires GOOGLE_GENERATIVE_AI_API_KEY. Set it in your .env file or use the heuristic provider.')
-    }
-    if (err instanceof APICallError) {
-      throw new Error('AI analysis failed: ' + sanitizeError(err))
-    }
-    if (err instanceof NoObjectGeneratedError) {
-      throw new Error('AI returned invalid analysis format. Falling back to heuristic.')
-    }
-    throw err
+    handleAIError(err, 'analysis')
   }
 }
 
@@ -166,16 +180,7 @@ async function generateSuggestions(resume, report) {
 
     return object
   } catch (err) {
-    if (err instanceof LoadAPIKeyError) {
-      throw new Error('AI analysis requires GOOGLE_GENERATIVE_AI_API_KEY. Set it in your .env file or use the heuristic provider.')
-    }
-    if (err instanceof APICallError) {
-      throw new Error('AI suggestion generation failed: ' + sanitizeError(err))
-    }
-    if (err instanceof NoObjectGeneratedError) {
-      throw new Error('AI returned invalid suggestion format. Falling back to heuristic.')
-    }
-    throw err
+    handleAIError(err, 'suggestion generation')
   }
 }
 

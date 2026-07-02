@@ -6,6 +6,8 @@
     "start": "node index.js"
   },
   "dependencies": {
+    "@ai-sdk/google": "^4.0.7",
+    "ai": "^7.0.13",
     "compression": "^1.8.1",
     "express": "^4.21.0",
     "helmet": "^8.2.0"

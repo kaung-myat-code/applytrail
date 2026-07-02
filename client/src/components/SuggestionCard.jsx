@@ -113,6 +113,11 @@ function SuggestionCard({ suggestion, decision, onAccept, onReject, onEdit }) {
               Reject
             </button>
           )}
+          {decision?.status === 'rejected' && (
+            <button className={styles.undoButton} onClick={() => onReject(suggestion.id)}>
+              Undo Reject
+            </button>
+          )}
           <button
             className={styles.editButton}
             onClick={() => { setIsEditing(true); setEditedText(decision?.editedContent || suggestion.suggested) }}

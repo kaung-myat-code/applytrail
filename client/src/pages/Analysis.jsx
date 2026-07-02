@@ -158,6 +158,8 @@ function Analysis() {
   const [suggestions, setSuggestions] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [provider, setProvider] = useState('heuristic')
+  const [fallbackInfo, setFallbackInfo] = useState(null)
 
   useEffect(() => {
     Promise.all([
@@ -179,6 +181,7 @@ function Analysis() {
     setLoading(true)
     setError('')
     setReport(null)
+    setFallbackInfo(null)
 
     try {
       const res = await fetch('/api/analyze', {
@@ -187,6 +190,7 @@ function Analysis() {
         body: JSON.stringify({
           job_posting_id: selectedPostingId,
           resume_version_id: selectedResumeId || undefined,
+          provider,
         }),
       })
 
@@ -194,6 +198,10 @@ function Analysis() {
 
       if (!res.ok) {
         throw new Error(data.error || 'Analysis failed')
+      }
+
+      if (data.fallback) {
+        setFallbackInfo({ reason: data.fallback_reason || 'AI provider unavailable' })
       }
 
       setReport(data.report)
@@ -275,6 +283,19 @@ function Analysis() {
           </select>
         </div>
 
+        <div className={styles.field}>
+          <label className={styles.label} htmlFor="provider">Analysis Provider</label>
+          <select
+            className={styles.select}
+            id="provider"
+            value={provider}
+            onChange={e => setProvider(e.target.value)}
+          >
+            <option value="heuristic">Heuristic (Keyword Match) -- no setup needed</option>
+            <option value="ai">AI Analysis (Gemini) -- requires API key</option>
+          </select>
+        </div>
+
         <button
           className={styles.analyzeButton}
           type="submit"
@@ -287,6 +308,13 @@ function Analysis() {
           <div className={styles.error}>{error}</div>
         )}
       </form>
+
+      {fallbackInfo && (
+        <div className={styles.fallbackBanner}>
+          <strong>AI analysis unavailable</strong> -- falling back to heuristic analysis.
+          <span className={styles.fallbackReason}>{fallbackInfo.reason}</span>
+        </div>
+      )}
 
       {report && (
         <div className={styles.report}>

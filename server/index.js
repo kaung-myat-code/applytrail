@@ -426,8 +426,8 @@ app.post('/api/generate-cover-letter', (req, res) => {
   res.json({ ok: true, cover_letter_paragraph: paragraph })
 })
 
-app.post('/api/analyze', (req, res) => {
-  const { job_posting_id, resume_version_id } = req.body
+app.post('/api/analyze', async (req, res) => {
+  const { job_posting_id, resume_version_id, provider: providerName = 'heuristic' } = req.body
 
   if (!job_posting_id) {
     return res.status(400).json({ error: 'job_posting_id is required' })
@@ -462,13 +462,28 @@ app.post('/api/analyze', (req, res) => {
   }
 
   try {
-    const { analyzeResume, generateSuggestions } = getProvider('heuristic')
-    const report = analyzeResume(resume, posting)
-    const suggestions = generateSuggestions(resume, report)
-    res.json({ ok: true, report, suggestions })
+    const provider = getProvider(providerName)
+    const report = await provider.analyzeResume(resume, posting)
+    const suggestions = await provider.generateSuggestions(resume, report)
+    res.json({ ok: true, report, suggestions, provider: providerName })
   } catch (err) {
-    console.error('Analysis error:', err)
-    res.status(500).json({ error: 'Analysis failed: ' + err.message })
+    if (providerName === 'ai') {
+      console.error('AI analysis failed, falling back to heuristic:', err.message)
+      try {
+        const heuristicProvider = getProvider('heuristic')
+        const report = heuristicProvider.analyzeResume(resume, posting)
+        const suggestions = heuristicProvider.generateSuggestions(resume, report)
+        // Sanitize fallback_reason: strip potential API key fragments
+        const sanitizedReason = (err.message || 'Unknown error').replace(/[A-Za-z0-9_-]{20,}/g, '[redacted]')
+        res.json({ ok: true, report, suggestions, provider: 'heuristic', fallback: true, fallback_reason: sanitizedReason })
+      } catch (fallbackErr) {
+        console.error('Heuristic fallback also failed:', fallbackErr)
+        res.status(500).json({ error: 'Analysis failed: ' + fallbackErr.message })
+      }
+    } else {
+      console.error('Analysis error:', err)
+      res.status(500).json({ error: 'Analysis failed: ' + err.message })
+    }
   }
 })
 

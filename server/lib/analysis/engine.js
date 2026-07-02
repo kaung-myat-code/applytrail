@@ -7,6 +7,7 @@
 
 const providers = {
   heuristic: require('./providers/heuristic'),
+  ai: require('./providers/ai'),
 }
 
 /**

@@ -370,22 +370,22 @@ function ResumeLibrary() {
 | A3 | Single-user means no concurrent write concerns | Common Pitfalls | Data corruption (unlikely for single-user tool) |
 | A4 | `generateId()` is sufficient for resume version IDs | Code Examples | ID collisions (extremely unlikely) |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Data directory location**
    - What we know: Requirements say `server/data/resume_library/` but actual `DATA_DIR` is project root
    - What's unclear: Should we follow the requirements literally or match the existing pattern?
-   - Recommendation: Match existing pattern (`<project_root>/resume_library/`). Update requirements to reflect reality.
+   - RESOLVED: Match existing pattern (`<project_root>/resume_library/`). Plan uses `path.join(DATA_DIR, 'resume_library')`.
 
 2. **Original resume.json handling**
    - What we know: Migration copies resume.json into library
    - What's unclear: Should the original resume.json be deleted after migration, kept as-is, or kept in sync?
-   - Recommendation: Keep it as-is (read-only safety net). Do not sync it. Document that it's a legacy artifact.
+   - RESOLVED: Keep it as-is (read-only safety net). Plan uses copy-not-move strategy.
 
 3. **Resume page behavior after migration**
    - What we know: `/api/resume` currently reads `resume.json` directly
    - What's unclear: Should `/api/resume` be updated to read from the library, or should the Resume page use a new endpoint?
-   - Recommendation: Update `/api/resume` to read from the selected library version. This keeps the Resume page unchanged and maintains backward compatibility for any other code using this endpoint.
+   - RESOLVED: Update `/api/resume` to read from the selected library version. Plan updates GET and PUT routes.
 
 ## Environment Availability
 

@@ -34,6 +34,49 @@ function writeJSON(filename, data) {
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2) + '\n', 'utf-8')
 }
 
+const VALID_ID = /^[a-z0-9]+$/
+const LIBRARY_DIR = path.join(DATA_DIR, 'resume_library')
+
+function readLibraryIndex() {
+  const indexPath = path.join(LIBRARY_DIR, 'index.json')
+  if (!fs.existsSync(indexPath)) {
+    return { selected_id: null, versions: [] }
+  }
+  const raw = fs.readFileSync(indexPath, 'utf-8')
+  return JSON.parse(raw)
+}
+
+function writeLibraryIndex(index) {
+  if (!fs.existsSync(LIBRARY_DIR)) {
+    fs.mkdirSync(LIBRARY_DIR, { recursive: true })
+  }
+  fs.writeFileSync(
+    path.join(LIBRARY_DIR, 'index.json'),
+    JSON.stringify(index, null, 2) + '\n',
+    'utf-8'
+  )
+}
+
+function readResumeVersion(id) {
+  if (!VALID_ID.test(id)) return null
+  const filePath = path.join(LIBRARY_DIR, `${id}.json`)
+  if (!fs.existsSync(filePath)) return null
+  const raw = fs.readFileSync(filePath, 'utf-8')
+  return JSON.parse(raw)
+}
+
+function writeResumeVersion(id, data) {
+  if (!VALID_ID.test(id)) return
+  if (!fs.existsSync(LIBRARY_DIR)) {
+    fs.mkdirSync(LIBRARY_DIR, { recursive: true })
+  }
+  fs.writeFileSync(
+    path.join(LIBRARY_DIR, `${id}.json`),
+    JSON.stringify(data, null, 2) + '\n',
+    'utf-8'
+  )
+}
+
 // Seed demo data on startup when data files are missing or empty
 function seedDemoData() {
   const files = ['resume.json', 'job_postings.json', 'applications.json']
@@ -103,8 +146,42 @@ function migrateApplications() {
   }
 }
 
+// Migrate existing resume.json to library structure (runs once at startup)
+function migrateResumeLibrary() {
+  if (fs.existsSync(LIBRARY_DIR)) return
+
+  fs.mkdirSync(LIBRARY_DIR, { recursive: true })
+
+  const resume = readJSON('resume.json')
+  if (
+    (Array.isArray(resume) && resume.length === 0) ||
+    (typeof resume === 'object' && !Array.isArray(resume) && Object.keys(resume).length === 0)
+  ) {
+    return
+  }
+
+  const id = generateId()
+  const now = new Date().toISOString().split('T')[0]
+
+  const index = {
+    selected_id: id,
+    versions: [{
+      id,
+      name: 'Default Resume',
+      created_at: now,
+      updated_at: now,
+      source_id: null
+    }]
+  }
+
+  writeLibraryIndex(index)
+  writeResumeVersion(id, resume)
+  console.log('Migrated resume to library structure')
+}
+
 seedDemoData()
 migrateApplications()
+migrateResumeLibrary()
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', uptime: process.uptime() })
@@ -193,12 +270,132 @@ app.post('/api/job-postings', (req, res) => {
 })
 
 app.get('/api/resume', (req, res) => {
+  const index = readLibraryIndex()
+  if (index.selected_id) {
+    const data = readResumeVersion(index.selected_id)
+    if (data) return res.json(data)
+  }
   res.json(readJSON('resume.json'))
 })
 
 app.put('/api/resume', (req, res) => {
-  writeJSON('resume.json', req.body)
+  const index = readLibraryIndex()
+  if (index.selected_id) {
+    writeResumeVersion(index.selected_id, req.body)
+    const entry = index.versions.find(v => v.id === index.selected_id)
+    if (entry) entry.updated_at = new Date().toISOString().split('T')[0]
+    writeLibraryIndex(index)
+  } else {
+    writeJSON('resume.json', req.body)
+  }
   res.json({ ok: true })
+})
+
+// Resume Library CRUD endpoints
+
+app.get('/api/resume-library', (req, res) => {
+  const index = readLibraryIndex()
+  res.json(index)
+})
+
+app.post('/api/resume-library', (req, res) => {
+  const name = req.body.name || 'Untitled Resume'
+  const id = generateId()
+  const now = new Date().toISOString().split('T')[0]
+  const resumeData = req.body.resume_data || {
+    contact: {}, summary: '', experience: [], projects: [], education: [], skills: []
+  }
+
+  const index = readLibraryIndex()
+  const entry = { id, name, created_at: now, updated_at: now, source_id: null }
+  index.versions.push(entry)
+  if (index.versions.length === 1) {
+    index.selected_id = id
+  }
+
+  writeResumeVersion(id, resumeData)
+  writeLibraryIndex(index)
+  res.json({ ok: true, version: entry })
+})
+
+app.get('/api/resume-library/:id', (req, res) => {
+  const { id } = req.params
+  if (!VALID_ID.test(id)) {
+    return res.status(400).json({ error: 'Invalid resume version ID' })
+  }
+  const data = readResumeVersion(id)
+  if (!data) {
+    return res.status(404).json({ error: 'Resume version not found' })
+  }
+  res.json(data)
+})
+
+app.put('/api/resume-library/:id', (req, res) => {
+  const { id } = req.params
+  if (!VALID_ID.test(id)) {
+    return res.status(400).json({ error: 'Invalid resume version ID' })
+  }
+
+  const index = readLibraryIndex()
+  const entry = index.versions.find(v => v.id === id)
+  if (!entry) {
+    return res.status(404).json({ error: 'Resume version not found' })
+  }
+
+  if (req.body.name) {
+    entry.name = req.body.name
+  }
+  if (req.body.resume_data) {
+    writeResumeVersion(id, req.body.resume_data)
+  }
+  entry.updated_at = new Date().toISOString().split('T')[0]
+  writeLibraryIndex(index)
+  res.json({ ok: true, version: entry })
+})
+
+app.delete('/api/resume-library/:id', (req, res) => {
+  const { id } = req.params
+  if (!VALID_ID.test(id)) {
+    return res.status(400).json({ error: 'Invalid resume version ID' })
+  }
+
+  const index = readLibraryIndex()
+  const idx = index.versions.findIndex(v => v.id === id)
+  if (idx === -1) {
+    return res.status(404).json({ error: 'Resume version not found' })
+  }
+  if (index.versions.length === 1) {
+    return res.status(400).json({ error: 'Cannot delete the last resume version' })
+  }
+
+  index.versions.splice(idx, 1)
+  if (index.selected_id === id) {
+    index.selected_id = index.versions[0].id
+  }
+
+  const filePath = path.join(LIBRARY_DIR, `${id}.json`)
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath)
+  }
+  writeLibraryIndex(index)
+  res.json({ ok: true })
+})
+
+app.put('/api/resume-library/:id/select', (req, res) => {
+  const { id } = req.params
+  if (!VALID_ID.test(id)) {
+    return res.status(400).json({ error: 'Invalid resume version ID' })
+  }
+
+  const index = readLibraryIndex()
+  const exists = index.versions.some(v => v.id === id)
+  if (!exists) {
+    return res.status(404).json({ error: 'Resume version not found' })
+  }
+
+  index.selected_id = id
+  writeLibraryIndex(index)
+  res.json({ ok: true, selected_id: id })
 })
 
 app.post('/api/generate-cover-letter', (req, res) => {
@@ -215,7 +412,14 @@ app.post('/api/generate-cover-letter', (req, res) => {
     return res.status(404).json({ error: 'Job posting not found' })
   }
 
-  const resume = readJSON('resume.json')
+  const libraryIndex = readLibraryIndex()
+  let resume
+  if (libraryIndex.selected_id) {
+    resume = readResumeVersion(libraryIndex.selected_id)
+  }
+  if (!resume) {
+    resume = readJSON('resume.json')
+  }
   const paragraph = generateCoverLetter(resume, posting)
 
   res.json({ ok: true, cover_letter_paragraph: paragraph })

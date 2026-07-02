@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "react": "^19.0.0",
+    "react-diff-viewer-continued": "^4.2.2",
     "react-dom": "^19.0.0",
     "react-router-dom": "^7.0.0"
   },

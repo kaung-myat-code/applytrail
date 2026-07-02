@@ -244,7 +244,11 @@ Plans:
   2. Match report displays matched keywords, missing keywords, and bonus keywords as categorized groups
   3. Match report shows section-level findings for Summary, Skills, Experience, Projects, and Education
   4. The analysis engine uses a provider-agnostic interface so a different provider (AI, third-party) can be swapped without UI changes
-**Plans**: TBD
+**Plans**: 1/1 plans complete
+
+Plans:
+- [ ] 10-01-PLAN.md — Analysis engine, shared keywords, API endpoint, and frontend match report page
+
 **UI hint**: yes
 
 ### Phase 11: Section-by-Section Suggestions
@@ -303,7 +307,7 @@ Phases execute in numeric order: 9 -> 10 -> 11 -> 12 -> 13
 | 7. Production Deployment | v1.1 | 1/1 | Complete | 2026-06-27 |
 | 8. Documentation & Release | v1.1 | 1/1 | Complete | 2026-06-27 |
 | 9. Resume Library Foundation | v2.0 | 1/1 | Complete | 2026-07-02 |
-| 10. Match Scoring and Gap Analysis | v2.0 | 0/TBD | Not started | - |
+| 10. Match Scoring and Gap Analysis | v2.0 | 0/1 | Not started | - |
 | 11. Section-by-Section Suggestions | v2.0 | 0/TBD | Not started | - |
 | 12. Tailored Resume Generation | v2.0 | 0/TBD | Not started | - |
 | 13. Application Pre-fill and Export | v2.0 | 0/TBD | Not started | - |

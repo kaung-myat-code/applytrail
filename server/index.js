@@ -468,6 +468,7 @@ app.post('/api/analyze', async (req, res) => {
     // If AI provider selected, try with fallback chain
     if (AI_PROVIDERS.includes(providerName)) {
       let lastError
+      let selectedProviderError
       const fallbackOrder = [
         providerName,
         ...AI_PROVIDERS.filter(p => p !== providerName),
@@ -488,6 +489,9 @@ app.post('/api/analyze', async (req, res) => {
           })
         } catch (err) {
           lastError = err
+          if (aiProvider === providerName) {
+            selectedProviderError = err
+          }
           console.error(`AI provider ${aiProvider} failed:`, err.message)
           // Continue to next provider
         }
@@ -497,7 +501,7 @@ app.post('/api/analyze', async (req, res) => {
       const heuristicProvider = getProvider('heuristic')
       const report = heuristicProvider.analyzeResume(resume, posting)
       const suggestions = heuristicProvider.generateSuggestions(resume, report)
-      const sanitizedReason = sanitizeError(lastError || new Error('Unknown error'))
+      const sanitizedReason = sanitizeError(selectedProviderError || lastError || new Error('Unknown error'))
       return res.json({
         ok: true,
         report,

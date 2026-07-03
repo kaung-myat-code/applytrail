@@ -27,6 +27,9 @@ yarn-error.log*
 data/*.local.json
 resume_library/
 snapshot-analysis.txt
+job_postings.json
+applications.json
+resume.json
 
 
 # GSD local installation artifacts

@@ -1,12 +1,15 @@
 /**
  * AI Analysis Provider
  *
- * Uses Vercel AI SDK with Google Gemini to generate structured resume analysis.
+ * Uses Vercel AI SDK with multiple providers (Gemini, OpenRouter, Groq)
+ * to generate structured resume analysis.
  * Returns Zod-validated MatchReport and suggestions matching the heuristic interface.
  */
 
 const { generateObject, LoadAPIKeyError, APICallError, NoObjectGeneratedError } = require('ai')
 const { google } = require('@ai-sdk/google')
+const { createOpenAICompatible } = require('@ai-sdk/openai-compatible')
+const { groq } = require('@ai-sdk/groq')
 const { z } = require('zod')
 
 // --- Zod Schemas ---
@@ -48,9 +51,25 @@ const suggestionSchema = z.object({
 
 // --- Model helper ---
 
-function getModel() {
-  const modelName = process.env.ANALYSIS_MODEL || 'gemini-2.5-flash'
-  return google(modelName)
+function getModel(provider = 'gemini') {
+  const modelName = process.env.ANALYSIS_MODEL
+
+  switch (provider) {
+    case 'gemini':
+      return google(modelName || 'gemini-2.5-flash')
+    case 'openrouter': {
+      const or = createOpenAICompatible({
+        name: 'openrouter',
+        apiKey: process.env.OPENROUTER_API_KEY,
+        baseURL: 'https://openrouter.ai/api/v1',
+      })
+      return or(modelName || 'meta-llama/llama-3.3-70b-instruct:free')
+    }
+    case 'groq':
+      return groq(modelName || 'llama-3.3-70b-versatile')
+    default:
+      throw new Error(`Unknown AI provider: ${provider}. Available: gemini, openrouter, groq`)
+  }
 }
 
 // --- Error sanitization ---
@@ -65,9 +84,14 @@ function sanitizeError(err) {
 
 // --- Shared error handler ---
 
-function handleAIError(err, operation) {
+function handleAIError(err, operation, provider) {
   if (err instanceof LoadAPIKeyError) {
-    throw new Error('AI analysis requires GOOGLE_GENERATIVE_AI_API_KEY. Set it in your .env file or use the heuristic provider.')
+    const keyVar = {
+      gemini: 'GOOGLE_GENERATIVE_AI_API_KEY',
+      openrouter: 'OPENROUTER_API_KEY',
+      groq: 'GROQ_API_KEY',
+    }[provider] || 'API_KEY'
+    throw new Error(`AI analysis requires ${keyVar}. Set it in your .env file or use the heuristic provider.`)
   }
   if (err instanceof APICallError) {
     throw new Error(`AI ${operation} failed: ` + sanitizeError(err))
@@ -86,7 +110,7 @@ function handleAIError(err, operation) {
  * @param {object} jobPosting - Job posting with posting_text field
  * @returns {Promise<object>} MatchReport (same shape as heuristic provider)
  */
-async function analyzeResume(resume, jobPosting) {
+async function analyzeResume(resume, jobPosting, provider = 'gemini') {
   const postingText = jobPosting.posting_text || ''
   if (!postingText.trim()) {
     return {
@@ -122,7 +146,7 @@ async function analyzeResume(resume, jobPosting) {
     ].join('\n')
 
     const { object } = await generateObject({
-      model: getModel(),
+      model: getModel(provider),
       schema: matchReportSchema,
       prompt,
     })
@@ -149,7 +173,7 @@ async function analyzeResume(resume, jobPosting) {
 
     return object
   } catch (err) {
-    handleAIError(err, 'analysis')
+    handleAIError(err, 'analysis', provider)
   }
 }
 
@@ -159,7 +183,7 @@ async function analyzeResume(resume, jobPosting) {
  * @param {object} report - MatchReport from analyzeResume
  * @returns {Promise<object[]>} Array of suggestion objects (same shape as heuristic)
  */
-async function generateSuggestions(resume, report) {
+async function generateSuggestions(resume, report, provider = 'gemini') {
   try {
     const prompt = [
       'Based on this MatchReport, generate actionable suggestions to improve the resume.',
@@ -173,14 +197,14 @@ async function generateSuggestions(resume, report) {
     ].join('\n')
 
     const { object } = await generateObject({
-      model: getModel(),
+      model: getModel(provider),
       schema: z.array(suggestionSchema),
       prompt,
     })
 
     return object
   } catch (err) {
-    handleAIError(err, 'suggestion generation')
+    handleAIError(err, 'suggestion generation', provider)
   }
 }
 

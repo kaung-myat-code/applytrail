@@ -461,31 +461,58 @@ app.post('/api/analyze', async (req, res) => {
     return res.status(400).json({ error: 'No resume content found. Add content to your resume first.' })
   }
 
+  const AI_PROVIDERS = ['gemini', 'openrouter', 'groq']
+
   try {
+    // If AI provider selected, try with fallback chain
+    if (AI_PROVIDERS.includes(providerName)) {
+      let lastError
+      for (const aiProvider of AI_PROVIDERS) {
+        try {
+          const provider = getProvider(aiProvider)
+          const report = await provider.analyzeResume(resume, posting, aiProvider)
+          const suggestions = await provider.generateSuggestions(resume, report, aiProvider)
+          const isFallback = aiProvider !== providerName
+          return res.json({
+            ok: true,
+            report,
+            suggestions,
+            provider: aiProvider,
+            fallback: isFallback || undefined,
+            fallback_reason: isFallback ? `Provider ${providerName} failed, using ${aiProvider}` : undefined,
+          })
+        } catch (err) {
+          lastError = err
+          console.error(`AI provider ${aiProvider} failed:`, err.message)
+          // Continue to next provider
+        }
+      }
+      // All AI providers failed, fall back to heuristic
+      console.error('All AI providers failed, falling back to heuristic:', lastError?.message)
+      const heuristicProvider = getProvider('heuristic')
+      const report = heuristicProvider.analyzeResume(resume, posting)
+      const suggestions = heuristicProvider.generateSuggestions(resume, report)
+      const sanitizedReason = (lastError?.message || 'Unknown error')
+        .replace(/AIza[A-Za-z0-9_-]{30,}/g, '[redacted]')
+        .replace(/sk-[A-Za-z0-9]{20,}/g, '[redacted]')
+      return res.json({
+        ok: true,
+        report,
+        suggestions,
+        provider: 'heuristic',
+        fallback: true,
+        fallback_reason: sanitizedReason,
+      })
+    }
+
+    // Heuristic provider (synchronous)
     const provider = getProvider(providerName)
-    const report = await provider.analyzeResume(resume, posting)
-    const suggestions = await provider.generateSuggestions(resume, report)
+    const report = provider.analyzeResume(resume, posting)
+    const suggestions = provider.generateSuggestions(resume, report)
     res.json({ ok: true, report, suggestions, provider: providerName })
   } catch (err) {
-    if (providerName === 'ai') {
-      console.error('AI analysis failed, falling back to heuristic:', err.message)
-      try {
-        const heuristicProvider = getProvider('heuristic')
-        const report = heuristicProvider.analyzeResume(resume, posting)
-        const suggestions = heuristicProvider.generateSuggestions(resume, report)
-        // Sanitize fallback_reason: strip potential API key fragments
-        const sanitizedReason = (err.message || 'Unknown error')
-          .replace(/AIza[A-Za-z0-9_-]{30,}/g, '[redacted]')
-          .replace(/sk-[A-Za-z0-9]{20,}/g, '[redacted]')
-        res.json({ ok: true, report, suggestions, provider: 'heuristic', fallback: true, fallback_reason: sanitizedReason })
-      } catch (fallbackErr) {
-        console.error('Heuristic fallback also failed:', fallbackErr)
-        res.status(500).json({ error: 'Analysis failed: ' + fallbackErr.message })
-      }
-    } else {
-      console.error('Analysis error:', err)
-      res.status(500).json({ error: 'Analysis failed. Check server logs for details.' })
-    }
+    console.error('Analysis error:', err)
+    res.status(500).json({ error: 'Analysis failed. Check server logs for details.' })
   }
 })
 

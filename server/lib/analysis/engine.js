@@ -16,10 +16,10 @@ const providers = {
  * @throws {Error} If provider name is unknown
  */
 function getProvider(name = 'heuristic') {
-  // Lazy-load AI provider to avoid crashing server if AI SDK has issues
-  if (name === 'ai' && !providers.ai) {
+  // Lazy-load AI providers to avoid crashing server if AI SDK has issues
+  if (['gemini', 'openrouter', 'groq'].includes(name) && !providers[name]) {
     try {
-      providers.ai = require('./providers/ai')
+      providers[name] = require('./providers/ai')
     } catch (err) {
       throw new Error('AI provider unavailable: ' + err.message + '. Use the heuristic provider instead.')
     }

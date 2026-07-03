@@ -77,7 +77,7 @@ coverage:
         status: pass
     human_judgment: false
 
-duration: 1min
+duration: 3min
 completed: 2026-07-03
 status: complete
 ---
@@ -88,7 +88,7 @@ status: complete
 
 ## Performance
 
-- **Duration:** 1 min
+- **Duration:** 3 min
 - **Started:** 2026-07-03T16:27:07Z
 - **Completed:** 2026-07-03T16:28:47Z
 - **Tasks:** 4

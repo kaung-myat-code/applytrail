@@ -305,7 +305,9 @@ function Analysis() {
             onChange={e => setProvider(e.target.value)}
           >
             <option value="heuristic">Heuristic (Keyword Match) -- no setup needed</option>
-            <option value="ai">AI Analysis (Gemini) -- requires API key</option>
+            <option value="gemini">AI: Gemini -- requires GOOGLE_GENERATIVE_AI_API_KEY</option>
+            <option value="openrouter">AI: OpenRouter -- requires OPENROUTER_API_KEY</option>
+            <option value="groq">AI: Groq -- requires GROQ_API_KEY</option>
           </select>
         </div>
 

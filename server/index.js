@@ -5,6 +5,7 @@ const helmet = require('helmet')
 const compression = require('compression')
 const { generateCoverLetter } = require('./lib/cover-letter')
 const { getProvider } = require('./lib/analysis/engine')
+const { sanitizeError } = require('./lib/analysis/providers/ai')
 
 const app = express()
 const DATA_DIR = path.join(__dirname, '..')
@@ -492,9 +493,7 @@ app.post('/api/analyze', async (req, res) => {
       const heuristicProvider = getProvider('heuristic')
       const report = heuristicProvider.analyzeResume(resume, posting)
       const suggestions = heuristicProvider.generateSuggestions(resume, report)
-      const sanitizedReason = (lastError?.message || 'Unknown error')
-        .replace(/AIza[A-Za-z0-9_-]{30,}/g, '[redacted]')
-        .replace(/sk-[A-Za-z0-9]{20,}/g, '[redacted]')
+      const sanitizedReason = sanitizeError(lastError || new Error('Unknown error'))
       return res.json({
         ok: true,
         report,

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams, useLocation } from 'react-router-dom'
 import SuggestionCard from '../components/SuggestionCard'
 import styles from './ReviewSuggestions.module.css'
 
@@ -13,16 +13,25 @@ const sectionLabels = {
 }
 
 function ReviewSuggestions() {
+  const location = useLocation()
   const [searchParams] = useSearchParams()
-  const resumeId = searchParams.get('resume')
-  const postingId = searchParams.get('posting')
+  const resumeId = location.state?.resumeId || searchParams.get('resume')
+  const postingId = location.state?.postingId || searchParams.get('posting')
+  const provider = location.state?.provider || searchParams.get('provider') || 'heuristic'
+  const initialStateSuggestions = location.state?.suggestions
 
-  const [suggestions, setSuggestions] = useState([])
+  const [suggestions, setSuggestions] = useState(initialStateSuggestions || [])
   const [decisions, setDecisions] = useState({})
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(!initialStateSuggestions)
   const [error, setError] = useState('')
 
   useEffect(() => {
+    // Skip API call if we already have suggestions from navigation state
+    if (initialStateSuggestions) {
+      setLoading(false)
+      return
+    }
+
     if (!postingId) {
       setError('No job posting selected. Run an analysis first.')
       setLoading(false)
@@ -37,6 +46,7 @@ function ReviewSuggestions() {
           body: JSON.stringify({
             job_posting_id: postingId,
             resume_version_id: resumeId || undefined,
+            provider,
           }),
         })
         const data = await res.json()
@@ -50,7 +60,7 @@ function ReviewSuggestions() {
     }
 
     fetchAnalysis()
-  }, [resumeId, postingId])
+  }, [resumeId, postingId, provider, initialStateSuggestions])
 
   function handleAccept(id) {
     setDecisions(prev => {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import styles from './Analysis.module.css'
 
 function ScoreDisplay({ score, summary, strengths, gaps }) {
@@ -150,6 +150,7 @@ function SectionFindings({ sections }) {
 }
 
 function Analysis() {
+  const navigate = useNavigate()
   const [resumeVersions, setResumeVersions] = useState([])
   const [selectedResumeId, setSelectedResumeId] = useState('')
   const [postings, setPostings] = useState([])
@@ -349,7 +350,8 @@ function Analysis() {
       {report && suggestions.length > 0 && (
         <div className={styles.reviewLink}>
           <Link
-            to={`/analysis/review?resume=${selectedResumeId}&posting=${selectedPostingId}`}
+            to={`/analysis/review?resume=${selectedResumeId}&posting=${selectedPostingId}&provider=${provider}`}
+            state={{ suggestions, resumeId: selectedResumeId, postingId: selectedPostingId, provider }}
             className={styles.reviewButton}
           >
             Review {suggestions.length} Suggestions

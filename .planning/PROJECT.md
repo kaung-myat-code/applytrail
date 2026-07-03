@@ -82,14 +82,14 @@ A local web MVP that migrated an existing Claude Code job application workflow i
 - Storage: JSON files (applications.json, resume.json, job_postings.json)
 - Build: Vite (frontend), npm scripts (backend)
 - Deployment: Render free tier
-- Analysis engine: Provider-agnostic pipeline (heuristics, AI models, or third-party services)
+- Analysis engine: Provider-agnostic pipeline (heuristics, AI models via Vercel AI SDK: Gemini, OpenRouter, Groq)
 
 ## Constraints
 
 - **No auth**: Single-user local tool
 - **JSON file storage**: Keep data human-readable and easy to inspect/edit
 - **Commit after each working milestone**: Incremental progress, not big-bang
-- **Provider-agnostic analysis**: Analysis engine must be swappable — heuristics, AI models, or third-party services without UI changes
+- **Provider-agnostic analysis**: Analysis engine must be swappable — heuristics, AI models (Gemini, OpenRouter, Groq), or third-party services without UI changes
 - **Structured JSON schema**: Resume data uses a structured JSON schema as the single source of truth; PDF, DOCX, Markdown are generated from this representation
 
 ## Key Decisions
@@ -103,7 +103,7 @@ A local web MVP that migrated an existing Claude Code job application workflow i
 | v1.1 = polish only | Prepare for public release without changing core functionality | Complete (v1.1) |
 | Render free tier | Simple deployment, auto-deploy from GitHub, sufficient for portfolio | Implemented (Phase 7) |
 | Demo data seeding | Portfolio visitors see populated interface on first visit | Implemented (Phase 6) |
-| Provider-agnostic analysis | Analysis engine swappable without UI changes — heuristics, AI, or third-party | Planned (v2.0) |
+| Provider-agnostic analysis | Analysis engine swappable without UI changes — heuristics, AI (Gemini, OpenRouter, Groq), or third-party | Planned (v2.0) |
 | Structured JSON schema | Single source of truth for resume data; formats generated from schema | Planned (v2.0) |
 | Resume library | Multiple immutable resume versions; tailoring creates new version | Planned (v2.0) |
 

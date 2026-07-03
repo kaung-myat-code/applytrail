@@ -1,22 +1,23 @@
 # Phase 11.5: AI Analysis Provider - Research
 
-**Researched:** 2026-07-03
-**Domain:** Vercel AI SDK, Google Gemini, Zod structured output
+**Researched:** 2026-07-03 | **Updated:** 2026-07-04
+**Domain:** Vercel AI SDK, Google Gemini, OpenRouter, Groq, Zod structured output
 **Confidence:** HIGH
 
 ## Summary
 
-This research covers integrating an AI-powered analysis provider alongside the existing heuristic provider using Vercel AI SDK with Google Gemini. The AI SDK v7.0.13 provides a `generateObject` function that accepts a Zod schema and returns structured, validated output. The `@ai-sdk/google` provider connects to Google's Generative AI API using the `GOOGLE_GENERATIVE_AI_API_KEY` environment variable.
+This research covers integrating an AI-powered analysis provider alongside the existing heuristic provider using Vercel AI SDK with multiple LLM providers: Google Gemini, OpenRouter, and Groq. The AI SDK v7.0.13 provides a `generateObject` function that accepts a Zod schema and returns structured, validated output. Each provider connects to its respective API using environment variables.
 
 Key findings:
 - AI SDK v7.0.13 works with CommonJS `require()` (critical for this project's server)
 - `generateObject` is still available in v7 (not removed)
 - Zod v4.4.3 is latest, but project has v3.25.76 (both work with AI SDK)
 - Node.js v23.6.0 meets v7 requirement of Node.js 22+
-- Environment variable must be `GOOGLE_GENERATIVE_AI_API_KEY` (not `GEMINI_API_KEY`)
+- Three AI providers supported: Gemini, OpenRouter, Groq — with automatic fallback chain
+- All providers use the same `generateObject` API — only the model factory differs
 - Error handling uses typed error classes: `LoadAPIKeyError`, `APICallError`, `NoObjectGeneratedError`
 
-**Primary recommendation:** Use `generateObject` from `ai` with `google('gemini-2.5-flash')` from `@ai-sdk/google` and a Zod schema matching the existing MatchReport shape.
+**Primary recommendation:** Use `generateObject` from `ai` with provider-specific model factories and a Zod schema matching the existing MatchReport shape. Implement a fallback chain: selected provider → next configured AI provider → heuristic.
 
 ## Architectural Responsibility Map
 
@@ -35,6 +36,8 @@ Key findings:
 |---------|---------|---------|--------------|
 | `ai` | 7.0.13 | Vercel AI SDK core - `generateObject` for structured output | Official SDK, maintained by Vercel, supports all major LLM providers |
 | `@ai-sdk/google` | 4.0.7 | Google Gemini provider for AI SDK | Official Google provider, supports Gemini 2.5 models |
+| `@ai-sdk/openai-compatible` | 3.0.5 | OpenRouter provider (OpenAI-compatible API) | Official Vercel package, works with any OpenAI-compatible API |
+| `@ai-sdk/groq` | 4.0.5 | Groq provider for AI SDK | Official Groq provider, fast inference with Llama/Mixtral models |
 | `zod` | 3.25.76 (existing) | Schema validation for AI output | Already in project, type-safe, works with AI SDK |
 
 ### Supporting
@@ -53,14 +56,16 @@ Key findings:
 
 **Installation:**
 ```bash
-cd server && npm install ai @ai-sdk/google
+cd server && npm install ai @ai-sdk/google @ai-sdk/openai-compatible @ai-sdk/groq
 ```
 
 **Version verification:**
 ```bash
-npm view ai version          # 7.0.13
-npm view @ai-sdk/google version  # 4.0.7
-npm view zod version         # 4.4.3 (project has 3.25.76, both work)
+npm view ai version                        # 7.0.13
+npm view @ai-sdk/google version            # 4.0.7
+npm view @ai-sdk/openai-compatible version # 3.0.5
+npm view @ai-sdk/groq version              # 4.0.5
+npm view zod version                       # 4.4.3 (project has 3.25.76, both work)
 ```
 
 ## Package Legitimacy Audit
@@ -82,40 +87,44 @@ npm view zod version         # 4.4.3 (project has 3.25.76, both work)
 ┌─────────────────────────────────────────────────────────────┐
 │                      Browser (User)                          │
 │              Analysis.jsx with provider selector             │
+│     Options: heuristic | gemini | openrouter | groq          │
 └────────────────────────┬────────────────────────────────────┘
-                         │ POST /api/analyze { provider: "ai" }
+                         │ POST /api/analyze { provider: "gemini" }
                          ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                   Express API Server                          │
 │  POST /api/analyze                                            │
 │  ┌─────────────────────────────────────────────────────────┐ │
-│  │ 1. Resolve provider (heuristic | ai)                    │ │
+│  │ 1. Resolve provider (heuristic | gemini | openrouter |  │ │
+│  │    groq)                                                 │ │
 │  │ 2. Call provider.analyzeResume(resume, posting)         │ │
 │  │ 3. Call provider.generateSuggestions(resume, report)    │ │
-│  │ 4. On AI failure → fallback to heuristic + warning      │ │
+│  │ 4. On AI failure → try next AI provider → heuristic     │ │
 │  └─────────────────────────────────────────────────────────┘ │
-└──────────┬──────────────────────────────────┬───────────────┘
-           │                                  │
-           ▼                                  ▼
-┌─────────────────────────┐    ┌──────────────────────────────┐
-│  Heuristic Provider      │    │  AI Provider (Gemini)         │
-│  keyword-matching.js     │    │  ai.js                        │
-│  - extractKeywords()     │    │  - generateObject()           │
-│  - matchSection()        │    │  - Zod schema validation      │
-│  - score calculation     │    │  - Error handling + fallback   │
-└─────────────────────────┘    └──────────────────────────────┘
+└──────┬──────────┬──────────┬──────────┬─────────────────────┘
+       │          │          │          │
+       ▼          ▼          ▼          ▼
+┌──────────┐ ┌──────────┐ ┌──────────┐ ┌──────────┐
+│Heuristic │ │  Gemini  │ │OpenRouter│ │   Groq   │
+│keyword.js│ │ai-gemini │ │ai-openrtr│ │ai-groq   │
+│          │ │.js       │ │.js       │ │.js       │
+└──────────┘ └──────────┘ └──────────┘ └──────────┘
 ```
 
 ### Recommended Project Structure
 
 ```
 server/lib/analysis/
-├── engine.js              # Provider registry (existing)
+├── engine.js              # Provider registry with fallback chain (existing)
 ├── keywords.js            # Shared keyword extraction (existing)
 └── providers/
     ├── heuristic.js       # Existing keyword-matching provider
-    └── ai.js              # NEW: AI provider using Vercel AI SDK
+    ├── ai-gemini.js       # NEW: Google Gemini provider
+    ├── ai-openrouter.js   # NEW: OpenRouter provider (OpenAI-compatible)
+    └── ai-groq.js         # NEW: Groq provider
 ```
+
+**Alternative:** A single `ai.js` file with an internal provider registry (simpler, fewer files). The `getModel()` function selects the factory based on `ANALYSIS_PROVIDER` env var.
 
 ### Pattern 1: generateObject with Zod Schema
 
@@ -275,6 +284,76 @@ async function generateSuggestions(resume, report) {
 }
 
 module.exports = { analyzeResume, generateSuggestions }
+```
+
+### Pattern 4: OpenRouter via @ai-sdk/openai-compatible
+
+**What:** Use `createOpenAICompatible` from `@ai-sdk/openai-compatible` to connect to OpenRouter's API.
+
+**When to use:** When using OpenRouter as the AI provider (access to 340+ models including free tier).
+
+**Example:**
+```javascript
+const { createOpenAICompatible } = require('@ai-sdk/openai-compatible')
+
+const openrouter = createOpenAICompatible({
+  name: 'openrouter',
+  apiKey: process.env.OPENROUTER_API_KEY,
+  baseURL: 'https://openrouter.ai/api/v1',
+})
+
+// Use with any model ID from OpenRouter's catalog
+const model = openrouter('meta-llama/llama-3.3-70b-instruct:free')
+```
+
+**Env var:** `OPENROUTER_API_KEY` (no built-in default — must pass explicitly)
+**Base URL:** `https://openrouter.ai/api/v1`
+
+### Pattern 5: Groq via @ai-sdk/groq
+
+**What:** Use `groq` from `@ai-sdk/groq` for fast inference with Llama and Mixtral models.
+
+**When to use:** When using Groq as the AI provider (fastest inference, strict rate limits).
+
+**Example:**
+```javascript
+const { groq } = require('@ai-sdk/groq')
+
+const model = groq('llama-3.3-70b-versatile')
+```
+
+**Env var:** `GROQ_API_KEY` (built-in default)
+**Base URL:** `https://api.groq.com/openai/v1` (built-in default)
+
+### Pattern 6: Provider Registry with Fallback Chain
+
+**What:** A single `getModel()` function that selects the AI provider based on `ANALYSIS_PROVIDER` env var, with automatic fallback.
+
+**When to use:** When supporting multiple AI providers with graceful degradation.
+
+**Example:**
+```javascript
+function getModel() {
+  const provider = process.env.ANALYSIS_PROVIDER || 'gemini'
+  const modelName = process.env.ANALYSIS_MODEL
+
+  switch (provider) {
+    case 'gemini':
+      return google(modelName || 'gemini-2.5-flash')
+    case 'openrouter': {
+      const or = createOpenAICompatible({
+        name: 'openrouter',
+        apiKey: process.env.OPENROUTER_API_KEY,
+        baseURL: 'https://openrouter.ai/api/v1',
+      })
+      return or(modelName || 'meta-llama/llama-3.3-70b-instruct:free')
+    }
+    case 'groq':
+      return groq(modelName || 'llama-3.3-70b-versatile')
+    default:
+      throw new Error(`Unknown AI provider: ${provider}`)
+  }
+}
 ```
 
 ### Anti-Patterns to Avoid
@@ -525,11 +604,18 @@ app.post('/api/analyze', async (req, res) => {
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `GOOGLE_GENERATIVE_AI_API_KEY` | Yes (for AI provider) | — | Google Gemini API key from [AI Studio](https://aistudio.google.com/apikey) |
-| `ANALYSIS_PROVIDER` | No | `heuristic` | Default provider: `heuristic` or `ai` |
-| `ANALYSIS_MODEL` | No | `gemini-2.5-flash` | Gemini model to use |
+| `ANALYSIS_PROVIDER` | No | `heuristic` | Provider: `heuristic`, `gemini`, `openrouter`, or `groq` |
+| `ANALYSIS_MODEL` | No | Provider-specific | Model ID (varies by provider) |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | Yes (for gemini) | — | Google Gemini API key from [AI Studio](https://aistudio.google.com/apikey) |
+| `OPENROUTER_API_KEY` | Yes (for openrouter) | — | OpenRouter API key from [openrouter.ai](https://openrouter.ai/keys) |
+| `GROQ_API_KEY` | Yes (for groq) | — | Groq API key from [console.groq.com](https://console.groq.com/keys) |
 
-**Note:** The user's research request mentions `GEMINI_API_KEY`, but `@ai-sdk/google` expects `GOOGLE_GENERATIVE_AI_API_KEY`. Use the standard env var name.
+**Provider-specific defaults for ANALYSIS_MODEL:**
+- `gemini`: `gemini-2.5-flash`
+- `openrouter`: `meta-llama/llama-3.3-70b-instruct:free`
+- `groq`: `llama-3.3-70b-versatile`
+
+**Note:** OpenRouter uses prefixed model IDs (e.g., `google/gemini-2.5-flash` not `gemini-2.5-flash`). Users must set the full OpenRouter model ID when using `ANALYSIS_MODEL` with OpenRouter.
 
 ## Assumptions Log
 
@@ -539,6 +625,9 @@ app.post('/api/analyze', async (req, res) => {
 | A2 | CommonJS `require()` works with AI SDK v7 | Architecture | Would need dynamic `import()` or ESM conversion |
 | A3 | Zod v3 works with AI SDK v7 | Standard Stack | Would need to upgrade Zod to v4 |
 | A4 | `gemini-2.5-flash` is available and free tier | Standard Stack | Would need to use different model or check pricing |
+| A5 | `@ai-sdk/openai-compatible` works with OpenRouter API | Standard Stack | Would need to use raw HTTP calls or different package |
+| A6 | `@ai-sdk/groq` has built-in `GROQ_API_KEY` env var | Standard Stack | Would need to pass API key explicitly |
+| A7 | OpenRouter free tier models have acceptable rate limits | Standard Stack | Would need to use paid models or increase fallback aggressiveness |
 
 ## Open Questions
 
@@ -552,6 +641,21 @@ app.post('/api/analyze', async (req, res) => {
    - What's unclear: Exact token cost for typical resume+posting analysis
    - Recommendation: Log token usage in development to estimate costs
 
+3. **OpenRouter rate limits on free models?**
+   - What we know: OpenRouter has 23+ free models including Llama 3.3 70B
+   - What's unclear: Rate limits on free tier models
+   - Recommendation: Test with `meta-llama/llama-3.3-70b-instruct:free` first
+
+4. **Groq rate limits?**
+   - What we know: Groq is fast but has strict rate limits on free tier
+   - What's unclear: Exact limits, `serviceTier: 'flex'` tradeoffs
+   - Recommendation: Use `llama-3.3-70b-versatile` as default, document limits
+
+5. **Fallback chain order?**
+   - What we know: User wants automatic fallback from selected provider → next AI → heuristic
+   - What's unclear: Optimal order (gemini → openrouter → groq → heuristic?)
+   - Recommendation: Make fallback order configurable, default to gemini → openrouter → groq → heuristic
+
 ## Environment Availability
 
 | Dependency | Required By | Available | Version | Fallback |
@@ -560,10 +664,12 @@ app.post('/api/analyze', async (req, res) => {
 | npm | Package install | ✓ | — | — |
 | `ai` package | generateObject | ✗ | 7.0.13 | Install via npm |
 | `@ai-sdk/google` | Gemini provider | ✗ | 4.0.7 | Install via npm |
+| `@ai-sdk/openai-compatible` | OpenRouter provider | ✗ | 3.0.5 | Install via npm |
+| `@ai-sdk/groq` | Groq provider | ✗ | 4.0.5 | Install via npm |
 | `zod` | Schema validation | ✓ | 3.25.76 | Already installed |
 
 **Missing dependencies with no fallback:**
-- `ai` and `@ai-sdk/google` must be installed
+- `ai`, `@ai-sdk/google`, `@ai-sdk/openai-compatible`, `@ai-sdk/groq` must be installed
 
 **Missing dependencies with fallback:**
 - None
@@ -590,8 +696,10 @@ app.post('/api/analyze', async (req, res) => {
 |---------|--------|---------------------|
 | API key exposure | Information Disclosure | Server-side only; never sent to client |
 | Malformed AI output | Tampering | Zod schema validation; fallback to heuristic |
-| API timeout | Denial of Service | 30s timeout; fallback to heuristic |
+| API timeout | Denial of Service | 30s timeout; fallback to next provider |
 | Prompt injection via resume/posting | Tampering | Input is JSON, not user-controlled prompt; limited attack surface |
+| Multiple API keys in env | Information Disclosure | Each key in separate env var; never logged together |
+| Provider-specific rate limits | Denial of Service | Automatic fallback chain; heuristic always available |
 
 ## Sources
 

@@ -83,9 +83,10 @@ Recent decisions affecting current work:
 - [Phase ?]: Provider registry pattern: engine.js maps provider name to module, getProvider() returns it; new providers need only a file + registry entry
 - [Phase 11]: Suggestions returned alongside report from POST /api/analyze (not a separate endpoint) -- avoids redundant computation
 - [Phase 11]: Accept/reject state is ephemeral (React useState), not persisted -- workflow designed for single-session completion
-- [Phase 11.5]: AI analysis provider INSERTED between Phases 11 and 12 -- Google Gemini via Vercel AI SDK, provider selector in UI, fallback to heuristic -- no renumbering of existing phases
+- [Phase 11.5]: Multi-provider AI analysis INSERTED between Phases 11 and 12 -- Gemini, OpenRouter, Groq via Vercel AI SDK, provider selector in UI, automatic fallback chain to heuristic -- no renumbering of existing phases
 - [Phase 11.5]: Used generateObject exclusively (not generateText) for all AI calls to guarantee structured output matches Zod schema
 - [Phase 11.5]: matchRate normalization required -- AI sometimes returns 0-100 instead of 0-1, added post-processing in ai.js
+- [Phase 11.5]: Fallback chain order: gemini → openrouter → groq → heuristic -- configurable via ANALYSIS_PROVIDER env var
 
 ### Pending Todos
 
@@ -99,6 +100,12 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-07-03T04:55:00.000Z
-Stopped at: Phase 11.5 complete (AI Analysis Provider)
+Last session: 2026-07-04T00:00:00Z
+Stopped at: Phase 11.5 planning updated for multi-provider support
 Resume file: None
+
+## Quick Tasks Completed
+
+| Date | Task | Status |
+|------|------|--------|
+| 2026-07-04 | Update Phase 11.5 planning for multi-provider support | ✅ Complete |

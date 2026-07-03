@@ -468,7 +468,11 @@ app.post('/api/analyze', async (req, res) => {
     // If AI provider selected, try with fallback chain
     if (AI_PROVIDERS.includes(providerName)) {
       let lastError
-      for (const aiProvider of AI_PROVIDERS) {
+      const fallbackOrder = [
+        providerName,
+        ...AI_PROVIDERS.filter(p => p !== providerName),
+      ]
+      for (const aiProvider of fallbackOrder) {
         try {
           const provider = getProvider(aiProvider)
           const report = await provider.analyzeResume(resume, posting, aiProvider)

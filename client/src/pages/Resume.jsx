@@ -5,13 +5,24 @@ import SectionEditor from '../components/SectionEditor'
 function Resume() {
   const [resumeData, setResumeData] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [loadError, setLoadError] = useState('')
   const [saving, setSaving] = useState(false)
   const [savedMessage, setSavedMessage] = useState('')
+  const [saveError, setSaveError] = useState('')
   const [skillsText, setSkillsText] = useState('')
 
   useEffect(() => {
+    loadResume()
+  }, [])
+
+  function loadResume() {
+    setLoading(true)
+    setLoadError('')
     fetch('/api/resume')
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`Server error (${res.status})`)
+        return res.json()
+      })
       .then((data) => {
         setResumeData(data)
         setSkillsText((data.skills || []).join(', '))
@@ -19,9 +30,10 @@ function Resume() {
       })
       .catch((err) => {
         console.error('Failed to load resume:', err)
+        setLoadError('Failed to load resume. Please check your connection and try again.')
         setLoading(false)
       })
-  }, [])
+  }
 
   function handleFieldChange(field, value) {
     setResumeData((prev) => ({ ...prev, [field]: value }))
@@ -174,8 +186,10 @@ function Resume() {
 
   // --- Save ---
   function handleSave() {
+    if (!resumeData) return
     setSaving(true)
     setSavedMessage('')
+    setSaveError('')
 
     // Split skills text into array before saving
     const dataToSave = {
@@ -191,7 +205,10 @@ function Resume() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(dataToSave),
     })
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) throw new Error(`Server error (${res.status})`)
+        return res.json()
+      })
       .then(() => {
         // Sync local state with what was saved
         setResumeData(dataToSave)
@@ -202,11 +219,26 @@ function Resume() {
       .catch((err) => {
         console.error('Failed to save resume:', err)
         setSaving(false)
+        setSaveError('Failed to save. Please try again.')
       })
   }
 
   if (loading) {
     return <div className={styles.loading}>Loading resume...</div>
+  }
+
+  if (loadError) {
+    return (
+      <div className={styles.page}>
+        <h1>Resume</h1>
+        <div className={styles.errorBox}>
+          <p>{loadError}</p>
+          <button className={styles.retryButton} onClick={loadResume}>
+            Retry
+          </button>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -469,6 +501,9 @@ function Resume() {
           </button>
           {savedMessage && (
             <span className={styles.savedMessage}>{savedMessage}</span>
+          )}
+          {saveError && (
+            <span className={styles.saveError}>{saveError}</span>
           )}
         </div>
       </div>

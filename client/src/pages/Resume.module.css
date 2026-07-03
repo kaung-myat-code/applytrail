@@ -249,6 +249,44 @@
   font-size: 0.95rem;
 }
 
+.errorBox {
+  padding: var(--space-6);
+  background: var(--color-danger-bg);
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  color: var(--color-danger);
+}
+
+.errorBox p {
+  margin: 0 0 var(--space-4);
+  font-size: 0.95rem;
+}
+
+.retryButton {
+  background: var(--color-danger);
+  color: white;
+  border: none;
+  padding: var(--space-2) var(--space-5);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: var(--font-body);
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.retryButton:hover {
+  opacity: 0.9;
+  box-shadow: var(--shadow-sm);
+}
+
+.saveError {
+  color: var(--color-danger);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
 /* Skills */
 .skillsInput {
   padding: var(--space-3) var(--space-4);

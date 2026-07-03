@@ -90,8 +90,8 @@ function extractResumeKeywords(resume) {
         keywords.add(kw)
       }
     }
-    if (edu.institution) {
-      for (const kw of extractKeywords(edu.institution)) {
+    if (edu.school) {
+      for (const kw of extractKeywords(edu.school)) {
         keywords.add(kw)
       }
     }

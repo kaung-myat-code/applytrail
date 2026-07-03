@@ -79,6 +79,7 @@ function sanitizeError(err) {
   // Only strip patterns that look like API keys
   message = message.replace(/AIza[A-Za-z0-9_-]{30,}/g, '[redacted]')  // Google API key prefix
   message = message.replace(/sk-[A-Za-z0-9]{20,}/g, '[redacted]')     // OpenAI-style keys
+  message = message.replace(/gsk_[A-Za-z0-9]{20,}/g, '[redacted]')    // Groq API key prefix
   return message
 }
 
@@ -208,4 +209,4 @@ async function generateSuggestions(resume, report, provider = 'gemini') {
   }
 }
 
-module.exports = { analyzeResume, generateSuggestions }
+module.exports = { analyzeResume, generateSuggestions, sanitizeError }

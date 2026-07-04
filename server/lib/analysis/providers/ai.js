@@ -83,6 +83,22 @@ function sanitizeError(err) {
   return message
 }
 
+// --- Rate limit detection ---
+
+function isRateLimitError(err) {
+  // Check for 429 status code in the error
+  if (err.statusCode === 429) return true
+  if (err.responseBody) {
+    try {
+      const body = JSON.parse(err.responseBody)
+      if (body.error?.code === 429) return true
+    } catch {}
+  }
+  // Check for rate limit in error message
+  const msg = (err.message || '').toLowerCase()
+  return msg.includes('429') || msg.includes('rate limit') || msg.includes('rate-limited')
+}
+
 // --- Shared error handler ---
 
 function handleAIError(err, operation, provider) {
@@ -94,7 +110,21 @@ function handleAIError(err, operation, provider) {
     }[provider] || 'API_KEY'
     throw new Error(`AI analysis requires ${keyVar}. Set it in your .env file or use the heuristic provider.`)
   }
-  if (err instanceof APICallError) {
+  if (err instanceof APICallError || isRateLimitError(err)) {
+    if (isRateLimitError(err)) {
+      // Extract retry-after info if available
+      let retryAfter = ''
+      if (err.responseHeaders?.['retry-after']) {
+        retryAfter = ` Wait ${err.responseHeaders['retry-after']} seconds before retrying.`
+      }
+      throw new Error(
+        `AI ${operation} failed: Rate limited by ${provider}.${retryAfter} ` +
+        `Free tier models have strict rate limits. You can:\n` +
+        `1. Wait a moment and try again\n` +
+        `2. Switch to the heuristic provider (no rate limits)\n` +
+        `3. Use a paid model via ANALYSIS_MODEL env var`
+      )
+    }
     throw new Error(`AI ${operation} failed: ` + sanitizeError(err))
   }
   if (err instanceof NoObjectGeneratedError) {
@@ -150,6 +180,7 @@ async function analyzeResume(resume, jobPosting, provider = 'gemini') {
       model: getModel(provider),
       schema: matchReportSchema,
       prompt,
+      maxRetries: 3,
     })
 
     // Normalize matchRate: if model returned percentage (e.g. 85), convert to decimal (0.85)
@@ -201,6 +232,7 @@ async function generateSuggestions(resume, report, provider = 'gemini') {
       model: getModel(provider),
       schema: z.array(suggestionSchema),
       prompt,
+      maxRetries: 3,
     })
 
     return object

@@ -96,6 +96,16 @@ ANALYSIS_MODEL=your_preferred_model_id
 
 **Recommendation:** Start with the heuristic provider. Add AI providers only if you need more sophisticated analysis.
 
+### Rate Limiting Important Notes
+
+**OpenRouter Free Models:** All free models on OpenRouter share rate limits across the platform. You may encounter 429 "rate-limited upstream" errors, especially during peak usage. The system will automatically fall back to the heuristic provider if AI fails.
+
+**Best Practices:**
+1. **Start with heuristic** - No rate limits, works offline
+2. **Use Gemini for production** - Better free tier limits (1M tokens/day)
+3. **Add retry logic** - The system retries 3 times with exponential backoff
+4. **Monitor usage** - Check OpenRouter dashboard for your rate limit status
+
 ## Troubleshooting
 
 ### "AI analysis requires API_KEY"

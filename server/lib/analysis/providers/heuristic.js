@@ -138,7 +138,7 @@ function analyzeResume(resume, jobPosting) {
   const projectKeywords = extractKeywords(projectBullets.join(' '))
 
   const educationText = (resume.education || [])
-    .map(e => [e.degree, e.institution, ...(e.bullets || [])].filter(Boolean).join(' '))
+    .map(e => [e.degree, e.school].filter(Boolean).join(' '))
     .join(' ')
   const educationKeywords = extractKeywords(educationText)
 

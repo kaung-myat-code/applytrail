@@ -83,7 +83,7 @@ function extractResumeKeywords(resume) {
     }
   }
 
-  // Education: degree, institution, and bullets
+  // Education: degree and school (no bullets — education entries don't have them)
   for (const edu of (resume.education || [])) {
     if (edu.degree) {
       for (const kw of extractKeywords(edu.degree)) {
@@ -92,11 +92,6 @@ function extractResumeKeywords(resume) {
     }
     if (edu.school) {
       for (const kw of extractKeywords(edu.school)) {
-        keywords.add(kw)
-      }
-    }
-    for (const bullet of (edu.bullets || [])) {
-      for (const kw of extractKeywords(bullet)) {
         keywords.add(kw)
       }
     }

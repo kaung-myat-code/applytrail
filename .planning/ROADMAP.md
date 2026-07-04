@@ -48,7 +48,7 @@ Archive: [v1.1-ROADMAP.md](milestones/v1.1-ROADMAP.md) | [v1.1-REQUIREMENTS.md](
 - [x] **Phase 9: Resume Library Foundation** - Multiple resume versions with CRUD, migration from single file, and selection for analysis (completed 2026-07-02)
 - [x] **Phase 10: Match Scoring and Gap Analysis** - Provider-agnostic analysis engine with compatibility score, keyword gaps, and section-level findings (analysis only, no suggestions) (completed 2026-07-02)
 - [x] **Phase 11: Section-by-Section Suggestions** - Per-section add/modify/remove suggestions with accept/reject workflow (completed 2026-07-03)
-- [ ] **Phase 11.5: AI Analysis Provider 🔶 INSERTED** - Multi-provider AI analysis (Gemini, OpenRouter, Groq) with provider selection toggle, API key config, and automatic fallback chain to heuristic
+- [x] **Phase 11.5: AI Analysis Provider 🔶 INSERTED** - Multi-provider AI analysis (Gemini, OpenRouter, Groq) with provider selection toggle, API key config, and automatic fallback chain to heuristic
 - [ ] **Phase 12: Tailored Resume Generation** - Apply accepted patches to create a new resume version with side-by-side diff review
 - [ ] **Phase 13: Application Pre-fill and Export** - Pre-fill application from job posting, export resume as PDF or JSON
 

@@ -45,6 +45,7 @@ A web app for managing job applications — from resume editing to cover letter 
 | Storage | JSON files on disk |
 | Styling | CSS Modules |
 | Deployment | Render free tier |
+| AI Analysis | Vercel AI SDK (Gemini, OpenRouter, Groq) |
 
 ---
 
@@ -65,6 +66,26 @@ The app runs at:
 * API: http://localhost:3000
 
 Demo data is seeded automatically on first launch.
+
+---
+
+## AI Analysis Providers
+
+ApplyTrail supports multiple AI providers for resume analysis with automatic fallback. The default uses keyword matching (heuristic), but you can enable AI-powered analysis with:
+
+* **Gemini** - Google's fast multimodal model
+* **OpenRouter** - Access to multiple models including free options
+* **Groq** - Ultra-fast inference with free tier
+
+**Quick Start:**
+
+```bash
+# Add to server/.env
+ANALYSIS_PROVIDER=gemini
+GOOGLE_GENERATIVE_AI_API_KEY=your_key_here
+```
+
+**Full Configuration Guide:** [AI_PROVIDERS.md](AI_PROVIDERS.md)
 
 ---
 

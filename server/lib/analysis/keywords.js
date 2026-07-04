@@ -3,35 +3,109 @@
  * Single source of truth for stop words and keyword parsing.
  */
 
-const STOP_WORDS = new Set([
-  'a', 'an', 'the', 'and', 'or', 'but', 'is', 'are', 'was', 'were', 'be',
-  'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did', 'will', 'would',
-  'could', 'should', 'may', 'might', 'shall', 'can', 'need', 'dare', 'ought',
-  'used', 'to', 'of', 'in', 'for', 'on', 'with', 'at', 'by', 'from', 'as',
-  'into', 'through', 'during', 'before', 'after', 'above', 'below', 'between',
-  'out', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here',
-  'there', 'when', 'where', 'why', 'how', 'all', 'each', 'every', 'both',
-  'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only',
-  'own', 'same', 'so', 'than', 'too', 'very', 'just', 'because', 'if', 'this',
-  'that', 'these', 'those', 'it', 'its', 'you', 'your', 'we', 'our', 'they',
-  'their', 'he', 'she', 'him', 'her', 'his', 'my', 'me', 'i', 'what', 'which',
-  'who', 'whom', 'while', 'about', 'up', 'down', 'also', 'any', 'much', 'well',
-  'get', 'got', 'make', 'made', 'take', 'took', 'come', 'came', 'go', 'went',
-  'give', 'gave', 'say', 'said', 'know', 'knew', 'think', 'thought', 'see',
-  'saw', 'want', 'look', 'use', 'find', 'found', 'work', 'working', 'etc',
-  'eg', 'ie', 'vs', 'per', 'via', 'new', 'one', 'two', 'first', 'second',
-  'within', 'across', 'along', 'among', 'upon', 'like', 'including', 'based',
-  'well', 'able', 'must', 'required', 'experience', 'working', 'knowledge',
-  'understanding', 'familiarity', 'proficiency', 'strong', 'good', 'excellent',
-  'great', 'solid', 'deep', 'proven', 'demonstrated', 'ability', 'skills',
-  'responsible', 'responsibilities', 'role', 'position', 'team', 'company',
-  'join', 'looking', 'seek', 'candidate', 'ideal', 'person', 'someone',
-  'ensure', 'including', 'related', 'relevant', 'minimum', 'preferred',
-  'plus', 'bonus', 'nice', 'have', 'years', 'year',
+/**
+ * Whitelist of known technical terms.
+ * Only tokens matching this list are extracted as keywords from job postings.
+ * This prevents common English words ("passionate", "description", "job") from
+ * being treated as missing skills.
+ *
+ * Keep alphabetically sorted within each category for easy maintenance.
+ */
+const TECH_KEYWORDS = new Set([
+  // --- Languages ---
+  'javascript', 'typescript', 'python', 'java', 'c', 'c++', 'c#', 'go', 'golang',
+  'rust', 'ruby', 'php', 'swift', 'kotlin', 'scala', 'r', 'matlab', 'perl',
+  'haskell', 'elixir', 'clojure', 'f#', 'objective-c', 'assembly', 'bash',
+  'shell', 'powershell', 'sql', 'nosql', 'html', 'css', 'scss', 'sass',
+  'less', 'graphql', 'protobuf', 'yaml', 'json', 'xml', 'markdown',
+
+  // --- Frontend frameworks ---
+  'react', 'reactjs', 'react.js', 'next', 'nextjs', 'next.js', 'vue', 'vuejs',
+  'vue.js', 'nuxt', 'nuxtjs', 'angular', 'angularjs', 'svelte', 'sveltejs',
+  'ember', 'backbone', 'jquery', 'htmx', 'solid', 'solidjs', 'remix', 'astro',
+
+  // --- Backend frameworks ---
+  'node', 'nodejs', 'node.js', 'express', 'expressjs', 'nestjs', 'fastify',
+  'koa', 'hapi', 'django', 'flask', 'fastapi', 'spring', 'springboot',
+  'rails', 'rubyonrails', 'laravel', 'symfony', 'asp.net', '.net', '.netcore',
+  'dotnet', 'gin', 'fiber', 'actix', 'axum', 'actix-web',
+
+  // --- Mobile ---
+  'reactnative', 'react-native', 'flutter', 'dart', 'ionic', 'xamarin',
+  'capacitor', 'expo', 'android', 'ios', 'swiftui', 'uikit',
+
+  // --- Databases ---
+  'postgresql', 'postgres', 'mysql', 'mariadb', 'sqlite', 'mongodb', 'mongo',
+  'redis', 'memcached', 'elasticsearch', 'elastic', 'cassandra', 'dynamodb',
+  'couchdb', 'couchbase', 'neo4j', 'influxdb', 'timescaledb', 'supabase',
+  'firebase', 'planetscale', 'neon', 'turso',
+
+  // --- Cloud & infrastructure ---
+  'aws', 'amazon', 'gcp', 'googlecloud', 'azure', 'digitalocean', 'heroku',
+  'vercel', 'netlify', 'cloudflare', 'render', 'fly.io', 'railway',
+
+  // --- DevOps & CI/CD ---
+  'docker', 'kubernetes', 'k8s', 'terraform', 'ansible', 'puppet', 'chef',
+  'jenkins', 'gitlab', 'github', 'bitbucket', 'circleci', 'travisci',
+  'githubactions', 'github-actions', 'argo', 'argocd', 'helm', 'istio',
+  'prometheus', 'grafana', 'datadog', 'newrelic', 'splunk', 'pagerduty',
+
+  // --- Testing ---
+  'jest', 'mocha', 'chai', 'jasmine', 'cypress', 'playwright', 'selenium',
+  'puppeteer', 'vitest', 'pytest', 'unittest', 'junit', 'rspec', 'minitest',
+  'k6', 'gatling', 'postman', 'supertest', 'testing-library',
+
+  // --- Build tools & package managers ---
+  'webpack', 'vite', 'rollup', 'esbuild', 'parcel', 'turbopack', 'turborepo',
+  'npm', 'yarn', 'pnpm', 'bun', 'gradle', 'maven', 'sbt', 'pip', 'poetry',
+  'pub', 'cargo', 'gem', 'composer',
+
+  // --- API & protocols ---
+  'rest', 'restful', 'api', 'apis', 'grpc', 'websocket', 'websockets',
+  'soap', 'oauth', 'jwt', 'openid', 'saml', 'ldap',
+
+  // --- Data & ML ---
+  'pandas', 'numpy', 'scipy', 'scikit-learn', 'sklearn', 'tensorflow',
+  'pytorch', 'keras', 'huggingface', 'langchain', 'openai', 'anthropic',
+  'spark', 'hadoop', 'kafka', 'airflow', 'dbt', 'snowflake', 'bigquery',
+  'redshift', 'databricks', 'jupyter', 'notebook',
+
+  // --- State management ---
+  'redux', 'zustand', 'mobx', 'recoil', 'jotai', 'pinia', 'vuex', 'ngrx',
+  'redux-saga', 'redux-thunk',
+
+  // --- CSS & design ---
+  'tailwind', 'tailwindcss', 'bootstrap', 'materialui', 'mui', 'chakra',
+  'shadcn', 'radix', 'headlessui', 'styled-components', 'emotion',
+  'figma', 'sketch', 'adobe', 'zeplin', 'invision',
+
+  // --- Auth & security ---
+  'passport', 'auth0', 'clerk', 'supabase-auth', 'keycloak', 'oauth2',
+  'bcrypt', 'argon2', 'helmet', 'cors', 'csrf',
+
+  // --- CMS & content ---
+  'wordpress', 'drupal', 'strapi', 'contentful', 'sanity', 'prismic',
+  'ghost', 'notion', 'airtable',
+
+  // --- Misc tools ---
+  'git', 'linux', 'unix', 'macos', 'windows', 'vim', 'neovim', 'vscode',
+  'postman', 'insomnia', 'swagger', 'openapi', 'prisma', 'drizzle',
+  'typeorm', 'sequelize', 'mongoose', 'knex', 'objection',
+  'socket.io', 'pusher', 'algolia', 'meilisearch', 'typesense',
+  'puppet', 'cheerio', 'playwright',
+
+  // --- Methodologies ---
+  'agile', 'scrum', 'kanban', 'lean', 'tdd', 'bdd', 'ci', 'cd',
+  'devops', 'gitops', 'mlops', 'microservices', 'serverless', 'lamda',
+  'event-driven', 'cqrs', 'ddd',
 ])
 
 /**
  * Extract meaningful keywords from text.
+ * Uses a whitelist approach: only tokens matching known technical terms
+ * are extracted. This prevents common English words from being treated
+ * as keywords.
+ *
  * Returns deduplicated array of lowercase keyword strings.
  */
 function extractKeywords(text) {
@@ -39,8 +113,8 @@ function extractKeywords(text) {
 
   const tokens = text
     .toLowerCase()
-    .split(/[^a-z0-9.+#]+/)
-    .filter(t => t.length >= 2 && t.length <= 30 && !STOP_WORDS.has(t))
+    .split(/[^a-z0-9.+#-]+/)
+    .filter(t => t.length >= 2 && t.length <= 30 && TECH_KEYWORDS.has(t))
 
   return [...new Set(tokens)]
 }
@@ -100,4 +174,4 @@ function extractResumeKeywords(resume) {
   return [...keywords]
 }
 
-module.exports = { STOP_WORDS, extractKeywords, extractResumeKeywords }
+module.exports = { TECH_KEYWORDS, extractKeywords, extractResumeKeywords }

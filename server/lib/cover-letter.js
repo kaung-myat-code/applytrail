@@ -5,7 +5,7 @@
  * Designed to be replaceable — swap this module for an LLM API call later.
  */
 
-const { STOP_WORDS, extractKeywords } = require('./analysis/keywords')
+const { extractKeywords } = require('./analysis/keywords')
 
 /**
  * Match resume content to job posting keywords.

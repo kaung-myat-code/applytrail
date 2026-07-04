@@ -152,6 +152,14 @@ None - plan executed exactly as written.
 
 None.
 
+## Known Schema Issues (identified in audit)
+
+See `.planning/quick/20260704-resume-schema-audit/FINDINGS.md` for full details.
+
+- **CRITICAL:** `keywords.js:98` accesses `edu.bullets` which does not exist in the resume schema. Should remove the loop.
+- **HIGH:** `heuristic.js:141` references `e.institution` instead of `e.school`. Education keywords from school field are silently dropped.
+- **MEDIUM:** No resume schema validation before analysis — malformed data passes through silently.
+
 ## User Setup Required
 
 None - no external service configuration required.

@@ -131,6 +131,12 @@ None - plan executed exactly as written.
 ## Issues Encountered
 None
 
+## Known Schema Issues (identified in audit)
+
+See `.planning/quick/20260704-resume-schema-audit/FINDINGS.md` for full details.
+
+- **MEDIUM:** AI provider sends unvalidated resume JSON to external API — should validate/repair before sending
+
 ## User Setup Required
 
 To use AI providers, add API keys to your `.env` file:

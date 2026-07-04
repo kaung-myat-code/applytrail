@@ -57,3 +57,11 @@ Added to server/index.js:
 - LIBRARY-02: List, view, create, rename, delete from Resume Library page
 - LIBRARY-04: Existing resume.json migrated on first launch, no data loss
 - LIBRARY-05: Select which resume version to use as base for analysis
+
+## Known Schema Issues (identified in audit)
+
+See `.planning/quick/20260704-resume-schema-audit/FINDINGS.md` for full details.
+
+- **HIGH:** `POST /api/resume-library` creates resumes without `name` field (line 307 defaults missing `name`)
+- **HIGH:** No resume validation on any write endpoint (`PUT /api/resume`, `POST /api/resume-library`, `PUT /api/resume-library/:id`) — malformed data persists silently
+- **MEDIUM:** `POST /api/resume-library` doesn't validate `resume_data` structure when provided

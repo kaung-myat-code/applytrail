@@ -6,6 +6,7 @@ const compression = require('compression')
 const { generateCoverLetter } = require('./lib/cover-letter')
 const { getProvider } = require('./lib/analysis/engine')
 const { sanitizeError } = require('./lib/analysis/providers/ai')
+const { validateMatchReport, validateSuggestions } = require('./lib/analysis/validate')
 
 const app = express()
 const DATA_DIR = path.join(__dirname, '..')
@@ -599,6 +600,8 @@ app.post('/api/analyze', async (req, res) => {
           const report = await provider.analyzeResume(resume, posting, aiProvider)
           const suggestions = await provider.generateSuggestions(resume, report, aiProvider)
           const isFallback = aiProvider !== providerName
+          const reportValidation = validateMatchReport(report)
+          const suggestionsValidation = validateSuggestions(suggestions, resume)
           return res.json({
             ok: true,
             report,
@@ -606,6 +609,10 @@ app.post('/api/analyze', async (req, res) => {
             provider: aiProvider,
             fallback: isFallback || undefined,
             fallback_reason: isFallback ? `Provider ${providerName} failed, using ${aiProvider}` : undefined,
+            validation: {
+              report: reportValidation,
+              suggestions: suggestionsValidation,
+            },
           })
         } catch (err) {
           lastError = err
@@ -622,6 +629,8 @@ app.post('/api/analyze', async (req, res) => {
       const report = heuristicProvider.analyzeResume(resume, posting)
       const suggestions = heuristicProvider.generateSuggestions(resume, report)
       const sanitizedReason = sanitizeError(selectedProviderError || lastError || new Error('Unknown error'))
+      const reportValidation = validateMatchReport(report)
+      const suggestionsValidation = validateSuggestions(suggestions, resume)
       return res.json({
         ok: true,
         report,
@@ -629,6 +638,10 @@ app.post('/api/analyze', async (req, res) => {
         provider: 'heuristic',
         fallback: true,
         fallback_reason: sanitizedReason,
+        validation: {
+          report: reportValidation,
+          suggestions: suggestionsValidation,
+        },
       })
     }
 
@@ -636,7 +649,18 @@ app.post('/api/analyze', async (req, res) => {
     const provider = getProvider(providerName)
     const report = provider.analyzeResume(resume, posting)
     const suggestions = provider.generateSuggestions(resume, report)
-    res.json({ ok: true, report, suggestions, provider: providerName })
+    const reportValidation = validateMatchReport(report)
+    const suggestionsValidation = validateSuggestions(suggestions, resume)
+    res.json({
+      ok: true,
+      report,
+      suggestions,
+      provider: providerName,
+      validation: {
+        report: reportValidation,
+        suggestions: suggestionsValidation,
+      },
+    })
   } catch (err) {
     console.error('Analysis error:', err)
     res.status(500).json({ error: 'Analysis failed. Check server logs for details.' })

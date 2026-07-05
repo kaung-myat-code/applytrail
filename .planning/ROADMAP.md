@@ -320,8 +320,8 @@ Plans:
 
 Plans:
 
-- [ ] 12-01-PLAN.md — Backend: Draft storage API + patch application engine
-- [ ] 12-02-PLAN.md — Frontend: Generate button wiring + Preview page + routing
+- [ ] 12-01-PLAN.md — Backend: Draft storage API + patch application engine (validateResume extraction + applyPatches with all-entry modify search + draft CRUD + startup cleanup)
+- [ ] 12-02-PLAN.md — Frontend: Generate button wiring + Preview page + routing (URL-param draftId for refresh resilience + draft hydration for TAILOR-05 + read-only resume renderer)
 
 **UI hint**: yes
 

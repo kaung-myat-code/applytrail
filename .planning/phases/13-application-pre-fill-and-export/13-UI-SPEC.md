@@ -1,7 +1,7 @@
 ---
 phase: 13
 slug: application-pre-fill-and-export
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: 2026-07-17
@@ -44,6 +44,8 @@ Declared values (project's existing 8px-grid tokens — reuse verbatim, do not i
 | 2xl | `--space-8` | 48px | Major section breaks |
 | 3xl | `--space-10` | 64px | Page-level spacing, empty states |
 
+Note on `--space-3` (12px): this is a pre-existing project token (not on the canonical 4/8/16/24/32/48/64 set) that this phase reuses intentionally for button horizontal padding and tight gaps, consistent with existing `.btn` usage in `ResumeLibrary.module.css`. It is not a new value invented for this phase.
+
 Exceptions: none. Modal dialog uses the same scale (`--space-5` internal padding, `--space-4` gap between fields, `--space-6` gap between dialog and backdrop edge on small viewports).
 
 ---
@@ -56,10 +58,10 @@ Reuses existing tokens exactly — no new sizes introduced.
 |------|------|--------|-------------|------|
 | Body / form input | 0.9rem (~14.4px) | 400 | 1.5 | `--font-body` |
 | Label (button, meta, badge) | 0.85rem (~13.6px) | 600 | 1.4 | `--font-body` |
-| Modal title (H2) | 1.25rem (20px) | 700 | 1.2 | `--font-body` |
+| Modal title (H2) | 1.25rem (20px) | 600 | 1.2 | `--font-body` |
 | Page heading (H1, unaffected by this phase) | 2.25rem (36px) | 400 | 1.2 | `--font-display` |
 
-Note: Existing codebase does not follow a strict 3-4-size/2-weight system — it uses body text at 15px (global `body` in `index.css`), 0.8–1.1rem for meta/labels, and 700/600/400 weights across components. This phase does not need to introduce new sizes: reuse `1.25rem` (matches `.name` card headers at `1.1rem`, bumped slightly for dialog title hierarchy) and `0.9rem`/`0.85rem` (matches existing `.btn`/`.renameInput` sizing in `ResumeLibrary.module.css`).
+Note: This new modal/export UI surface is capped at exactly 2 weights — 400 (body/form input) and 600 (labels, buttons, badges, and the modal title). The modal title uses 600 at 1.25rem rather than a heavier weight, matching the same weight already used for labels/buttons in this phase; size alone (1.25rem vs. 0.85rem) carries the title's visual hierarchy. Existing codebase does not follow a strict 3-4-size/2-weight system elsewhere (body text at 15px globally, 0.8–1.1rem for meta/labels, and 700/600/400 weights across components) — that legacy variance is unaffected by this phase and out of scope here. This phase does not need to introduce new sizes: reuse `1.25rem` (matches `.name` card headers at `1.1rem`, bumped slightly for dialog title hierarchy) and `0.9rem`/`0.85rem` (matches existing `.btn`/`.renameInput` sizing in `ResumeLibrary.module.css`).
 
 ---
 
@@ -105,6 +107,7 @@ Status badge colors (reused from `Applications.module.css` for the modal's inlin
 | Cover letter loading state | "Generating cover letter..." |
 | Cover letter generation failure | "Couldn't auto-generate a cover letter. You can write one manually below, or leave it blank and add it later." (field remains editable and empty — does not block Confirm) |
 | Primary CTA (confirm) | "Confirm & Create Application" |
+| Primary CTA loading state | "Creating..." (button label swap, disabled during request — matches "Exporting..."/"Saving..." pattern) |
 | Secondary action (cancel) | "Cancel" |
 | Post-confirm success (auto-trigger path) | Toast/inline: "Application created. Redirecting to Resume Library..." then navigate to `/resume-library` |
 | Post-confirm success (manual-trigger path) | Toast/inline: "Application created." then navigate to `/applications` (surfaces the user's new record directly, since they initiated from the library, not from a save flow already headed there) |
@@ -121,7 +124,7 @@ Status badge colors (reused from `Applications.module.css` for the modal's inlin
 
 ## UI Considerations
 
-Applicable state considerations resolved: 9 covered, 3 backstop, 0 unresolved
+Applicable state considerations resolved: 10 covered, 3 backstop, 0 unresolved
 
 | Category | Element(s) | Status | Resolution / Reason |
 |----------|------------|--------|---------------------|
@@ -136,6 +139,7 @@ Applicable state considerations resolved: 9 covered, 3 backstop, 0 unresolved
 | long-text | Company/Role inline-editable fields (modal) | ✅ covered | Standard text input, no character limit specified — reuse existing `.renameInput`-style input sizing (`min-width: 200px`), allow natural text wrapping is not applicable to single-line inputs; horizontal scroll within input is acceptable/standard browser behavior |
 | loading | PDF export while pdfmake generates document server-side | ✅ covered | Button shows "Exporting..." per Copywriting Contract; button disabled during request to prevent duplicate triggers |
 | populated | Confirmation modal — happy path, all fields present | ✅ covered | Company, role, job posting excerpt, resume version name, and generated cover letter all render pre-filled per D-03/D-05 |
+| loading | Confirm button while `POST /api/applications` is in flight | ✅ covered | Button disables and swaps label to "Creating...", same disabled+label-swap pattern already used for "Export PDF"/"Export JSON" (Exporting...) and `PreviewTailored.jsx`'s Save button (Saving...) — prevents duplicate submission |
 | partial | Draft has company/role but posting was deleted between analysis and save | 🧪 backstop | Not explicitly covered in CONTEXT.md (edge case of concurrent data deletion in a single-user local tool is low-probability); treat same as empty-posting backstop above — show "No job posting text available." rather than erroring the whole modal |
 
 ---
@@ -154,6 +158,7 @@ Applicable state considerations resolved: 9 covered, 3 backstop, 0 unresolved
 | Focus management | Focus moves to the first editable field (Company input) on open; focus returns to the triggering button on close (standard dialog accessibility baseline — not explicitly requested in CONTEXT.md but required for no-regression accessibility since this is the app's first modal) |
 | Scroll behavior | Page scroll locked while modal is open (`overflow: hidden` on body or equivalent) since this is a blocking confirmation step, not a non-modal panel |
 | Animation | Reuse existing `fadeInUp` keyframe pattern already defined in `index.css`/`ResumeLibrary.module.css` (`--duration-normal` / `--ease-out`) for the dialog entrance; simple opacity fade for the backdrop |
+| Visual focal point | The primary CTA button ("Confirm & Create Application") is the visual anchor of the dialog — bottom-right position, `--color-primary` fill, standard button elevation; the cover-letter textarea is the secondary focus (largest field, positioned above the CTA row) since it is the one field users are most likely to read and edit before confirming |
 
 ---
 
@@ -170,11 +175,11 @@ No component registry is used in this project (CSS Modules + hand-rolled compone
 
 ## Checker Sign-Off
 
-- [ ] Dimension 1 Copywriting: PASS
-- [ ] Dimension 2 Visuals: PASS
-- [ ] Dimension 3 Color: PASS
-- [ ] Dimension 4 Typography: PASS
-- [ ] Dimension 5 Spacing: PASS
-- [ ] Dimension 6 Registry Safety: PASS
+- [x] Dimension 1 Copywriting: PASS
+- [x] Dimension 2 Visuals: PASS
+- [x] Dimension 3 Color: PASS
+- [x] Dimension 4 Typography: PASS (revision 2 — collapsed to 2 weights)
+- [x] Dimension 5 Spacing: PASS (FLAG on `--space-3` reuse, non-blocking, justified in-spec)
+- [x] Dimension 6 Registry Safety: PASS
 
-**Approval:** pending
+**Approval:** approved 2026-07-17

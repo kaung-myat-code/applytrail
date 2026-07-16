@@ -10,7 +10,7 @@
 
 - [ ] **LIBRARY-01**: Resume versions are stored as separate JSON files with a metadata index (`index.json`) in `server/data/resume_library/`
 - [ ] **LIBRARY-02**: User can list, view, create, rename, and delete resume versions from a Resume Library page
-- [ ] **LIBRARY-03**: Tailored resumes are auto-named using "Company - Role" format (e.g., "Meridian Software - Fullstack Developer")
+- [x] **LIBRARY-03**: Tailored resumes are auto-named using "Company - Role" format (e.g., "Meridian Software - Fullstack Developer")
 - [ ] **LIBRARY-04**: Existing `resume.json` is migrated to the library structure on first launch, preserving all data
 - [ ] **LIBRARY-05**: User can select which resume version to use as the base for analysis and tailoring
 
@@ -30,12 +30,12 @@
 
 ### Tailored Resume Generation
 
-- [ ] **TAILOR-01**: Apply user-approved structured patches to a deep copy of the source resume
-- [ ] **TAILOR-02**: Tailored resume is saved as a new version with auto-naming, without overwriting the source resume
-- [ ] **TAILOR-03**: User can preview the tailored resume before final save
-- [ ] **TAILOR-04**: Tailored resume is linked to its source resume via `source_id`
-- [ ] **TAILOR-05**: User can return to suggestion review from preview without losing accepted/rejected edits
-- [ ] **TAILOR-06**: Generated resume must conform to the resume JSON schema before it can be saved or exported
+- [x] **TAILOR-01**: Apply user-approved structured patches to a deep copy of the source resume
+- [x] **TAILOR-02**: Tailored resume is saved as a new version with auto-naming, without overwriting the source resume
+- [x] **TAILOR-03**: User can preview the tailored resume before final save
+- [x] **TAILOR-04**: Tailored resume is linked to its source resume via `source_id`
+- [x] **TAILOR-05**: User can return to suggestion review from preview without losing accepted/rejected edits
+- [x] **TAILOR-06**: Generated resume must conform to the resume JSON schema before it can be saved or exported
 
 ### Application Pre-fill & Export
 
@@ -75,7 +75,7 @@
 |-------------|-------|--------|
 | LIBRARY-01 | Phase 9 | Pending |
 | LIBRARY-02 | Phase 9 | Pending |
-| LIBRARY-03 | Phase 12 | Pending |
+| LIBRARY-03 | Phase 12 | Complete |
 | LIBRARY-04 | Phase 9 | Pending |
 | LIBRARY-05 | Phase 9 | Pending |
 | ANALYSIS-01 | Phase 10 | Complete |
@@ -86,12 +86,12 @@
 | SUGGEST-02 | Phase 11 | Complete |
 | SUGGEST-03 | Phase 11 | Complete |
 | SUGGEST-04 | Phase 11 | Complete |
-| TAILOR-01 | Phase 12 | Pending |
-| TAILOR-02 | Phase 12 | Pending |
-| TAILOR-03 | Phase 12 | Pending |
-| TAILOR-04 | Phase 12 | Pending |
-| TAILOR-05 | Phase 12 | Pending |
-| TAILOR-06 | Phase 12 | Pending |
+| TAILOR-01 | Phase 12 | Complete |
+| TAILOR-02 | Phase 12 | Complete |
+| TAILOR-03 | Phase 12 | Complete |
+| TAILOR-04 | Phase 12 | Complete |
+| TAILOR-05 | Phase 12 | Complete |
+| TAILOR-06 | Phase 12 | Complete |
 | PREFILL-01 | Phase 13 | Pending |
 | PREFILL-02 | Phase 13 | Pending |
 | PREFILL-03 | Phase 13 | Pending |

@@ -69,6 +69,16 @@ function applyToAllEntries(entries, currentValue, replacement) {
 /**
  * Apply an add-type patch to experience or projects: append the suggested
  * bullet to the last entry, or create a new entry if the list is empty.
+ *
+ * KNOWN LIMITATION (WR-06): suggestions do not carry a target entry
+ * identifier (e.g. company/project name or index), so the bullet is always
+ * attached to whatever entry happens to be last in the array — regardless
+ * of whether that entry is actually the most relevant one for the matched
+ * keyword. If the resume's most recent job/project isn't the best match for
+ * the job posting, the tailored bullet can land on the wrong entry, which is
+ * a correctness issue for the feature's stated goal (accurate tailored
+ * resumes). Fixing this properly requires suggestions to specify a target
+ * entry; until then, this is a documented best-effort placement.
  * @param {object[]} entries
  * @param {string} suggestedBullet
  * @param {'experience'|'projects'} kind

@@ -185,3 +185,12 @@ None - no external service configuration required.
 ---
 *Phase: 12-tailored-resume*
 *Completed: 2026-07-16*
+
+## Self-Check: PASSED
+
+- FOUND: client/src/pages/PreviewTailored.jsx
+- FOUND: client/src/pages/PreviewTailored.module.css
+- FOUND: .planning/phases/12-tailored-resume/12-02-SUMMARY.md
+- FOUND: commit ad14ced (Task 1)
+- FOUND: commit 0928ad4 (Task 2)
+- FOUND: commit 277cf32 (SUMMARY)

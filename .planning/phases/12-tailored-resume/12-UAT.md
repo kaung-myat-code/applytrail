@@ -1,14 +1,23 @@
 ---
-status: complete
+status: testing
 phase: 12-tailored-resume
-source: [12-01-SUMMARY.md, 12-02-SUMMARY.md]
+source: [12-01-SUMMARY.md, 12-02-SUMMARY.md, 12-03-SUMMARY.md]
 started: 2026-07-16T11:18:41Z
-updated: 2026-07-16T11:25:00Z
+updated: 2026-07-16T20:10:00Z
 ---
 
 ## Current Test
 
-[testing complete]
+number: 20
+name: Live browser click-through of the G-12-2 fix
+expected: |
+  Start the dev server (npm run dev), navigate to /resume-library, click "Edit" on the tailored
+  resume card (or generate a fresh one via Analyze -> Review Suggestions -> Generate -> Save to
+  Library), confirm the editor loads that card's actual tailored content (not the source/default
+  resume), make an edit, save, and re-open the same card to confirm the edit persisted to that
+  specific version file. The URL should become /resume/<id>, and saving should only update
+  resume_library/<id>.json, leaving the source version and legacy resume.json untouched.
+awaiting: user response
 
 ## Tests
 
@@ -124,21 +133,53 @@ result: pass
 source: automated
 coverage_id: D9
 
+### 20. Live browser click-through of the G-12-2 fix
+expected: |
+  Start the dev server (npm run dev), navigate to /resume-library, click "Edit" on the tailored
+  resume card, confirm the editor loads that card's actual tailored content (not the source/default
+  resume), make an edit, save, and re-open the same card to confirm the edit persisted to that
+  specific version file only.
+result: pending
+
+### 21. Scope decision on CR-01/CR-02 (applyPatches education/summary-remove gaps)
+expected: |
+  Review 12-REVIEW.md's CR-01 (no 'education' section handling in applyPatches) and CR-02 (no
+  'summary'+'remove' handling) -- decide whether these need a follow-up gap-closure plan before
+  Phase 13, or are acceptable to defer.
+result: pending
+
 ## Summary
 
-total: 19
+total: 21
 passed: 18
-issues: 1
-pending: 0
+issues: 0
+pending: 2
 skipped: 0
 
 ## Gaps
 
 - gap_id: G-12-2
   truth: "Saving a tailored resume to the library and then opening it in the Resume editor shows the tailored/patched content, not the original source resume content"
-  status: failed
-  reason: "User reported: new tailored version is listed, when I click edit to see the update resume it stills show the selected resume data."
+  status: resolved
+  reason: "Closed by gap-closure plan 12-03 (adds /resume/:id route, version-aware Edit links, id-aware Resume.jsx fetch/save). Confirmed via re-verification: static code re-inspection, plan 12-03's automated assertions re-run, and a live API round-trip test proving version isolation. Awaiting human browser click-through (test 20) as final confirmation."
   severity: major
   test: 2
-  artifacts: []
-  missing: []
+  root_cause: |
+    Not a Phase 12 backend defect -- POST /api/drafts/:id/save (server/index.js:578-613) correctly
+    computes the tailored resume via applyPatches and writes it to a new id-keyed library version
+    (writeResumeVersion), and GET /api/resume-library/:id (server/index.js:402-412) correctly reads
+    that id-specific file. The bug is a pre-existing frontend defect surfaced by Phase 12: the "Edit"
+    link on EVERY resume-library card in ResumeLibrary.jsx:194-196 navigates to the static route
+    "/resume" with no version id at all. Resume.jsx (loadResume, lines 18-36) has no route param/query
+    handling for a version id and unconditionally fetches the legacy singular GET /api/resume (reads
+    server/data/resume.json), never GET /api/resume-library/:id. So clicking Edit on ANY library card
+    -- tailored or not -- always loads the original default resume, regardless of which version was
+    clicked.
+  artifacts:
+    - client/src/pages/ResumeLibrary.jsx (Edit link missing version id, lines ~194-196)
+    - client/src/pages/Resume.jsx (loadResume always calls GET /api/resume, no id-aware fetch, lines ~18-36)
+    - server/index.js (GET /api/resume-library/:id already correct, lines ~402-412; PUT /api/resume-library/:id needs checking for symmetric save path)
+  missing:
+    - "ResumeLibrary.jsx Edit link must carry the version id (e.g. Link to=\"/resume/${version.id}\")"
+    - "Router needs a /resume/:id route (client/src/main.jsx or App.jsx)"
+    - "Resume.jsx must read the id via useParams and fetch/save against GET and PUT /api/resume-library/:id when an id is present, falling back to the legacy /api/resume endpoint only when no id is given"

@@ -3,16 +3,16 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Resume Tailoring Flow
 current_phase: 12
-current_phase_name: Tailored Resume Generation
-status: ready
+current_phase_name: tailored-resume
+status: executing
 stopped_at: Created 12-01-PLAN.md and 12-02-PLAN.md
-last_updated: "2026-07-05T01:00:00.000Z"
-last_activity: 2026-07-05
-last_activity_desc: Created Phase 12 plans: backend draft storage + frontend preview page
+last_updated: "2026-07-16T10:25:03.421Z"
+last_activity: 2026-07-16
+last_activity_desc: Phase 12 execution started
 progress:
   total_phases: 14
   completed_phases: 3
-  total_plans: 5
+  total_plans: 7
   completed_plans: 5
   percent: 21
 ---
@@ -24,14 +24,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-02)
 
 **Core value:** End-to-end job application workflow in a web UI -- from resume to cover letter to application tracking -- so the user can manage their job search from any browser.
-**Current focus:** v2.0 Resume Tailoring Flow -- Phase 11.5 complete, Phase 12 next
+**Current focus:** Phase 12 — tailored-resume
 
 ## Current Position
 
-Phase: 12 of 14 (Tailored Resume Generation)
-Plan: None yet
-Status: Phase 11.5 complete (AI Analysis Provider backend + UI)
-Last activity: 2026-07-03 -- Phase 11.5 both plans complete, AI provider working with fallback
+Phase: 12 (tailored-resume) — EXECUTING
+Plan: 1 of 2
+Status: Executing Phase 12
+Last activity: 2026-07-16 — Phase 12 execution started
 
 Progress: [██████░░░░░] 50%
 

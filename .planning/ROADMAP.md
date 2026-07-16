@@ -316,11 +316,11 @@ Plans:
   5. Generated resume conforms to the resume JSON schema before it can be saved
   6. The source resume remains unchanged after generating a tailored resume
 
-**Plans**: 0/2 plans
+**Plans**: 1/2 plans executed
 
 Plans:
 
-- [ ] 12-01-PLAN.md — Backend: Draft storage API + patch application engine (validateResume extraction + applyPatches with all-entry modify search + draft CRUD + startup cleanup)
+- [x] 12-01-PLAN.md — Backend: Draft storage API + patch application engine (validateResume extraction + applyPatches with all-entry modify search + draft CRUD + startup cleanup)
 - [ ] 12-02-PLAN.md — Frontend: Generate button wiring + Preview page + routing (URL-param draftId for refresh resilience + draft hydration for TAILOR-05 + read-only resume renderer)
 
 **UI hint**: yes
@@ -361,5 +361,5 @@ Phases execute in numeric order: 9 -> 10 -> 11 -> 11.5 -> 12 -> 13
 | 10. Match Scoring and Gap Analysis | v2.0 | 1/1 | Complete | 2026-07-02 |
 | 11. Section-by-Section Suggestions | v2.0 | 1/1 | Complete   | 2026-07-02 |
 | 11.5 AI Analysis Provider 🔶 INSERTED | v2.0 | 2/2 | Complete | 2026-07-03 |
-| 12. Tailored Resume Generation | v2.0 | 0/2 | Plans created | - |
+| 12. Tailored Resume Generation | v2.0 | 1/2 | In Progress|  |
 | 13. Application Pre-fill and Export | v2.0 | 0/TBD | Not started | - |

@@ -55,6 +55,8 @@ function validateResume(data) {
     for (const field of CONTACT_FIELDS) {
       if (!(field in data.contact)) {
         errors.push(`Missing contact field: ${field}`)
+      } else if (data.contact[field] !== '' && typeof data.contact[field] !== 'string') {
+        errors.push(`contact.${field} must be a string`)
       }
     }
   }

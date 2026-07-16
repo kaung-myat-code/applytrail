@@ -7,6 +7,8 @@ const { generateCoverLetter } = require('./lib/cover-letter')
 const { getProvider } = require('./lib/analysis/engine')
 const { sanitizeError } = require('./lib/analysis/providers/ai')
 const { validateMatchReport, validateSuggestions } = require('./lib/analysis/validate')
+const { validateResume } = require('./lib/validateResume')
+const { applyPatches } = require('./lib/tailor/applyPatches')
 
 const app = express()
 const DATA_DIR = path.join(__dirname, '..')
@@ -35,112 +37,6 @@ function readJSON(filename) {
 function writeJSON(filename, data) {
   const filePath = path.join(DATA_DIR, filename)
   fs.writeFileSync(filePath, JSON.stringify(data, null, 2) + '\n', 'utf-8')
-}
-
-/**
- * Validate resume data against the canonical schema.
- * Returns { ok: true } or { ok: false, errors: string[] }.
- */
-function validateResume(data) {
-  const errors = []
-
-  if (!data || typeof data !== 'object' || Array.isArray(data)) {
-    return { ok: false, errors: ['Resume must be a JSON object'] }
-  }
-
-  // Required top-level fields
-  const REQUIRED_FIELDS = ['name', 'contact', 'summary', 'experience', 'projects', 'education', 'skills']
-  for (const field of REQUIRED_FIELDS) {
-    if (!(field in data)) {
-      errors.push(`Missing top-level field: ${field}`)
-    }
-  }
-
-  // Validate contact
-  if (data.contact && typeof data.contact === 'object') {
-    const CONTACT_FIELDS = ['email', 'github', 'location']
-    for (const field of CONTACT_FIELDS) {
-      if (!(field in data.contact)) {
-        errors.push(`Missing contact field: ${field}`)
-      }
-    }
-  }
-
-  // Validate experience entries
-  if (Array.isArray(data.experience)) {
-    for (let i = 0; i < data.experience.length; i++) {
-      const exp = data.experience[i]
-      if (!exp || typeof exp !== 'object') {
-        errors.push(`experience[${i}]: must be an object`)
-        continue
-      }
-      for (const field of ['company', 'role', 'period', 'bullets']) {
-        if (!(field in exp)) {
-          errors.push(`experience[${i}]: missing field "${field}"`)
-        }
-      }
-      if (Array.isArray(exp.bullets)) {
-        for (let j = 0; j < exp.bullets.length; j++) {
-          if (typeof exp.bullets[j] !== 'string') {
-            errors.push(`experience[${i}].bullets[${j}]: must be a string`)
-          }
-        }
-      }
-    }
-  }
-
-  // Validate project entries
-  if (Array.isArray(data.projects)) {
-    for (let i = 0; i < data.projects.length; i++) {
-      const proj = data.projects[i]
-      if (!proj || typeof proj !== 'object') {
-        errors.push(`projects[${i}]: must be an object`)
-        continue
-      }
-      for (const field of ['name', 'description', 'bullets']) {
-        if (!(field in proj)) {
-          errors.push(`projects[${i}]: missing field "${field}"`)
-        }
-      }
-      if (Array.isArray(proj.bullets)) {
-        for (let j = 0; j < proj.bullets.length; j++) {
-          if (typeof proj.bullets[j] !== 'string') {
-            errors.push(`projects[${i}].bullets[${j}]: must be a string`)
-          }
-        }
-      }
-    }
-  }
-
-  // Validate education entries (must NOT have bullets)
-  if (Array.isArray(data.education)) {
-    for (let i = 0; i < data.education.length; i++) {
-      const edu = data.education[i]
-      if (!edu || typeof edu !== 'object') {
-        errors.push(`education[${i}]: must be an object`)
-        continue
-      }
-      for (const field of ['degree', 'school', 'year']) {
-        if (!(field in edu)) {
-          errors.push(`education[${i}]: missing field "${field}"`)
-        }
-      }
-      if ('bullets' in edu) {
-        errors.push(`education[${i}]: has unexpected field "bullets" (education entries should not have bullets)`)
-      }
-    }
-  }
-
-  // Validate skills is an array of strings
-  if (Array.isArray(data.skills)) {
-    for (let i = 0; i < data.skills.length; i++) {
-      if (typeof data.skills[i] !== 'string') {
-        errors.push(`skills[${i}]: must be a string`)
-      }
-    }
-  }
-
-  return errors.length === 0 ? { ok: true } : { ok: false, errors }
 }
 
 const VALID_ID = /^[a-z0-9]+$/
@@ -184,6 +80,71 @@ function writeResumeVersion(id, data) {
     JSON.stringify(data, null, 2) + '\n',
     'utf-8'
   )
+}
+
+// Drafts: ephemeral storage for suggestion accept/reject decisions while
+// the user reviews a tailored resume. DRAFTS_DIR resolves to project-root
+// drafts/ (DATA_DIR = path.join(__dirname, '..')), consistent with the
+// existing convention where job_postings.json and resume_library/ also
+// live at the project root.
+const DRAFTS_DIR = path.join(DATA_DIR, 'drafts')
+
+function ensureDraftsDir() {
+  if (!fs.existsSync(DRAFTS_DIR)) {
+    fs.mkdirSync(DRAFTS_DIR, { recursive: true })
+  }
+}
+
+function readDraft(id) {
+  if (!VALID_ID.test(id)) return null
+  const filePath = path.join(DRAFTS_DIR, `${id}.json`)
+  if (!fs.existsSync(filePath)) return null
+  const raw = fs.readFileSync(filePath, 'utf-8')
+  return JSON.parse(raw)
+}
+
+function writeDraft(id, data) {
+  ensureDraftsDir()
+  fs.writeFileSync(
+    path.join(DRAFTS_DIR, `${id}.json`),
+    JSON.stringify(data, null, 2) + '\n',
+    'utf-8'
+  )
+}
+
+function deleteDraftFile(id) {
+  const filePath = path.join(DRAFTS_DIR, `${id}.json`)
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath)
+  }
+}
+
+// Clean up orphaned draft files older than 24 hours (runs once at startup)
+function cleanOldDrafts() {
+  if (!fs.existsSync(DRAFTS_DIR)) return
+
+  const MAX_AGE_MS = 24 * 60 * 60 * 1000
+  const now = Date.now()
+  const files = fs.readdirSync(DRAFTS_DIR)
+  let removed = 0
+
+  for (const file of files) {
+    if (!file.endsWith('.json')) continue
+    const filePath = path.join(DRAFTS_DIR, file)
+    try {
+      const stat = fs.statSync(filePath)
+      if (now - stat.mtimeMs > MAX_AGE_MS) {
+        fs.unlinkSync(filePath)
+        removed++
+      }
+    } catch {
+      // Ignore files that disappear mid-scan
+    }
+  }
+
+  if (removed > 0) {
+    console.log(`Cleaned up ${removed} orphaned draft(s) older than 24 hours`)
+  }
 }
 
 // Seed demo data on startup when data files are missing or empty
@@ -291,6 +252,7 @@ function migrateResumeLibrary() {
 seedDemoData()
 migrateApplications()
 migrateResumeLibrary()
+cleanOldDrafts()
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', uptime: process.uptime() })
@@ -519,6 +481,134 @@ app.put('/api/resume-library/:id/select', (req, res) => {
   index.selected_id = id
   writeLibraryIndex(index)
   res.json({ ok: true, selected_id: id })
+})
+
+// Draft CRUD endpoints -- ephemeral storage for tailored resume review sessions
+
+app.post('/api/drafts', (req, res) => {
+  const { resume_id, posting_id, suggestions, decisions, provider } = req.body
+
+  if (!resume_id || !VALID_ID.test(resume_id)) {
+    return res.status(400).json({ error: 'Invalid or missing resume_id' })
+  }
+  const sourceResume = readResumeVersion(resume_id)
+  if (!sourceResume) {
+    return res.status(400).json({ error: 'resume_id not found in library' })
+  }
+
+  if (!posting_id) {
+    return res.status(400).json({ error: 'posting_id is required' })
+  }
+  const postings = readJSON('job_postings.json')
+  const posting = postings.find(p => p.id === posting_id)
+  if (!posting) {
+    return res.status(404).json({ error: 'Job posting not found' })
+  }
+
+  if (!Array.isArray(suggestions)) {
+    return res.status(400).json({ error: 'suggestions must be an array' })
+  }
+  if (decisions !== undefined && (typeof decisions !== 'object' || decisions === null || Array.isArray(decisions))) {
+    return res.status(400).json({ error: 'decisions must be an object' })
+  }
+
+  const id = generateId()
+  const draft = {
+    id,
+    resume_id,
+    posting_id,
+    company: posting.company,
+    role: posting.role,
+    provider: provider || 'heuristic',
+    suggestions,
+    decisions: decisions || {},
+    created_at: new Date().toISOString().split('T')[0]
+  }
+
+  writeDraft(id, draft)
+  res.json({ ok: true, draft })
+})
+
+app.get('/api/drafts/:id', (req, res) => {
+  const { id } = req.params
+  if (!VALID_ID.test(id)) {
+    return res.status(400).json({ error: 'Invalid draft ID' })
+  }
+
+  const draft = readDraft(id)
+  if (!draft) {
+    return res.status(404).json({ error: 'Draft not found' })
+  }
+
+  const sourceResume = readResumeVersion(draft.resume_id)
+  if (!sourceResume) {
+    return res.status(400).json({ error: 'Source resume for this draft no longer exists' })
+  }
+
+  const result = applyPatches(sourceResume, draft.suggestions, draft.decisions)
+
+  const libraryIndex = readLibraryIndex()
+  const sourceEntry = libraryIndex.versions.find(v => v.id === draft.resume_id)
+  const source_name = sourceEntry ? sourceEntry.name : null
+
+  res.json({
+    ...draft,
+    tailored_resume: result.resume,
+    validation: result.validation,
+    source_name
+  })
+})
+
+app.post('/api/drafts/:id/save', (req, res) => {
+  const { id } = req.params
+  if (!VALID_ID.test(id)) {
+    return res.status(400).json({ error: 'Invalid draft ID' })
+  }
+
+  const draft = readDraft(id)
+  if (!draft) {
+    return res.status(404).json({ error: 'Draft not found' })
+  }
+
+  const sourceResume = readResumeVersion(draft.resume_id)
+  if (!sourceResume) {
+    return res.status(400).json({ error: 'Source resume for this draft no longer exists' })
+  }
+
+  const result = applyPatches(sourceResume, draft.suggestions, draft.decisions)
+  if (!result.validation.ok) {
+    return res.status(400).json({ error: 'Tailored resume failed validation', details: result.validation.errors })
+  }
+
+  const newId = generateId()
+  const now = new Date().toISOString().split('T')[0]
+  const name = req.body.name || `${draft.company} - ${draft.role}`
+
+  writeResumeVersion(newId, result.resume)
+
+  const index = readLibraryIndex()
+  const entry = { id: newId, name, created_at: now, updated_at: now, source_id: draft.resume_id }
+  index.versions.push(entry)
+  writeLibraryIndex(index)
+
+  deleteDraftFile(draft.id)
+
+  res.json({ ok: true, version: entry })
+})
+
+app.delete('/api/drafts/:id', (req, res) => {
+  const { id } = req.params
+  if (!VALID_ID.test(id)) {
+    return res.status(400).json({ error: 'Invalid draft ID' })
+  }
+
+  const draft = readDraft(id)
+  if (!draft) {
+    return res.status(404).json({ error: 'Draft not found' })
+  }
+
+  deleteDraftFile(id)
+  res.json({ ok: true })
 })
 
 app.post('/api/generate-cover-letter', (req, res) => {

@@ -4,34 +4,34 @@ milestone: v2.0
 milestone_name: Resume Tailoring Flow
 current_phase: 13
 current_phase_name: Application Pre-fill and Export
-status: executing
-stopped_at: Completed 11-5-03-PLAN.md
-last_updated: "2026-07-16T11:35:53.878Z"
+status: ready_to_plan
+stopped_at: Phase 12 complete
+last_updated: "2026-07-16T12:06:13.921Z"
 last_activity: 2026-07-16
-last_activity_desc: Phase 12 execution resumed (wave continue)
+last_activity_desc: Phase 12 complete, transitioned to Phase 13
 progress:
   total_phases: 14
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 8
-  completed_plans: 7
-  percent: 21
+  completed_plans: 8
+  percent: 29
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-07-02)
+See: .planning/PROJECT.md (updated 2026-07-16)
 
 **Core value:** End-to-end job application workflow in a web UI -- from resume to cover letter to application tracking -- so the user can manage their job search from any browser.
-**Current focus:** Phase 12 — tailored-resume
+**Current focus:** Phase 13 — Application Pre-fill and Export
 
 ## Current Position
 
 Phase: 13 — Application Pre-fill and Export
 Plan: Not started
-Status: Executing Phase 12
-Last activity: 2026-07-16 — Phase 12 execution resumed (wave continue)
+Status: Ready to plan
+Last activity: 2026-07-16 — Phase 12 complete, transitioned to Phase 13
 
 Progress: [██████░░░░░] 50%
 
@@ -48,7 +48,7 @@ Progress: [██████░░░░░] 50%
 
 **Velocity:**
 
-- Total plans completed: 14 (across both milestones, Phase 11.5 complete)
+- Total plans completed: 15 (across both milestones, Phase 11.5 complete)
 - Average duration: ~5 min/plan
 - Total execution time: ~50 min
 
@@ -69,7 +69,7 @@ Progress: [██████░░░░░] 50%
 | Phase 11.5-ai-analysis P01 | 3min | 3 tasks | 5 files |
 | Phase 11.5-ai-analysis P02 | 2min | 1 task + verification | 2 files |
 | Phase 11-5 P03 | 1min | - tasks | - files |
-| 12 | 2 | - | - |
+| 12 | 3 | - | - |
 
 ## Accumulated Context
 
@@ -92,21 +92,24 @@ Recent decisions affecting current work:
 - [Phase ?]: OpenRouter uses createOpenAI-compatible with llama-3.3-70b-instruct:free as default model
 - [Phase ?]: Groq uses llama-3.3-70b-versatile as default model
 - [Phase ?]: Fallback chain order: gemini -> openrouter -> groq -> heuristic
+- [Phase 12]: Draft-based tailoring flow -- ephemeral drafts (project-root `drafts/`) hold in-progress patch state; `applyPatches` deep-clones the source resume and only writes a new library version on explicit Save, so the source is never mutated
+- [Phase 12]: `?draft=<id>` URL search param (not React Router `location.state`) is the source of truth for cross-page draft state, so refresh survives on both Review and Preview pages
+- [Phase 12]: Resume.jsx branches on `useParams().id` (added via gap-closure plan 12-03) to fetch/save either a specific library version or the legacy singular resume -- fixed G-12-2 (Edit link on every library card previously always opened the legacy default resume)
 
 ### Pending Todos
 
-- Execute Phase 12: 12-01 (backend), 12-02 (frontend)
+- Phase 13: Application Pre-fill and Export
+- Deferred (Phase 12, CR-01/CR-02): applyPatches has no `education` section handling and no `summary`+`remove` handling -- both silently no-op. Not blocking Phase 13; revisit as a future gap-closure plan if it becomes user-visible.
 
 ### Blockers/Concerns
 
-- Resume schema undocumented -- Phase 9 should formalize schema before building library around it
 - Render free tier (512MB RAM) may constrain export libraries (pdfmake) -- test during Phase 13
 - AI API calls introduce latency and potential cost — user must opt in intentionally
 
 ## Session Continuity
 
-Last session: 2026-07-03T18:52:58.198Z
-Stopped at: Completed 11-5-03-PLAN.md
+Last session: 2026-07-16
+Stopped at: Phase 12 complete, ready to plan Phase 13
 Resume file: None
 
 ## Quick Tasks Completed

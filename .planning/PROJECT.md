@@ -74,6 +74,11 @@ A local web MVP that migrated an existing Claude Code job application workflow i
 - [x] User can preview the tailored resume before final save (Phase 12)
 - [x] User can return to suggestion review from preview without losing accept/reject decisions (Phase 12)
 - [x] Generated resume conforms to the resume JSON schema before it can be saved (Phase 12)
+- [x] Source resume remains unchanged after generating a tailored resume (Phase 12)
+
+### Active
+
+- [ ] applyPatches must handle 'education' section patches and 'summary'+'remove' patches — currently silent no-ops (CR-01/CR-02, deferred from Phase 12, see 12-REVIEW.md)
 
 ### Out of Scope
 
@@ -111,9 +116,12 @@ A local web MVP that migrated an existing Claude Code job application workflow i
 | v1.1 = polish only | Prepare for public release without changing core functionality | Complete (v1.1) |
 | Render free tier | Simple deployment, auto-deploy from GitHub, sufficient for portfolio | Implemented (Phase 7) |
 | Demo data seeding | Portfolio visitors see populated interface on first visit | Implemented (Phase 6) |
-| Provider-agnostic analysis | Analysis engine swappable without UI changes — heuristics, AI (Gemini, OpenRouter, Groq), or third-party | Planned (v2.0) |
-| Structured JSON schema | Single source of truth for resume data; formats generated from schema | Planned (v2.0) |
-| Resume library | Multiple immutable resume versions; tailoring creates new version | Planned (v2.0) |
+| Provider-agnostic analysis | Analysis engine swappable without UI changes — heuristics, AI (Gemini, OpenRouter, Groq), or third-party | Implemented (v2.0, Phase 11.5) |
+| Structured JSON schema | Single source of truth for resume data; formats generated from schema | Implemented (v2.0, Phase 12) |
+| Resume library | Multiple immutable resume versions; tailoring creates new version | Implemented (v2.0, Phase 09) |
+| Ephemeral draft storage for tailoring | Drafts stored as project-root files (`drafts/`), deleted on save, swept on startup — avoids polluting the permanent resume library with in-progress tailoring state | Implemented (Phase 12) |
+| URL search params as source of truth for cross-page draft state | `?draft=<id>` (not React Router `location.state`) survives browser refresh across Review ↔ Preview navigation | Implemented (Phase 12) |
+| Route-param branching over component forking | `Resume.jsx` branches on `useParams().id` to target either the legacy singular resume or a specific library version, rather than splitting into two components | Implemented (Phase 12) |
 
 ## Milestones
 
@@ -143,4 +151,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-03 — Phase 11.5 AI Analysis Provider INSERTED*
+*Last updated: 2026-07-16 after Phase 12*

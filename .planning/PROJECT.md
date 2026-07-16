@@ -13,7 +13,7 @@ End-to-end job application workflow in a web UI — from resume to cover letter 
 **Shipped:** v1.1 Release Polish (2026-06-27)
 **Live URL:** https://applytrail.onrender.com
 **Deployment:** Render free tier, auto-deploy from main branch
-**Status:** All 8 phases complete, 36/36 requirements met across both milestones
+**Status:** v1.0/v1.1 shipped (36/36 requirements). v2.0 Resume Tailoring Flow in progress — Phase 12 complete 2026-07-16 (tailored resume generation: applyPatches engine, draft storage, review/preview UI). Phase 13 (Application Pre-fill and Export) remains.
 
 <details>
 <summary>Previous milestone context</summary>
@@ -66,6 +66,14 @@ A local web MVP that migrated an existing Claude Code job application workflow i
 - [x] App is deployed to a public hosting platform (Phase 7)
 - [x] Documentation is polished for public consumption (Phase 8)
 - [x] Release assets (screenshots, slides) are created (Phase 8)
+
+### Validated (v2.0, in progress)
+
+- [x] User can generate a tailored resume that applies only accepted suggestions to a copy of the source resume (Phase 12)
+- [x] Tailored resume is saved as a new version with auto-naming ("Company - Role"), without overwriting the source (Phase 12)
+- [x] User can preview the tailored resume before final save (Phase 12)
+- [x] User can return to suggestion review from preview without losing accept/reject decisions (Phase 12)
+- [x] Generated resume conforms to the resume JSON schema before it can be saved (Phase 12)
 
 ### Out of Scope
 

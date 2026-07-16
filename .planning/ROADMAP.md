@@ -341,7 +341,13 @@ Plans:
   5. User can export any resume version as a JSON file
   6. Applications reference a resume version by resume_version_id rather than duplicating resume data
 
-**Plans**: TBD
+**Plans**: 0/3 plans complete
+
+Plans:
+
+- [ ] 13-01-PLAN.md — Backend: resume_version_id on POST /api/applications, JSON/PDF export routes, server/lib/pdf.js (pdfmake)
+- [ ] 13-02-PLAN.md — CreateApplicationModal component: pre-filled fields, auto-generated cover letter, confirm/cancel
+- [ ] 13-03-PLAN.md — Wire modal into PreviewTailored.jsx (auto-trigger) and ResumeLibrary.jsx (manual-trigger + export actions)
 **UI hint**: yes
 
 ## Backlog

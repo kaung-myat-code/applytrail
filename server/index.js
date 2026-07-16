@@ -525,6 +525,9 @@ app.post('/api/drafts', (req, res) => {
     return res.status(400).json({ error: 'decisions must be an object' })
   }
 
+  const VALID_PROVIDERS = ['heuristic', 'gemini', 'openrouter', 'groq']
+  const safeProvider = VALID_PROVIDERS.includes(provider) ? provider : 'heuristic'
+
   const id = generateId()
   const draft = {
     id,
@@ -532,7 +535,7 @@ app.post('/api/drafts', (req, res) => {
     posting_id,
     company: posting.company,
     role: posting.role,
-    provider: provider || 'heuristic',
+    provider: safeProvider,
     suggestions,
     decisions: decisions || {},
     created_at: new Date().toISOString().split('T')[0]

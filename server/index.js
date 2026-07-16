@@ -508,6 +508,14 @@ app.post('/api/drafts', (req, res) => {
   if (!Array.isArray(suggestions)) {
     return res.status(400).json({ error: 'suggestions must be an array' })
   }
+  const VALID_SECTIONS = ['summary', 'skills', 'experience', 'projects', 'education']
+  const VALID_TYPES = ['add', 'modify', 'remove']
+  for (const s of suggestions) {
+    if (!s || typeof s !== 'object' || typeof s.id !== 'string' ||
+        !VALID_SECTIONS.includes(s.section) || !VALID_TYPES.includes(s.type)) {
+      return res.status(400).json({ error: 'Invalid suggestion object in suggestions array' })
+    }
+  }
   if (decisions !== undefined && (typeof decisions !== 'object' || decisions === null || Array.isArray(decisions))) {
     return res.status(400).json({ error: 'decisions must be an object' })
   }

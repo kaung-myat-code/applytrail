@@ -510,11 +510,16 @@ app.post('/api/drafts', (req, res) => {
   }
   const VALID_SECTIONS = ['summary', 'skills', 'experience', 'projects', 'education']
   const VALID_TYPES = ['add', 'modify', 'remove']
+  const seenSuggestionIds = new Set()
   for (const s of suggestions) {
     if (!s || typeof s !== 'object' || typeof s.id !== 'string' ||
         !VALID_SECTIONS.includes(s.section) || !VALID_TYPES.includes(s.type)) {
       return res.status(400).json({ error: 'Invalid suggestion object in suggestions array' })
     }
+    if (seenSuggestionIds.has(s.id)) {
+      return res.status(400).json({ error: `Duplicate suggestion id: ${s.id}` })
+    }
+    seenSuggestionIds.add(s.id)
   }
   if (decisions !== undefined && (typeof decisions !== 'object' || decisions === null || Array.isArray(decisions))) {
     return res.status(400).json({ error: 'decisions must be an object' })

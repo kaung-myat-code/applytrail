@@ -191,7 +191,7 @@ function ResumeLibrary() {
               >
                 Delete
               </button>
-              <Link to="/resume" className={styles.btn}>
+              <Link to={`/resume/${version.id}`} className={styles.btn}>
                 Edit
               </Link>
             </div>

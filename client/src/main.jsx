@@ -20,6 +20,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Dashboard /> },
       { path: 'resume', element: <Resume /> },
+      { path: 'resume/:id', element: <Resume /> },
       { path: 'resume-library', element: <ResumeLibrary /> },
       { path: 'new', element: <NewApplication /> },
       { path: 'applications', element: <Applications /> },

@@ -10,6 +10,7 @@ import ResumeLibrary from './pages/ResumeLibrary.jsx'
 import CoverLetter from './pages/CoverLetter.jsx'
 import Analysis from './pages/Analysis.jsx'
 import ReviewSuggestions from './pages/ReviewSuggestions.jsx'
+import PreviewTailored from './pages/PreviewTailored.jsx'
 import './index.css'
 
 const router = createBrowserRouter([
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
       { path: 'cover-letter', element: <CoverLetter /> },
       { path: 'analysis', element: <Analysis /> },
       { path: 'analysis/review', element: <ReviewSuggestions /> },
+      { path: 'analysis/preview', element: <PreviewTailored /> },
     ],
   },
 ])

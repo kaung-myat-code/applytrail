@@ -1,23 +1,14 @@
 ---
-status: testing
+status: complete
 phase: 12-tailored-resume
 source: [12-01-SUMMARY.md, 12-02-SUMMARY.md, 12-03-SUMMARY.md]
 started: 2026-07-16T11:18:41Z
-updated: 2026-07-16T20:10:00Z
+updated: 2026-07-16T20:25:00Z
 ---
 
 ## Current Test
 
-number: 20
-name: Live browser click-through of the G-12-2 fix
-expected: |
-  Start the dev server (npm run dev), navigate to /resume-library, click "Edit" on the tailored
-  resume card (or generate a fresh one via Analyze -> Review Suggestions -> Generate -> Save to
-  Library), confirm the editor loads that card's actual tailored content (not the source/default
-  resume), make an edit, save, and re-open the same card to confirm the edit persisted to that
-  specific version file. The URL should become /resume/<id>, and saving should only update
-  resume_library/<id>.json, leaving the source version and legacy resume.json untouched.
-awaiting: user response
+[testing complete]
 
 ## Tests
 
@@ -139,29 +130,30 @@ expected: |
   resume card, confirm the editor loads that card's actual tailored content (not the source/default
   resume), make an edit, save, and re-open the same card to confirm the edit persisted to that
   specific version file only.
-result: pending
+result: pass
 
 ### 21. Scope decision on CR-01/CR-02 (applyPatches education/summary-remove gaps)
 expected: |
   Review 12-REVIEW.md's CR-01 (no 'education' section handling in applyPatches) and CR-02 (no
   'summary'+'remove' handling) -- decide whether these need a follow-up gap-closure plan before
   Phase 13, or are acceptable to defer.
-result: pending
+result: skipped
+reason: "Deferred follow-up: defer for now, mark as follow-up"
 
 ## Summary
 
 total: 21
-passed: 18
+passed: 19
 issues: 0
-pending: 2
-skipped: 0
+pending: 0
+skipped: 1
 
 ## Gaps
 
 - gap_id: G-12-2
   truth: "Saving a tailored resume to the library and then opening it in the Resume editor shows the tailored/patched content, not the original source resume content"
   status: resolved
-  reason: "Closed by gap-closure plan 12-03 (adds /resume/:id route, version-aware Edit links, id-aware Resume.jsx fetch/save). Confirmed via re-verification: static code re-inspection, plan 12-03's automated assertions re-run, and a live API round-trip test proving version isolation. Awaiting human browser click-through (test 20) as final confirmation."
+  reason: "Closed by gap-closure plan 12-03 (adds /resume/:id route, version-aware Edit links, id-aware Resume.jsx fetch/save). Confirmed via re-verification: static code re-inspection, plan 12-03's automated assertions re-run, and a live API round-trip test proving version isolation. Human browser click-through (test 20) confirmed: edit persisted correctly to the specific version."
   severity: major
   test: 2
   root_cause: |
@@ -183,3 +175,9 @@ skipped: 0
     - "ResumeLibrary.jsx Edit link must carry the version id (e.g. Link to=\"/resume/${version.id}\")"
     - "Router needs a /resume/:id route (client/src/main.jsx or App.jsx)"
     - "Resume.jsx must read the id via useParams and fetch/save against GET and PUT /api/resume-library/:id when an id is present, falling back to the legacy /api/resume endpoint only when no id is given"
+
+## Deferred Follow-Ups
+
+- test: 21
+  idea: "CR-01/CR-02 (12-REVIEW.md): applyPatches has no 'education' section handling and no 'summary'+'remove' handling -- both silently no-op. Deferred, not blocking Phase 13. Revisit as a future gap-closure plan."
+  deferred_at: 2026-07-16

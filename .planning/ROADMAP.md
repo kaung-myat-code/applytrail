@@ -344,10 +344,18 @@ Plans:
 **Plans**: 0/3 plans complete
 
 Plans:
+**Wave 1**
 
 - [ ] 13-01-PLAN.md — Backend: resume_version_id on POST /api/applications, JSON/PDF export routes, server/lib/pdf.js (pdfmake)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 13-02-PLAN.md — CreateApplicationModal component: pre-filled fields, auto-generated cover letter, confirm/cancel
+
+**Wave 3** *(blocked on Wave 2 completion)*
+
 - [ ] 13-03-PLAN.md — Wire modal into PreviewTailored.jsx (auto-trigger) and ResumeLibrary.jsx (manual-trigger + export actions)
+
 **UI hint**: yes
 
 ## Backlog
@@ -359,9 +367,11 @@ Plans:
 **Source:** `feedback/feedback.md` (2026-07-05 exploratory test) + GitHub issues #2-#8
 
 Plans:
+
 - [ ] TBD (promote with /gsd-review-backlog when ready)
 
 Tracked issues:
+
 - #2 Clarify job posting vs. application workflow with next-step feedback
 - #3 Fix Resume Library "New Resume" creation ("Invalid resume data") and add contract tests
 - #4 Broaden match-analysis keyword extraction beyond technical whitelist

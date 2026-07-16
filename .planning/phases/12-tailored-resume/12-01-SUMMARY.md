@@ -168,3 +168,12 @@ None - no external service configuration required.
 ---
 *Phase: 12-tailored-resume*
 *Completed: 2026-07-16*
+
+## Self-Check: PASSED
+
+- FOUND: server/lib/validateResume.js
+- FOUND: server/lib/tailor/applyPatches.js
+- FOUND: .planning/phases/12-tailored-resume/12-01-SUMMARY.md
+- FOUND: commit 0a8a17f (Task 1)
+- FOUND: commit 46b4294 (Task 2)
+- FOUND: commit bc1e821 (SUMMARY)

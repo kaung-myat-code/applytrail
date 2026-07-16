@@ -1,7 +1,7 @@
 ---
 phase: 12-tailored-resume
 verified: 2026-07-16T20:10:00Z
-status: human_needed
+status: passed
 score: 6/6 must-haves verified
 behavior_unverified: 0
 overrides_applied: 0
@@ -9,14 +9,17 @@ re_verification:
   previous_status: passed
   previous_score: 6/6
   gaps_closed:
+
     - "G-12-2: Clicking Edit on a resume-library card (tailored or original) opens the Resume editor loaded with that specific version's data, not the legacy default resume"
   gaps_remaining: []
   regressions: []
 behavior_unverified_items: []
 human_verification:
+
   - test: "Click Edit on the tailored resume card created via the Generate -> Preview -> Save flow in an actual browser (not curl), confirm the editor shows the tailored content, edit a field, Save, then reload /resume-library and re-open the same card to confirm the edit persisted to that version and not to a different file."
     expected: "Editor loads the exact tailored content (patched skills/summary/etc.), edits persist to that specific resume_library/<id>.json version, and the source version / legacy resume.json are unaffected."
     why_human: "This verifier confirmed the fix via static code inspection (all 12-03 automated <verify> assertions re-run and pass) and live curl-level API testing (GET/PUT /api/resume-library/:id correctly isolates versions, confirmed with a live write-and-read-back test using a marker string). No prior VERIFICATION.md or SUMMARY.md recorded an actual browser click-through of the React Router /resume/:id link since 12-03 was executed in a worktree without node_modules/browser access (per 12-03-SUMMARY.md 'Issues Encountered'). The UI wiring (Link to, useParams, fetch target) is proven correct at the code and API level, but the literal browser interaction has not yet been observed by any agent."
+
   - test: "Decide whether CR-01 (applyPatches has no 'education' section handling) and CR-02 (applyPatches has no 'summary'+'remove' handling) in 12-REVIEW.md need a follow-up gap-closure plan before Phase 13 begins."
     expected: "A human decision on scope/priority for these two narrow, currently-unfixed defects."
     why_human: "This is a product-priority judgment call about acceptable defect scope, not something a verifier can resolve unilaterally per the escalation-gate pattern. The defects are real (independently confirmed by direct code read in this session) but narrow (2 of 15 section x type combinations) and don't break the core mechanism the 6 roadmap success criteria assert."

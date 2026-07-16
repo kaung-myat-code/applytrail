@@ -344,6 +344,26 @@ Plans:
 **Plans**: TBD
 **UI hint**: yes
 
+## Backlog
+
+### Phase 999.1: UX & Quality Polish from User Feedback (BACKLOG)
+
+**Goal:** [Captured for future planning]
+**Requirements:** TBD
+**Source:** `feedback/feedback.md` (2026-07-05 exploratory test) + GitHub issues #2-#8
+
+Plans:
+- [ ] TBD (promote with /gsd-review-backlog when ready)
+
+Tracked issues:
+- #2 Clarify job posting vs. application workflow with next-step feedback
+- #3 Fix Resume Library "New Resume" creation ("Invalid resume data") and add contract tests
+- #4 Broaden match-analysis keyword extraction beyond technical whitelist
+- #5 Improve generated writing quality; complete or hide "Generate Tailored Resume (Coming Soon)"
+- #6 Reduce risk in resume editor: preview, autosave indicator, and safer remove controls
+- #7 Simplify top-level navigation to reflect linear job-search workflow
+- #8 Fix lint failures (exclude client/dist, missing prop-types, unused vars) and add API contract test coverage
+
 ## Progress
 
 **Execution Order:**

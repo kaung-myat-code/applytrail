@@ -8,6 +8,7 @@ const { getProvider } = require('./lib/analysis/engine')
 const { sanitizeError } = require('./lib/analysis/providers/ai')
 const { validateMatchReport, validateSuggestions } = require('./lib/analysis/validate')
 const { validateResume } = require('./lib/validateResume')
+const { applyPatches } = require('./lib/tailor/applyPatches')
 
 const app = express()
 const DATA_DIR = path.join(__dirname, '..')
@@ -79,6 +80,71 @@ function writeResumeVersion(id, data) {
     JSON.stringify(data, null, 2) + '\n',
     'utf-8'
   )
+}
+
+// Drafts: ephemeral storage for suggestion accept/reject decisions while
+// the user reviews a tailored resume. DRAFTS_DIR resolves to project-root
+// drafts/ (DATA_DIR = path.join(__dirname, '..')), consistent with the
+// existing convention where job_postings.json and resume_library/ also
+// live at the project root.
+const DRAFTS_DIR = path.join(DATA_DIR, 'drafts')
+
+function ensureDraftsDir() {
+  if (!fs.existsSync(DRAFTS_DIR)) {
+    fs.mkdirSync(DRAFTS_DIR, { recursive: true })
+  }
+}
+
+function readDraft(id) {
+  if (!VALID_ID.test(id)) return null
+  const filePath = path.join(DRAFTS_DIR, `${id}.json`)
+  if (!fs.existsSync(filePath)) return null
+  const raw = fs.readFileSync(filePath, 'utf-8')
+  return JSON.parse(raw)
+}
+
+function writeDraft(id, data) {
+  ensureDraftsDir()
+  fs.writeFileSync(
+    path.join(DRAFTS_DIR, `${id}.json`),
+    JSON.stringify(data, null, 2) + '\n',
+    'utf-8'
+  )
+}
+
+function deleteDraftFile(id) {
+  const filePath = path.join(DRAFTS_DIR, `${id}.json`)
+  if (fs.existsSync(filePath)) {
+    fs.unlinkSync(filePath)
+  }
+}
+
+// Clean up orphaned draft files older than 24 hours (runs once at startup)
+function cleanOldDrafts() {
+  if (!fs.existsSync(DRAFTS_DIR)) return
+
+  const MAX_AGE_MS = 24 * 60 * 60 * 1000
+  const now = Date.now()
+  const files = fs.readdirSync(DRAFTS_DIR)
+  let removed = 0
+
+  for (const file of files) {
+    if (!file.endsWith('.json')) continue
+    const filePath = path.join(DRAFTS_DIR, file)
+    try {
+      const stat = fs.statSync(filePath)
+      if (now - stat.mtimeMs > MAX_AGE_MS) {
+        fs.unlinkSync(filePath)
+        removed++
+      }
+    } catch {
+      // Ignore files that disappear mid-scan
+    }
+  }
+
+  if (removed > 0) {
+    console.log(`Cleaned up ${removed} orphaned draft(s) older than 24 hours`)
+  }
 }
 
 // Seed demo data on startup when data files are missing or empty
@@ -186,6 +252,7 @@ function migrateResumeLibrary() {
 seedDemoData()
 migrateApplications()
 migrateResumeLibrary()
+cleanOldDrafts()
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', uptime: process.uptime() })
@@ -414,6 +481,134 @@ app.put('/api/resume-library/:id/select', (req, res) => {
   index.selected_id = id
   writeLibraryIndex(index)
   res.json({ ok: true, selected_id: id })
+})
+
+// Draft CRUD endpoints -- ephemeral storage for tailored resume review sessions
+
+app.post('/api/drafts', (req, res) => {
+  const { resume_id, posting_id, suggestions, decisions, provider } = req.body
+
+  if (!resume_id || !VALID_ID.test(resume_id)) {
+    return res.status(400).json({ error: 'Invalid or missing resume_id' })
+  }
+  const sourceResume = readResumeVersion(resume_id)
+  if (!sourceResume) {
+    return res.status(400).json({ error: 'resume_id not found in library' })
+  }
+
+  if (!posting_id) {
+    return res.status(400).json({ error: 'posting_id is required' })
+  }
+  const postings = readJSON('job_postings.json')
+  const posting = postings.find(p => p.id === posting_id)
+  if (!posting) {
+    return res.status(404).json({ error: 'Job posting not found' })
+  }
+
+  if (!Array.isArray(suggestions)) {
+    return res.status(400).json({ error: 'suggestions must be an array' })
+  }
+  if (decisions !== undefined && (typeof decisions !== 'object' || decisions === null || Array.isArray(decisions))) {
+    return res.status(400).json({ error: 'decisions must be an object' })
+  }
+
+  const id = generateId()
+  const draft = {
+    id,
+    resume_id,
+    posting_id,
+    company: posting.company,
+    role: posting.role,
+    provider: provider || 'heuristic',
+    suggestions,
+    decisions: decisions || {},
+    created_at: new Date().toISOString().split('T')[0]
+  }
+
+  writeDraft(id, draft)
+  res.json({ ok: true, draft })
+})
+
+app.get('/api/drafts/:id', (req, res) => {
+  const { id } = req.params
+  if (!VALID_ID.test(id)) {
+    return res.status(400).json({ error: 'Invalid draft ID' })
+  }
+
+  const draft = readDraft(id)
+  if (!draft) {
+    return res.status(404).json({ error: 'Draft not found' })
+  }
+
+  const sourceResume = readResumeVersion(draft.resume_id)
+  if (!sourceResume) {
+    return res.status(400).json({ error: 'Source resume for this draft no longer exists' })
+  }
+
+  const result = applyPatches(sourceResume, draft.suggestions, draft.decisions)
+
+  const libraryIndex = readLibraryIndex()
+  const sourceEntry = libraryIndex.versions.find(v => v.id === draft.resume_id)
+  const source_name = sourceEntry ? sourceEntry.name : null
+
+  res.json({
+    ...draft,
+    tailored_resume: result.resume,
+    validation: result.validation,
+    source_name
+  })
+})
+
+app.post('/api/drafts/:id/save', (req, res) => {
+  const { id } = req.params
+  if (!VALID_ID.test(id)) {
+    return res.status(400).json({ error: 'Invalid draft ID' })
+  }
+
+  const draft = readDraft(id)
+  if (!draft) {
+    return res.status(404).json({ error: 'Draft not found' })
+  }
+
+  const sourceResume = readResumeVersion(draft.resume_id)
+  if (!sourceResume) {
+    return res.status(400).json({ error: 'Source resume for this draft no longer exists' })
+  }
+
+  const result = applyPatches(sourceResume, draft.suggestions, draft.decisions)
+  if (!result.validation.ok) {
+    return res.status(400).json({ error: 'Tailored resume failed validation', details: result.validation.errors })
+  }
+
+  const newId = generateId()
+  const now = new Date().toISOString().split('T')[0]
+  const name = req.body.name || `${draft.company} - ${draft.role}`
+
+  writeResumeVersion(newId, result.resume)
+
+  const index = readLibraryIndex()
+  const entry = { id: newId, name, created_at: now, updated_at: now, source_id: draft.resume_id }
+  index.versions.push(entry)
+  writeLibraryIndex(index)
+
+  deleteDraftFile(draft.id)
+
+  res.json({ ok: true, version: entry })
+})
+
+app.delete('/api/drafts/:id', (req, res) => {
+  const { id } = req.params
+  if (!VALID_ID.test(id)) {
+    return res.status(400).json({ error: 'Invalid draft ID' })
+  }
+
+  const draft = readDraft(id)
+  if (!draft) {
+    return res.status(404).json({ error: 'Draft not found' })
+  }
+
+  deleteDraftFile(id)
+  res.json({ ok: true })
 })
 
 app.post('/api/generate-cover-letter', (req, res) => {

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Link, useSearchParams, useLocation } from 'react-router-dom'
+import { Link, useSearchParams, useLocation, useNavigate } from 'react-router-dom'
 import SuggestionCard from '../components/SuggestionCard'
 import styles from './ReviewSuggestions.module.css'
 
@@ -14,18 +14,47 @@ const sectionLabels = {
 
 function ReviewSuggestions() {
   const location = useLocation()
+  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const resumeId = location.state?.resumeId || searchParams.get('resume')
-  const postingId = location.state?.postingId || searchParams.get('posting')
-  const provider = location.state?.provider || searchParams.get('provider') || 'heuristic'
+  const draftId = searchParams.get('draft')
   const initialStateSuggestions = location.state?.suggestions
+
+  const [resumeId, setResumeId] = useState(location.state?.resumeId || searchParams.get('resume'))
+  const [postingId, setPostingId] = useState(location.state?.postingId || searchParams.get('posting'))
+  const [provider, setProvider] = useState(location.state?.provider || searchParams.get('provider') || 'heuristic')
 
   const [suggestions, setSuggestions] = useState(initialStateSuggestions || [])
   const [decisions, setDecisions] = useState({})
-  const [loading, setLoading] = useState(!initialStateSuggestions)
+  const [loading, setLoading] = useState(!initialStateSuggestions && !draftId)
+  const [hydrating, setHydrating] = useState(!!draftId && !initialStateSuggestions)
   const [error, setError] = useState('')
+  const [generating, setGenerating] = useState(false)
+  const [generateError, setGenerateError] = useState('')
 
   useEffect(() => {
+    // Draft hydration (TAILOR-05 fix): restore suggestions + decisions from a
+    // server-side draft when returning via ?draft=<id> (e.g. "Back to Suggestions").
+    if (draftId && !initialStateSuggestions) {
+      async function fetchDraft() {
+        try {
+          const res = await fetch(`/api/drafts/${draftId}`)
+          const data = await res.json()
+          if (!res.ok) throw new Error(data.error || 'Failed to load draft')
+          setSuggestions(data.suggestions || [])
+          setDecisions(data.decisions || {})
+          setResumeId(data.resume_id)
+          setPostingId(data.posting_id)
+          setProvider(data.provider || 'heuristic')
+        } catch (err) {
+          setError(err.message || 'Failed to load draft.')
+        } finally {
+          setHydrating(false)
+        }
+      }
+      fetchDraft()
+      return
+    }
+
     // Skip API call if we already have suggestions from navigation state
     if (initialStateSuggestions) {
       setLoading(false)
@@ -60,7 +89,8 @@ function ReviewSuggestions() {
     }
 
     fetchAnalysis()
-  }, [resumeId, postingId, provider, initialStateSuggestions])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [draftId])
 
   function handleAccept(id) {
     setDecisions(prev => {
@@ -108,6 +138,35 @@ function ReviewSuggestions() {
     setDecisions(newDecisions)
   }
 
+  async function handleGenerate() {
+    setGenerating(true)
+    setGenerateError('')
+    try {
+      const res = await fetch('/api/drafts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          resume_id: resumeId,
+          posting_id: postingId,
+          suggestions,
+          decisions,
+          provider,
+        }),
+      })
+      const data = await res.json()
+      if (!res.ok) throw new Error(data.error || 'Failed to create draft')
+      navigate(`/analysis/preview?draft=${data.draft.id}`, {
+        state: { company: data.draft.company, role: data.draft.role },
+      })
+    } catch (err) {
+      setGenerateError(err.message || 'Failed to generate tailored resume.')
+    } finally {
+      setGenerating(false)
+    }
+  }
+
+  if (hydrating) return <div className={styles.page}><p>Loading draft...</p></div>
+
   if (loading) return <div className={styles.page}><p>Loading suggestions...</p></div>
 
   if (error) {
@@ -141,6 +200,7 @@ function ReviewSuggestions() {
 
   const acceptedCount = Object.values(decisions).filter(d => d.status === 'accepted' || d.status === 'edited').length
   const totalCount = suggestions.length
+  const hasAccepted = acceptedCount > 0
 
   return (
     <div className={styles.page}>
@@ -188,12 +248,20 @@ function ReviewSuggestions() {
         )
       })}
 
+      {generateError && (
+        <div className={styles.error}>{generateError}</div>
+      )}
+
       <div className={styles.footer}>
         <Link to={`/analysis?resume=${resumeId || ''}&posting=${postingId || ''}`} className={styles.backLink}>
           Back to Analysis
         </Link>
-        <button className={styles.generateButton} disabled title="Coming in Phase 12">
-          Generate Tailored Resume (Coming Soon)
+        <button
+          className={styles.generateButton}
+          disabled={generating || !hasAccepted}
+          onClick={handleGenerate}
+        >
+          {generating ? 'Generating...' : 'Generate Tailored Resume'}
         </button>
       </div>
     </div>

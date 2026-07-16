@@ -1,12 +1,14 @@
 ---
 phase: 12-tailored-resume
-reviewed: 2026-07-16T10:47:48Z
+reviewed: 2026-07-16T11:46:10Z
 depth: standard
-files_reviewed: 8
+files_reviewed: 10
 files_reviewed_list:
   - client/src/main.jsx
   - client/src/pages/PreviewTailored.jsx
   - client/src/pages/PreviewTailored.module.css
+  - client/src/pages/Resume.jsx
+  - client/src/pages/ResumeLibrary.jsx
   - client/src/pages/ReviewSuggestions.jsx
   - client/src/pages/ReviewSuggestions.module.css
   - server/index.js
@@ -14,40 +16,88 @@ files_reviewed_list:
   - server/lib/validateResume.js
 findings:
   critical: 2
-  warning: 6
-  info: 4
-  total: 12
+  warning: 4
+  info: 3
+  total: 9
 status: issues_found
 ---
 
 # Phase 12: Code Review Report
 
-**Reviewed:** 2026-07-16T10:47:48Z
+**Reviewed:** 2026-07-16T11:46:10Z
 **Depth:** standard
-**Files Reviewed:** 8
+**Files Reviewed:** 10
 **Status:** issues_found
 
 ## Summary
 
-Reviewed the tailored-resume generation flow: draft CRUD routes in `server/index.js`, the patch-application engine (`applyPatches.js`), schema validation (`validateResume.js`), and the two new client pages (`ReviewSuggestions.jsx`, `PreviewTailored.jsx`). The core patch-application logic is generally sound (deep clone, decision-gated mutation, per-section search across all entries), and the route layer consistently validates IDs against `VALID_ID` before touching the filesystem, which prevents path traversal. However, there are two correctness/robustness gaps that qualify as blockers: the draft `POST /api/drafts` and `POST /api/drafts/:id/save` routes do not verify that `posting_id` and `suggestions[].id` are well-formed before persisting/using them, and `applyPatches` silently overwrites `summary` without any "current still matches" check — unlike every other section — creating an inconsistent last-write-wins behavior that can silently corrupt data when suggestions are generated against a stale summary. Several warnings cover unhandled edge cases (duplicate suggestion IDs colliding in the decisions map, `handleSave`/`handleGenerate` lacking re-entrancy guards, missing `provider` allowlist validation) and info-level issues (magic numbers, `id` field never validated as string, dead navigation state).
+This is a re-review of the tailored-resume generation feature after a prior review round
+(`12-REVIEW.md` iteration 1, all 8 in-scope findings fixed per `12-REVIEW-FIX.md`) and the
+subsequent `12-03` commits that fixed the previously-logged UAT gap G-12-2 (Edit link / `Resume.jsx`
+were not id-aware — now correctly id-scoped for fetch and save). Verified the prior fixes are
+present and correct in the current code (summary modify guard, suggestion-shape validation,
+duplicate-ID rejection, re-entrancy guards, provider allowlist, draft-hydration state reset,
+contact-field type checks). `Resume.jsx`, `ResumeLibrary.jsx`, and `main.jsx` for the G-12-2 fix are
+also correct: the Edit link now carries the version id, the `/resume/:id` route exists, and
+`Resume.jsx` fetches/saves against `GET`/`PUT /api/resume-library/:id` when an id is present.
+
+Two new/still-open issues rise to Critical: `applyPatches`'s section/type coverage does not match
+what is actually declared valid elsewhere in the same codebase. `education` is a valid suggestion
+section per both the `POST /api/drafts` allowlist and the AI provider's Zod schema, but
+`applyPatches` has no handling for it at all — an accepted education suggestion silently vanishes.
+Similarly, `summary` + `type: 'remove'` is a valid combination that `applyPatches` doesn't handle
+(not even the `default` case catches it, since it falls through the matched `case 'summary'` block
+with no warning). Both are silent-failure paths: the user sees "Accepted" in the UI and gets no
+signal that their accepted suggestion never applied to the saved resume. A related-but-lower-severity
+issue (previously flagged as Info and left unfixed) is that empty user edits are silently discarded
+in favor of the original AI suggestion, which is a genuine "user's explicit edit was overridden"
+correctness bug, not just documentation debt — reclassified to Warning here.
 
 ## Critical Issues
 
-### CR-01: `applyPatches` summary patch is applied unconditionally, unlike every other section
+### CR-01: applyPatches silently drops all "education" section suggestions
 
-**File:** `server/lib/tailor/applyPatches.js:114-119`
-**Issue:** The `summary` case blindly overwrites `cloned.summary` with the resolved content whenever an accepted/edited suggestion targets it:
-```js
-case 'summary': {
-  if (type === 'modify' || type === 'add') {
-    cloned.summary = resolveContent(suggestion, decision)
-  }
+**File:** `server/lib/tailor/applyPatches.js:123-192`
+**Issue:** The `switch (section)` block handles `'summary'`, `'skills'`, `'experience'`, and
+`'projects'` but has no `case 'education'`. `education` is nonetheless a documented valid section:
+it's part of `VALID_SECTIONS` in `POST /api/drafts` (`server/index.js:511`) and part of the Zod
+`suggestionSchema.section` enum the AI providers use (`server/lib/analysis/providers/ai.js:45`,
+`z.enum(['summary', 'skills', 'experience', 'projects', 'education'])`). If an AI provider
+(Gemini/OpenRouter/Groq) returns an `education` suggestion, the user can accept it in
+`ReviewSuggestions`/`SuggestionCard` (neither restricts which sections are actionable — they render
+whatever the API returns), the draft is created and saved successfully (`POST /api/drafts`
+validates the suggestion *shape*, not whether `applyPatches` can actually act on it), but
+`applyPatches` hits the `default` branch and drops it with only a server-side `console.warn`. The
+Preview page and Save-to-Library flow give the user no indication that their accepted "education"
+suggestion never made it into the tailored resume.
+**Fix:**
+```javascript
+case 'education': {
+  if (!Array.isArray(cloned.education)) cloned.education = []
+  // implement add/modify/remove for education entries (education has no
+  // bullets, so modify/remove likely needs to match against degree/school/
+  // year fields rather than reusing applyToAllEntries), or explicitly
+  // remove 'education' from VALID_SECTIONS in server/index.js and from any
+  // AI provider prompt/schema that can emit it, so unsupported suggestions
+  // are rejected at draft-creation time instead of silently vanishing
+  // after the user accepts them.
   break
 }
 ```
-Every other section (`experience`, `projects`) explicitly searches for `suggestion.current` in the cloned resume before applying a modify/remove patch, and logs+skips when not found (see lines 141-149, 160-168). The `summary` branch has no equivalent check against `suggestion.current`. If a draft references a suggestion computed from an older/different resume snapshot (e.g., user edited the resume in another tab, or a draft is reused via a stale `?draft=` URL from a previous session against a resume that has since been re-selected in the library), the "modify" patch silently replaces whatever the current summary is — even if it no longer matches `suggestion.current` at all — with no warning and no validation error. This is a real data-loss risk: a user's manually-edited summary can be silently clobbered by a stale suggestion when they click "Generate Tailored Resume" days after generating suggestions.
+
+### CR-02: applyPatches silently drops "summary" remove-type suggestions with no warning at all
+
+**File:** `server/lib/tailor/applyPatches.js:124-135`
+**Issue:** The `'summary'` case only handles `type === 'modify'` and `type === 'add'`. `type:
+'remove'` is a valid value per the shared `VALID_TYPES` allowlist in `POST /api/drafts`
+(`server/index.js:512`) and the AI provider's Zod schema (`type: z.enum(['add', 'modify',
+'remove'])`, `server/lib/analysis/providers/ai.js:46`). A `remove`-type summary suggestion passes
+draft-creation validation and can be accepted by the user, but silently falls through the
+`if/else if` inside the matched `case 'summary':` block with **no branch executed and no
+`console.warn`** — unlike the `default:` case (unsupported section) which at least logs. This is a
+strictly worse silent-failure than CR-01 because there's no server-side diagnostic trail at all.
 **Fix:**
-```js
+```javascript
 case 'summary': {
   if (type === 'modify') {
     if (cloned.summary === suggestion.current) {
@@ -57,112 +107,147 @@ case 'summary': {
     }
   } else if (type === 'add') {
     cloned.summary = resolveContent(suggestion, decision)
+  } else if (type === 'remove') {
+    if (cloned.summary === suggestion.current) {
+      cloned.summary = ''
+    } else {
+      console.warn(`applyPatches: remove suggestion "${suggestion.id}" (summary) — current value does not match, skipped`)
+    }
+  } else {
+    console.warn(`applyPatches: suggestion "${suggestion.id}" (summary) has unsupported type "${type}", skipped`)
   }
   break
 }
 ```
 
-### CR-02: Draft creation trusts client-supplied `suggestions` array without validating element shape, enabling malformed drafts that crash `applyPatches` consumers
-
-**File:** `server/index.js:488-530`
-**Issue:** `POST /api/drafts` only checks `Array.isArray(suggestions)` (line 508) — it never validates that each element has the fields `applyPatches` depends on (`id`, `section`, `type`, `current`/`suggested`). Since `suggestions` and `decisions` originate entirely from the request body (the client echoes back whatever it received from `/api/analyze`, but nothing stops a direct API call from posting arbitrary JSON), a malformed suggestion — e.g. `{ "section": "experience" }` with no `type` — will pass through into `applyPatches`, where `resolveContent` (applyPatches.js:36-41) does `suggestion.suggested` which is `undefined`, and downstream `cloned.summary = undefined` or `cloned.skills.push(undefined)` can occur. This corrupts the persisted resume data (e.g. `PUT`-equivalent write in `POST /api/drafts/:id/save` at line 587 calls `writeResumeVersion(newId, result.resume)` even though `validateResume` would likely reject `undefined` skills entries as "must be a string" — but for `summary` there's no type check preventing `cloned.summary = undefined` from silently producing `"summary must be a string"` validation failure only at save time, not at draft-creation time). More importantly, since `section` is not restricted to the known enum (`summary|skills|experience|projects|education`) at creation time, the `default` case in `applyPatches` (line 173-175) only warns and skips — it doesn't reject the draft — so a caller can create drafts with garbage `suggestions` that persist to disk unchecked.
-**Fix:** Validate each suggestion's shape in the `POST /api/drafts` handler before writing:
-```js
-const VALID_SECTIONS = ['summary', 'skills', 'experience', 'projects', 'education']
-const VALID_TYPES = ['add', 'modify', 'remove']
-for (const s of suggestions) {
-  if (!s || typeof s !== 'object' || typeof s.id !== 'string' ||
-      !VALID_SECTIONS.includes(s.section) || !VALID_TYPES.includes(s.type)) {
-    return res.status(400).json({ error: 'Invalid suggestion object in suggestions array' })
-  }
-}
-```
-
 ## Warnings
 
-### WR-01: Duplicate suggestion IDs silently collapse decisions and cause incorrect patch application
+### WR-01: Empty edited content silently reverts to the original AI-suggested text, discarding the user's explicit edit
 
-**File:** `server/lib/tailor/applyPatches.js:104-107`, `client/src/pages/ReviewSuggestions.jsx:95-119`
-**Issue:** Both the client `decisions` map and the server's `accepted` filter key everything off `suggestion.id`. Heuristic suggestions use per-run counters (`s1`, `s2`, ...), but AI-provider suggestions (`server/lib/analysis/providers/ai.js`) get their `id` from LLM output validated only as `z.string()` — nothing guarantees uniqueness. If the AI returns two suggestions with the same `id`, `decisions[id]` in React state collapses to a single entry (last `SuggestionCard` write wins), and on the server, `accepted = suggestionList.filter(s => decisionMap[s.id]...)` will mark BOTH suggestions accepted/rejected together even if the user only meant to accept one, since they share a decision.
-**Fix:** Enforce ID uniqueness server-side when generating AI suggestions (dedupe or reassign IDs), or validate uniqueness in `POST /api/drafts` and reject duplicate IDs.
-
-### WR-02: `handleSave` (PreviewTailored) and `handleGenerate` (ReviewSuggestions) have no re-entrancy guard beyond the disabled button
-
-**File:** `client/src/pages/PreviewTailored.jsx:51-68`, `client/src/pages/ReviewSuggestions.jsx:141-166`
-**Issue:** `saving`/`generating` state disables the button in JSX, but the handler itself doesn't check `if (saving) return` at the top. A fast double-click (before React re-renders to apply `disabled`) or a programmatic double-invocation can fire two concurrent `POST` requests. For `handleSave`, this could create two duplicate resume-library versions from a single click if the disabled-attribute update races the click handler.
+**File:** `server/lib/tailor/applyPatches.js:36-41`
+**Issue:** `resolveContent` only honors `decision.editedContent` when it's a non-empty string:
+`typeof decision.editedContent === 'string' && decision.editedContent`. If a user opens the edit
+textarea in `SuggestionCard.jsx` and clears it entirely — e.g. to intentionally blank out a
+suggested bullet — and clicks Save, `onEdit(suggestion.id, '')` sets `{status: 'edited',
+editedContent: ''}`; there is no client-side guard preventing the save of an empty edit
+(`SuggestionCard.jsx:87`). On the server, `resolveContent` treats the empty string as falsy and
+silently substitutes `suggestion.suggested` instead — applying content the user explicitly removed.
+This was previously flagged as an Info-level "undocumented behavior" item and left unfixed by
+design in the prior review round; on inspection it's a genuine correctness bug (user's saved edit
+is overridden with different content than what they saved), not just a documentation gap.
 **Fix:**
-```js
-async function handleSave() {
-  if (saving) return
-  setSaving(true)
-  ...
+```javascript
+function resolveContent(suggestion, decision) {
+  if (decision && decision.status === 'edited' && typeof decision.editedContent === 'string') {
+    return decision.editedContent
+  }
+  return suggestion.suggested
+}
 ```
+If empty edits should be disallowed outright, enforce that at the point of decision (client-side
+disable Save on empty textarea, and/or server-side reject empty `editedContent` in `POST
+/api/drafts` validation) rather than silently substituting different content than what was saved.
 
-### WR-03: `POST /api/drafts` does not validate `provider` against a known allowlist
+### WR-02: applyToAllEntries uses first-match substring search, risking cross-entry misapplication of modify/remove patches
 
-**File:** `server/index.js:488-530`
-**Issue:** `provider: provider || 'heuristic'` (line 522) accepts any client-supplied string and persists it into the draft file unchecked, unlike `/api/analyze` which restricts to a fixed `AI_PROVIDERS` list plus `'heuristic'`. This is low-severity (provider is only used for display/metadata in the draft), but it's inconsistent with the validation pattern used elsewhere in the same file and allows arbitrary strings into stored data.
+**File:** `server/lib/tailor/applyPatches.js:51-66`
+**Issue:** `applyToAllEntries` searches bullets with `b.includes(currentValue)` (substring, not
+exact match) and returns on the first entry/bullet that matches. If the same or an overlapping
+substring appears in bullets across two different experience/project entries, a `modify`/`remove`
+suggestion intended for one job's bullet can silently apply to a different job's bullet instead,
+with no indication of which entry was actually changed. This is the `modify`/`remove` counterpart
+to the already-documented WR-06 limitation on `applyAddToList` (best-effort last-entry placement
+for `add`), but it is not documented anywhere in this file.
+**Fix:** Prefer exact match over `.includes()` where `current` values are expected to be full
+bullet text (as the heuristic provider produces), and/or have suggestions carry a target entry
+index/identifier so patches apply deterministically. At minimum, add a comment analogous to the
+existing WR-06 block documenting this substring-first-match risk.
+
+### WR-03: skills "remove" is a silent no-op on mismatch, unlike the equivalent experience/projects path
+
+**File:** `server/lib/tailor/applyPatches.js:145-147`
+**Issue:** `experience`/`projects` remove (via `applyToAllEntries`) logs a `console.warn` when no
+matching bullet is found. The `skills` `remove` branch does `cloned.skills =
+cloned.skills.filter(sk => sk !== suggestion.current)` with no check on whether anything was
+actually removed — if `suggestion.current` doesn't match any skill (e.g. a stale suggestion after
+the resume was edited between analysis and draft generation), the accepted removal is a silent
+no-op with zero diagnostic trail, inconsistent with the pattern used elsewhere in the same file.
 **Fix:**
-```js
-const VALID_PROVIDERS = ['heuristic', 'gemini', 'openrouter', 'groq']
-const safeProvider = VALID_PROVIDERS.includes(provider) ? provider : 'heuristic'
-```
-
-### WR-04: `ReviewSuggestions` `useEffect` omits `initialStateSuggestions`, `postingId`, `resumeId`, `provider` from deps but reads them inside — stale closure risk if `draftId` changes without remount
-
-**File:** `client/src/pages/ReviewSuggestions.jsx:34-93`
-**Issue:** The effect is scoped to `[draftId]` with an eslint-disable comment, but the effect body reads `initialStateSuggestions`, `postingId`, `resumeId`, and `provider` from the enclosing closure. Because `draftId` comes from `useSearchParams()` and the component is not remounted on navigation within the same route (React Router reuses the component instance for `/analysis/review?draft=X` → `/analysis/review?draft=Y`), if a user navigates directly between two different drafts via the "Back to Suggestions" link without a full page reload, the effect re-fires (deps changed since `draftId` changed) but `postingId`/`resumeId`/`provider` still hold values from the *previous* draft's state, not the new one, until the fetch resolves and calls `setPostingId`/`setResumeId`. This is mitigated by the fact this page is normally reached via `PreviewTailored`'s "Back to Suggestions" link with a matching `draftId`, but it's still a latent staleness bug if the URL is edited directly.
-**Fix:** Either add the missing deps and restructure to avoid infinite loops (e.g., derive `postingId`/`resumeId` from the draft response only, not the closure), or reset dependent state at the top of the effect before the async fetch begins.
-
-### WR-05: `validateResume` requires exact contact fields but does not validate their types
-
-**File:** `server/lib/validateResume.js:53-60`
-**Issue:** The contact-field loop only checks presence (`!(field in data.contact)`) — it never validates that `email`, `github`, `location` are strings. A tailored resume patch or malformed API payload could set `contact.email = 123` or `contact.email = {}` and still pass validation, then break rendering in `PreviewTailored.jsx:121` (`{contact.email && <span> · {contact.email}</span>}` — an object would render `[object Object]` or throw if it's not a primitive React can render, e.g. `contact.email = { foo: 'bar' }` throws "Objects are not valid as a React child").
-**Fix:**
-```js
-for (const field of CONTACT_FIELDS) {
-  if (!(field in data.contact)) {
-    errors.push(`Missing contact field: ${field}`)
-  } else if (data.contact[field] !== '' && typeof data.contact[field] !== 'string') {
-    errors.push(`contact.${field} must be a string`)
+```javascript
+} else if (type === 'remove') {
+  const before = cloned.skills.length
+  cloned.skills = cloned.skills.filter(sk => sk !== suggestion.current)
+  if (cloned.skills.length === before) {
+    console.warn(`applyPatches: remove suggestion "${suggestion.id}" (skills) — current value not found, skipped`)
   }
 }
 ```
 
-### WR-06: `applyAddToList` appends new bullets to the *last* entry regardless of relevance, silently mutating unrelated historical jobs/projects
+### WR-04: readResumeVersion / readDraft have no malformed-JSON handling, and no route wraps them in try/catch
 
-**File:** `server/lib/tailor/applyPatches.js:76-90`
-**Issue:** When an "add" suggestion targets `experience` or `projects`, the bullet is always appended to `entries[entries.length - 1]` — i.e., whatever the last entry in the array happens to be, with no way for the suggestion to specify which company/project it belongs to. If the resume's most recent job is unrelated to the job posting's requirements (e.g., the strongest keyword match is actually from an older role), the tailored bullet gets attached to the wrong entry, producing an inaccurate/misleading resume (e.g., claiming a skill was used at the wrong job). This isn't a crash, but it's a correctness issue for the feature's stated purpose (accurate tailored resumes).
-**Fix:** Longer-term, suggestions should carry a target entry identifier (e.g., company name or index) so `applyAddToList` can place bullets correctly; at minimum, document this limitation prominently since it affects resume accuracy.
+**File:** `server/index.js:65-71, 98-104, 402-628`
+**Issue:** `readResumeVersion` and `readDraft` call `JSON.parse` on files this project explicitly
+designs to be user-editable (CLAUDE.md: "JSON file storage: Keep data human-readable and easy to
+inspect/edit") with no try/catch, and none of the routes that call them — `GET/PUT/DELETE
+/api/resume-library/:id`, `GET /api/drafts/:id`, `POST /api/drafts/:id/save`, `DELETE
+/api/drafts/:id`, `POST /api/analyze`'s `resume_version_id` path — wrap the call in try/catch. No
+global Express error-handling middleware is registered in `server/index.js`. A hand-edit that
+leaves invalid JSON in `resume_library/<id>.json` or `drafts/<id>.json` will crash the request with
+an unhandled exception, returning Express's default HTML 500 page (with a stack trace) instead of
+the clean `{ error: ... }` JSON responses every other failure path in this file returns.
+**Fix:**
+```javascript
+function readResumeVersion(id) {
+  if (!VALID_ID.test(id)) return null
+  const filePath = path.join(LIBRARY_DIR, `${id}.json`)
+  if (!fs.existsSync(filePath)) return null
+  try {
+    return JSON.parse(fs.readFileSync(filePath, 'utf-8'))
+  } catch {
+    return null
+  }
+}
+```
+Apply the same pattern to `readDraft`. Callers already treat a `null` return as "not found" (404),
+so this reuses an existing contract rather than introducing a new one.
 
 ## Info
 
-### IN-01: Magic number `24 * 60 * 60 * 1000` for draft TTL has no named constant
+### IN-01: validateResume never type-checks top-level `name`
 
-**File:** `server/index.js:126`
-**Issue:** `MAX_AGE_MS = 24 * 60 * 60 * 1000` is a reasonable local const name but the "24 hours" retention policy isn't documented anywhere as configurable, and the comment above `cleanOldDrafts` (line 122) doesn't explain why 24h was chosen.
-**Fix:** Minor; consider extracting to a top-of-file constant `const DRAFT_TTL_HOURS = 24` for discoverability.
+**File:** `server/lib/validateResume.js:25-30`
+**Issue:** `REQUIRED_FIELDS` checks that `name` is present but no branch validates its type (unlike
+`summary`, `contact`, `experience`, `projects`, `education`, `skills`, which all have dedicated type
+checks a few lines below). A non-string `name` would pass validation and could later break
+rendering in `PreviewTailored.jsx:121` (`<strong>{resume.name}</strong>`) with a React "objects are
+not valid as a child" crash. Low likelihood given the only write paths today are a controlled text
+`<input>` in `Resume.jsx` and `applyPatches` (which never touches `name`), but inconsistent with the
+rest of the validator.
+**Fix:** `if ('name' in data && typeof data.name !== 'string') errors.push('name must be a string')`
 
-### IN-02: `resolveContent` treats empty-string `editedContent` as "not edited", silently falling back to the original suggestion
+### IN-02: PUT /api/resume-library/:id and POST /api/resume-library accept any type for `name`
 
-**File:** `server/lib/tailor/applyPatches.js:36-41`
-**Issue:** `typeof decision.editedContent === 'string' && decision.editedContent` — the truthy check means a user who intentionally clears a bullet to an empty string (e.g., to effectively delete content via edit) will have their edit ignored and `suggestion.suggested` applied instead. This is likely intentional (empty edits are probably invalid), but it's undocumented behavior that could confuse a user who edits a field to `''` expecting it to stick.
-**Fix:** Document this behavior in the JSDoc comment, or validate on the client that empty edits aren't submitted (disable Save when textarea is empty).
+**File:** `server/index.js:377-378, 426-428`
+**Issue:** `req.body.name` is used directly (`entry.name = req.body.name` / `const name =
+req.body.name || 'Untitled Resume'`) with only a truthiness check, no type check. A non-string
+`name` would be persisted into `resume_library/index.json` untouched, and `ResumeLibrary.jsx`
+renders `version.name || 'Untitled Resume'` directly as a JSX child, which would throw if `name` is
+an object.
+**Fix:** Validate `typeof req.body.name === 'string'` before assigning, matching the pattern already
+used for `resume_data` validation in the same handlers.
 
-### IN-03: `sourceEntry`/`source_name` lookup in `GET /api/drafts/:id` does not handle a renamed/deleted source resume gracefully in the UI copy
+### IN-03: Rename form allows whitespace-only names with no trim/validation
 
-**File:** `server/index.js:550-559`, `client/src/pages/PreviewTailored.jsx:102-104`
-**Issue:** If `sourceEntry` is `null` (source resume version still exists per line 543-546 check, but its library index entry was somehow removed — an edge case if `DELETE /api/resume-library/:id` runs concurrently with a draft using it), `source_name` is `null` and the "Based on: ..." line simply doesn't render (`sourceName &&` guard). This degrades gracefully but silently — no indication to the user that source metadata is missing.
-**Fix:** Low priority; optionally render a fallback like "Based on: (unknown resume)" instead of hiding the line entirely.
-
-### IN-04: `ReviewSuggestions.jsx` `handleAcceptAll`/`handleRejectAll` iterate `suggestions` but don't clear opposite-status decisions in one pass consistently with single accept/reject toggle semantics
-
-**File:** `client/src/pages/ReviewSuggestions.jsx:121-139`
-**Issue:** `handleAccept`/`handleReject` (lines 95-115) toggle: clicking Accept on an already-accepted item un-accepts it. But `handleAcceptAll` only sets status to `'accepted'` for items not already accepted — it doesn't toggle/undo anything, which is reasonable for "Accept All" semantics but inconsistent with the mental model established by the per-card toggle buttons (no "Undo Accept All"). Not a bug, but worth noting as an intentional asymmetry that could surprise users familiar with the per-item toggle behavior.
-**Fix:** None required; consider a code comment clarifying "Accept All is idempotent, not a toggle" to preempt confusion for future maintainers.
+**File:** `client/src/pages/ResumeLibrary.jsx:63-78`
+**Issue:** `handleRename` sends `renameValue` as-is; there is no client-side trim or empty-string
+check before the request, and the server's `if (req.body.name)` truthiness check treats a
+whitespace-only string (e.g. `"   "`) as valid, persisting an effectively-blank name. Minor UX issue
+only — `name` is purely a display label with no downstream logic depending on it being non-blank.
+**Fix:** Trim and validate `renameValue` before calling `handleRename`, e.g. disable the Save button
+when `renameValue.trim().length === 0`.
 
 ---
 
-_Reviewed: 2026-07-16T10:47:48Z_
+_Reviewed: 2026-07-16T11:46:10Z_
 _Reviewer: Claude (gsd-code-reviewer)_
 _Depth: standard_

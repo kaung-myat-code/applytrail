@@ -49,6 +49,7 @@ function PreviewTailored() {
   }, [draftId])
 
   async function handleSave() {
+    if (saving) return
     setSaving(true)
     setSaveError('')
     try {

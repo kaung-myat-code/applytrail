@@ -139,6 +139,7 @@ function ReviewSuggestions() {
   }
 
   async function handleGenerate() {
+    if (generating) return
     setGenerating(true)
     setGenerateError('')
     try {

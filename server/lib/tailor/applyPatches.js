@@ -112,7 +112,13 @@ function applyPatches(resume, suggestions, decisions) {
 
     switch (section) {
       case 'summary': {
-        if (type === 'modify' || type === 'add') {
+        if (type === 'modify') {
+          if (cloned.summary === suggestion.current) {
+            cloned.summary = resolveContent(suggestion, decision)
+          } else {
+            console.warn(`applyPatches: modify suggestion "${suggestion.id}" (summary) — current value does not match, skipped`)
+          }
+        } else if (type === 'add') {
           cloned.summary = resolveContent(suggestion, decision)
         }
         break

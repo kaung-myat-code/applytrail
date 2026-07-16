@@ -35,6 +35,17 @@ function ReviewSuggestions() {
     // Draft hydration (TAILOR-05 fix): restore suggestions + decisions from a
     // server-side draft when returning via ?draft=<id> (e.g. "Back to Suggestions").
     if (draftId && !initialStateSuggestions) {
+      // Reset dependent state before the fetch begins so a direct navigation
+      // between two different drafts (component reused, not remounted) never
+      // renders/uses the previous draft's postingId/resumeId/provider while
+      // the new draft is loading (WR-04).
+      setHydrating(true)
+      setResumeId(null)
+      setPostingId(null)
+      setProvider('heuristic')
+      setSuggestions([])
+      setDecisions({})
+
       async function fetchDraft() {
         try {
           const res = await fetch(`/api/drafts/${draftId}`)

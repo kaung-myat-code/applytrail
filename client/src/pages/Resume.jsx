@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import styles from './Resume.module.css'
 import SectionEditor from '../components/SectionEditor'
 
 function Resume() {
+  const { id } = useParams()
   const [resumeData, setResumeData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [loadError, setLoadError] = useState('')
@@ -13,12 +15,14 @@ function Resume() {
 
   useEffect(() => {
     loadResume()
-  }, [])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id])
 
   function loadResume() {
     setLoading(true)
     setLoadError('')
-    fetch('/api/resume')
+    const request = id ? fetch(`/api/resume-library/${id}`) : fetch('/api/resume')
+    request
       .then((res) => {
         if (!res.ok) throw new Error(`Server error (${res.status})`)
         return res.json()
@@ -200,11 +204,19 @@ function Resume() {
         .filter((s) => s.length > 0),
     }
 
-    fetch('/api/resume', {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(dataToSave),
-    })
+    const saveRequest = id
+      ? fetch(`/api/resume-library/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ resume_data: dataToSave }),
+        })
+      : fetch('/api/resume', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(dataToSave),
+        })
+
+    saveRequest
       .then((res) => {
         if (!res.ok) throw new Error(`Server error (${res.status})`)
         return res.json()

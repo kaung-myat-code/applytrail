@@ -39,11 +39,11 @@
 
 ### Application Pre-fill & Export
 
-- [ ] **PREFILL-01**: User can create a new application pre-filled with company, role, and job posting from the analyzed job posting
-- [ ] **PREFILL-02**: A confirmation dialog is shown before creating the application, with pre-filled data visible
-- [ ] **PREFILL-03**: Created application is linked to the tailored resume via `resume_version_id`
-- [ ] **EXPORT-01**: User can export any resume version as a PDF file
-- [ ] **EXPORT-02**: User can export any resume version as a JSON file
+- [x] **PREFILL-01**: User can create a new application pre-filled with company, role, and job posting from the analyzed job posting
+- [x] **PREFILL-02**: A confirmation dialog is shown before creating the application, with pre-filled data visible
+- [x] **PREFILL-03**: Created application is linked to the tailored resume via `resume_version_id`
+- [x] **EXPORT-01**: User can export any resume version as a PDF file
+- [x] **EXPORT-02**: User can export any resume version as a JSON file
 
 ## Future Requirements
 
@@ -92,11 +92,11 @@
 | TAILOR-04 | Phase 12 | Complete |
 | TAILOR-05 | Phase 12 | Complete |
 | TAILOR-06 | Phase 12 | Complete |
-| PREFILL-01 | Phase 13 | Pending |
-| PREFILL-02 | Phase 13 | Pending |
-| PREFILL-03 | Phase 13 | Pending |
-| EXPORT-01 | Phase 13 | Pending |
-| EXPORT-02 | Phase 13 | Pending |
+| PREFILL-01 | Phase 13 | Complete |
+| PREFILL-02 | Phase 13 | Complete |
+| PREFILL-03 | Phase 13 | Complete |
+| EXPORT-01 | Phase 13 | Complete |
+| EXPORT-02 | Phase 13 | Complete |
 
 ---
 *Requirements defined: 2026-07-02*

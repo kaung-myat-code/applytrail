@@ -9,6 +9,8 @@ const { sanitizeError } = require('./lib/analysis/providers/ai')
 const { validateMatchReport, validateSuggestions } = require('./lib/analysis/validate')
 const { validateResume } = require('./lib/validateResume')
 const { applyPatches } = require('./lib/tailor/applyPatches')
+const pdfmake = require('pdfmake')
+const { buildResumePdfDefinition } = require('./lib/pdf')
 
 const app = express()
 const DATA_DIR = path.join(__dirname, '..')
@@ -254,6 +256,19 @@ migrateApplications()
 migrateResumeLibrary()
 cleanOldDrafts()
 
+// Register the Roboto font for PDF export (once, at startup). pdfmake only
+// resolves a font for a text block when the document definition names a
+// registered font (see buildResumePdfDefinition's defaultStyle.font). The
+// installed pdfmake version exposes { vfs, fonts } from the Roboto font
+// package -- addFonts() only accepts the flat `fonts` descriptor, so the
+// font file bytes (`vfs`) must be separately written into pdfmake's virtual
+// filesystem before addFonts is called, or font resolution fails at render time.
+const RobotoFont = require('pdfmake/build/fonts/Roboto')
+pdfmake.addFonts(RobotoFont.fonts)
+for (const [filename, entry] of Object.entries(RobotoFont.vfs)) {
+  pdfmake.virtualfs.writeFileSync(filename, Buffer.from(entry.data, entry.encoding || 'base64'))
+}
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', uptime: process.uptime() })
 })
@@ -264,8 +279,10 @@ app.get('/api/applications', (req, res) => {
   res.json(applications)
 })
 
+const VALID_STATUSES = ['drafted', 'applied', 'interviewing', 'offered', 'rejected', 'withdrawn']
+
 app.post('/api/applications', (req, res) => {
-  const { job_posting_id, cover_letter_paragraph, status } = req.body
+  const { job_posting_id, resume_version_id, company, role, cover_letter_paragraph, status } = req.body
 
   if (!job_posting_id) {
     return res.status(400).json({ error: 'job_posting_id is required' })
@@ -278,14 +295,23 @@ app.post('/api/applications', (req, res) => {
     return res.status(404).json({ error: 'Job posting not found' })
   }
 
+  if (resume_version_id && !VALID_ID.test(resume_version_id)) {
+    return res.status(400).json({ error: 'Invalid resume version ID' })
+  }
+
+  if (status && !VALID_STATUSES.includes(status)) {
+    return res.status(400).json({ error: `status must be one of: ${VALID_STATUSES.join(', ')}` })
+  }
+
   const applications = readJSON('applications.json')
   const now = new Date().toISOString().split('T')[0]
 
   const newApplication = {
     id: generateId(),
     job_posting_id,
-    company: posting.company,
-    role: posting.role,
+    resume_version_id: resume_version_id || null,
+    company: company || posting.company,
+    role: role || posting.role,
     cover_letter_paragraph: cover_letter_paragraph || '',
     status: status || 'drafted',
     date_applied: now,
@@ -296,8 +322,6 @@ app.post('/api/applications', (req, res) => {
   writeJSON('applications.json', applications)
   res.json({ ok: true, application: newApplication })
 })
-
-const VALID_STATUSES = ['drafted', 'applied', 'interviewing', 'offered', 'rejected', 'withdrawn']
 
 app.put('/api/applications/:id', (req, res) => {
   const { id } = req.params
@@ -481,6 +505,43 @@ app.put('/api/resume-library/:id/select', (req, res) => {
   index.selected_id = id
   writeLibraryIndex(index)
   res.json({ ok: true, selected_id: id })
+})
+
+// Resume Library export endpoints
+
+app.get('/api/resume-library/:id/export/json', (req, res) => {
+  const { id } = req.params
+  if (!VALID_ID.test(id)) {
+    return res.status(400).json({ error: 'Invalid resume version ID' })
+  }
+  const data = readResumeVersion(id)
+  if (!data) {
+    return res.status(404).json({ error: 'Resume version not found' })
+  }
+  res.attachment('resume.json').json(data)
+})
+
+app.get('/api/resume-library/:id/export/pdf', async (req, res) => {
+  const { id } = req.params
+  if (!VALID_ID.test(id)) {
+    return res.status(400).json({ error: 'Invalid resume version ID' })
+  }
+  const data = readResumeVersion(id)
+  if (!data) {
+    return res.status(404).json({ error: 'Resume version not found' })
+  }
+
+  try {
+    const docDefinition = buildResumePdfDefinition(data)
+    const pdfDoc = pdfmake.createPdf(docDefinition)
+    const buffer = await pdfDoc.getBuffer()
+    res.setHeader('Content-Type', 'application/pdf')
+    res.setHeader('Content-Disposition', 'attachment; filename="resume.pdf"')
+    res.send(buffer)
+  } catch (err) {
+    console.error('PDF export error:', err)
+    res.status(500).json({ error: 'Failed to generate PDF', details: err.message })
+  }
 })
 
 // Draft CRUD endpoints -- ephemeral storage for tailored resume review sessions

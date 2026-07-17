@@ -295,8 +295,13 @@ app.post('/api/applications', (req, res) => {
     return res.status(404).json({ error: 'Job posting not found' })
   }
 
-  if (resume_version_id && !VALID_ID.test(resume_version_id)) {
-    return res.status(400).json({ error: 'Invalid resume version ID' })
+  if (resume_version_id) {
+    if (!VALID_ID.test(resume_version_id)) {
+      return res.status(400).json({ error: 'Invalid resume version ID' })
+    }
+    if (!readResumeVersion(resume_version_id)) {
+      return res.status(404).json({ error: 'Resume version not found' })
+    }
   }
 
   if (status && !VALID_STATUSES.includes(status)) {

@@ -3,7 +3,8 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "node lib/pdf.test.js"
   },
   "dependencies": {
     "@ai-sdk/google": "^4.0.7",

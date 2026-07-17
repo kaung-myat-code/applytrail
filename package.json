@@ -9,7 +9,7 @@
     "start": "node server/index.js",
     "postinstall": "cd client && npm install && cd ../server && npm install",
     "lint": "cd client && npm run lint",
-    "test": "cd client && npm run test"
+    "test": "cd client && npm run test && cd ../server && npm run test"
   },
   "devDependencies": {
     "concurrently": "^9.0.0"

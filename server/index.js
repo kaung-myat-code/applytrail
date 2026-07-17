@@ -264,8 +264,10 @@ app.get('/api/applications', (req, res) => {
   res.json(applications)
 })
 
+const VALID_STATUSES = ['drafted', 'applied', 'interviewing', 'offered', 'rejected', 'withdrawn']
+
 app.post('/api/applications', (req, res) => {
-  const { job_posting_id, cover_letter_paragraph, status } = req.body
+  const { job_posting_id, resume_version_id, company, role, cover_letter_paragraph, status } = req.body
 
   if (!job_posting_id) {
     return res.status(400).json({ error: 'job_posting_id is required' })
@@ -278,14 +280,23 @@ app.post('/api/applications', (req, res) => {
     return res.status(404).json({ error: 'Job posting not found' })
   }
 
+  if (resume_version_id && !VALID_ID.test(resume_version_id)) {
+    return res.status(400).json({ error: 'Invalid resume version ID' })
+  }
+
+  if (status && !VALID_STATUSES.includes(status)) {
+    return res.status(400).json({ error: `status must be one of: ${VALID_STATUSES.join(', ')}` })
+  }
+
   const applications = readJSON('applications.json')
   const now = new Date().toISOString().split('T')[0]
 
   const newApplication = {
     id: generateId(),
     job_posting_id,
-    company: posting.company,
-    role: posting.role,
+    resume_version_id: resume_version_id || null,
+    company: company || posting.company,
+    role: role || posting.role,
     cover_letter_paragraph: cover_letter_paragraph || '',
     status: status || 'drafted',
     date_applied: now,
@@ -296,8 +307,6 @@ app.post('/api/applications', (req, res) => {
   writeJSON('applications.json', applications)
   res.json({ ok: true, application: newApplication })
 })
-
-const VALID_STATUSES = ['drafted', 'applied', 'interviewing', 'offered', 'rejected', 'withdrawn']
 
 app.put('/api/applications/:id', (req, res) => {
   const { id } = req.params

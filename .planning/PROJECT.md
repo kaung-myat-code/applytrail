@@ -13,7 +13,7 @@ End-to-end job application workflow in a web UI — from resume to cover letter 
 **Shipped:** v1.1 Release Polish (2026-06-27)
 **Live URL:** https://applytrail.onrender.com
 **Deployment:** Render free tier, auto-deploy from main branch
-**Status:** v1.0/v1.1 shipped (36/36 requirements). v2.0 Resume Tailoring Flow in progress — Phase 12 complete 2026-07-16 (tailored resume generation: applyPatches engine, draft storage, review/preview UI). Phase 13 (Application Pre-fill and Export) remains.
+**Status:** v1.0/v1.1 shipped (36/36 requirements). v2.0 Resume Tailoring Flow in progress — Phase 13 complete 2026-07-17 (application pre-fill from job posting + tailored resume, PDF/JSON export via pdfmake). Phase 14 remains.
 
 <details>
 <summary>Previous milestone context</summary>
@@ -75,6 +75,8 @@ A local web MVP that migrated an existing Claude Code job application workflow i
 - [x] User can return to suggestion review from preview without losing accept/reject decisions (Phase 12)
 - [x] Generated resume conforms to the resume JSON schema before it can be saved (Phase 12)
 - [x] Source resume remains unchanged after generating a tailored resume (Phase 12)
+- [x] User can create a new application pre-filled from the analyzed job posting with the tailored resume linked automatically (Phase 13)
+- [x] User can export any resume library version as PDF or JSON (Phase 13)
 
 ### Active
 
@@ -122,6 +124,8 @@ A local web MVP that migrated an existing Claude Code job application workflow i
 | Ephemeral draft storage for tailoring | Drafts stored as project-root files (`drafts/`), deleted on save, swept on startup — avoids polluting the permanent resume library with in-progress tailoring state | Implemented (Phase 12) |
 | URL search params as source of truth for cross-page draft state | `?draft=<id>` (not React Router `location.state`) survives browser refresh across Review ↔ Preview navigation | Implemented (Phase 12) |
 | Route-param branching over component forking | `Resume.jsx` branches on `useParams().id` to target either the legacy singular resume or a specific library version, rather than splitting into two components | Implemented (Phase 12) |
+| pdfmake for PDF export | Pure-JS PDF generation (no headless browser) to respect the Render free-tier memory ceiling | Implemented (Phase 13) |
+| `resume_version_id` existence check on application creation | Format-only validation allowed orphaned/forged references into `applications.json`; existence check matches the sibling `job_posting_id` lookup pattern (code review CR-02) | Implemented (Phase 13) |
 
 ## Milestones
 
@@ -151,4 +155,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-16 after Phase 12*
+*Last updated: 2026-07-17 after Phase 13*

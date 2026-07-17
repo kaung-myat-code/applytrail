@@ -341,7 +341,7 @@ Plans:
   5. User can export any resume version as a JSON file
   6. Applications reference a resume version by resume_version_id rather than duplicating resume data
 
-**Plans**: 1/3 plans executed
+**Plans**: 2/3 plans executed
 
 Plans:
 **Wave 1**
@@ -350,7 +350,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 13-02-PLAN.md — CreateApplicationModal component: pre-filled fields, auto-generated cover letter, confirm/cancel
+- [x] 13-02-PLAN.md — CreateApplicationModal component: pre-filled fields, auto-generated cover letter, confirm/cancel
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -400,4 +400,4 @@ Phases execute in numeric order: 9 -> 10 -> 11 -> 11.5 -> 12 -> 13
 | 11. Section-by-Section Suggestions | v2.0 | 1/1 | Complete   | 2026-07-02 |
 | 11.5 AI Analysis Provider 🔶 INSERTED | v2.0 | 2/2 | Complete | 2026-07-03 |
 | 12. Tailored Resume Generation | v2.0 | 3/3 | Complete    | 2026-07-16 |
-| 13. Application Pre-fill and Export | v2.0 | 1/3 | In Progress|  |
+| 13. Application Pre-fill and Export | v2.0 | 2/3 | In Progress|  |

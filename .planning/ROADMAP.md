@@ -341,12 +341,12 @@ Plans:
   5. User can export any resume version as a JSON file
   6. Applications reference a resume version by resume_version_id rather than duplicating resume data
 
-**Plans**: 0/3 plans complete
+**Plans**: 1/3 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 13-01-PLAN.md — Backend: resume_version_id on POST /api/applications, JSON/PDF export routes, server/lib/pdf.js (pdfmake)
+- [x] 13-01-PLAN.md — Backend: resume_version_id on POST /api/applications, JSON/PDF export routes, server/lib/pdf.js (pdfmake)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -400,4 +400,4 @@ Phases execute in numeric order: 9 -> 10 -> 11 -> 11.5 -> 12 -> 13
 | 11. Section-by-Section Suggestions | v2.0 | 1/1 | Complete   | 2026-07-02 |
 | 11.5 AI Analysis Provider 🔶 INSERTED | v2.0 | 2/2 | Complete | 2026-07-03 |
 | 12. Tailored Resume Generation | v2.0 | 3/3 | Complete    | 2026-07-16 |
-| 13. Application Pre-fill and Export | v2.0 | 0/TBD | Not started | - |
+| 13. Application Pre-fill and Export | v2.0 | 1/3 | In Progress|  |

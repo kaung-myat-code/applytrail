@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import styles from './ResumeLibrary.module.css'
+import CreateApplicationModal from '../components/CreateApplicationModal.jsx'
 
 function ResumeLibrary() {
+  const navigate = useNavigate()
   const [library, setLibrary] = useState({ selected_id: null, versions: [] })
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -10,6 +12,8 @@ function ResumeLibrary() {
   const [renamingId, setRenamingId] = useState(null)
   const [renameValue, setRenameValue] = useState('')
   const [deletingId, setDeletingId] = useState(null)
+  const [creatingApplicationFor, setCreatingApplicationFor] = useState(null)
+  const [exportingId, setExportingId] = useState(null)
 
   function fetchLibrary() {
     fetch('/api/resume-library')
@@ -93,6 +97,45 @@ function ResumeLibrary() {
     }
   }
 
+  async function handleCreateApplication(version) {
+    setError('')
+    try {
+      const res = await fetch('/api/job-postings')
+      const postings = await res.json()
+      if (!res.ok) throw new Error('Failed to load job postings')
+      if (!Array.isArray(postings) || postings.length === 0) {
+        setError('No job posting found. Create a job posting first from New Application before creating an application from this resume.')
+        return
+      }
+      const mostRecent = [...postings].sort((a, b) => (a.created_at < b.created_at ? 1 : -1))[0]
+      setCreatingApplicationFor({ version, posting: mostRecent })
+    } catch (err) {
+      setError(err.message || 'Failed to load job postings')
+    }
+  }
+
+  function handleExportJson(id) {
+    setExportingId(id)
+    const a = document.createElement('a')
+    a.href = `/api/resume-library/${id}/export/json`
+    a.download = 'resume.json'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    setTimeout(() => setExportingId(null), 1000)
+  }
+
+  function handleExportPdf(id) {
+    setExportingId(id)
+    const a = document.createElement('a')
+    a.href = `/api/resume-library/${id}/export/pdf`
+    a.download = 'resume.pdf'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    setTimeout(() => setExportingId(null), 1000)
+  }
+
   if (loading) {
     return (
       <div className={styles.page}>
@@ -115,6 +158,10 @@ function ResumeLibrary() {
       </div>
     )
   }
+
+  const linkedResumeVersionLabel = creatingApplicationFor
+    ? `${creatingApplicationFor.version.name} (linked to posting: ${creatingApplicationFor.posting.company} - ${creatingApplicationFor.posting.role})`
+    : ''
 
   return (
     <div className={styles.page}>
@@ -194,10 +241,44 @@ function ResumeLibrary() {
               <Link to={`/resume/${version.id}`} className={styles.btn}>
                 Edit
               </Link>
+              <button
+                className={styles.btn}
+                onClick={() => handleExportPdf(version.id)}
+                disabled={exportingId === version.id}
+              >
+                {exportingId === version.id ? 'Exporting...' : 'Export PDF'}
+              </button>
+              <button
+                className={styles.btn}
+                onClick={() => handleExportJson(version.id)}
+                disabled={exportingId === version.id}
+              >
+                {exportingId === version.id ? 'Exporting...' : 'Export JSON'}
+              </button>
+              <button
+                className={styles.btn}
+                onClick={() => handleCreateApplication(version)}
+              >
+                Create Application
+              </button>
             </div>
           </div>
         ))}
       </div>
+
+      {creatingApplicationFor && (
+        <CreateApplicationModal
+          mode="manual"
+          company={creatingApplicationFor.posting.company}
+          role={creatingApplicationFor.posting.role}
+          postingText={creatingApplicationFor.posting.posting_text}
+          postingId={creatingApplicationFor.posting.id}
+          resumeVersionId={creatingApplicationFor.version.id}
+          resumeVersionName={linkedResumeVersionLabel}
+          onCancel={() => setCreatingApplicationFor(null)}
+          onSuccess={() => navigate('/applications')}
+        />
+      )}
     </div>
   )
 }

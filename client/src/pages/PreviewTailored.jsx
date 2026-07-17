@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams, useLocation, Link } from 'react-router-dom'
 import styles from './PreviewTailored.module.css'
+import CreateApplicationModal from '../components/CreateApplicationModal.jsx'
 
 function PreviewTailored() {
   const navigate = useNavigate()
@@ -17,6 +18,9 @@ function PreviewTailored() {
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState('')
+  const [postingText, setPostingText] = useState('')
+  const [showModal, setShowModal] = useState(false)
+  const [savedVersion, setSavedVersion] = useState(null)
 
   useEffect(() => {
     if (!draftId) {
@@ -37,6 +41,19 @@ function PreviewTailored() {
         const company = data.company || location.state?.company || ''
         const role = data.role || location.state?.role || ''
         setName(`${company} - ${role}`)
+
+        if (data.posting_id) {
+          try {
+            const postingsRes = await fetch('/api/job-postings')
+            const postings = await postingsRes.json()
+            const posting = Array.isArray(postings)
+              ? postings.find(p => p.id === data.posting_id)
+              : null
+            setPostingText(posting?.posting_text || '')
+          } catch {
+            setPostingText('')
+          }
+        }
       } catch (err) {
         setError(err.message || 'Failed to load draft.')
       } finally {
@@ -60,7 +77,8 @@ function PreviewTailored() {
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Failed to save resume')
-      navigate('/resume-library')
+      setSavedVersion(data.version)
+      setShowModal(true)
     } catch (err) {
       setSaveError(err.message || 'Failed to save tailored resume.')
     } finally {
@@ -210,6 +228,20 @@ function PreviewTailored() {
           {saving ? 'Saving...' : 'Save to Library'}
         </button>
       </div>
+
+      {showModal && savedVersion && (
+        <CreateApplicationModal
+          mode="auto"
+          company={draft?.company || ''}
+          role={draft?.role || ''}
+          postingText={postingText}
+          postingId={draft?.posting_id}
+          resumeVersionId={savedVersion.id}
+          resumeVersionName={savedVersion.name}
+          onCancel={() => navigate('/resume-library')}
+          onSuccess={() => navigate('/resume-library')}
+        />
+      )}
     </div>
   )
 }

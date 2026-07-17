@@ -142,5 +142,11 @@ describe('CreateApplicationModal', () => {
     render(<CreateApplicationModal {...baseProps} postingText="" />)
 
     expect(screen.getByText('No job posting text available.')).toBeInTheDocument()
+
+    // Wait for the in-flight cover-letter fetch to settle so React state updates
+    // from the mount effect don't leak into the next test unwrapped in act().
+    await waitFor(() => {
+      expect(screen.queryByText(/Generating cover letter/i)).not.toBeInTheDocument()
+    })
   })
 })

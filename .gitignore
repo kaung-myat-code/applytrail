@@ -43,3 +43,6 @@ resume.json
 .claude/scripts/
 .claude/commands/gsd-*.md
 .claude/agents/gsd-*.md
+
+
+.mcp.json

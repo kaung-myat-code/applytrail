@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
-import { render, screen, waitFor, fireEvent } from '@testing-library/react'
+import { render, screen, waitFor, fireEvent, within } from '@testing-library/react'
 import { createMemoryRouter, RouterProvider } from 'react-router-dom'
 import Resume from './Resume'
 
@@ -119,5 +119,91 @@ describe('Resume', () => {
 
     expect(screen.getByText('● Unsaved changes')).toBeInTheDocument()
     expect(screen.queryByText('✓ Saved')).not.toBeInTheDocument()
+  })
+
+  it('opens the Preview modal when "Preview Resume" is clicked', async () => {
+    mockFetchSequence([{ ok: true, json: () => Promise.resolve(resumeFixture) }])
+
+    renderResume()
+
+    await screen.findByDisplayValue('Jane Doe')
+
+    expect(screen.queryByText('Resume Preview')).not.toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: /Preview Resume/i }))
+
+    expect(screen.getByText('Resume Preview')).toBeInTheDocument()
+  })
+
+  it('shows the current unsaved value of an edited field in the Preview modal, not the last-saved value', async () => {
+    mockFetchSequence([{ ok: true, json: () => Promise.resolve(resumeFixture) }])
+
+    renderResume()
+
+    const nameInput = await screen.findByDisplayValue('Jane Doe')
+    fireEvent.change(nameInput, { target: { value: 'Jane Smith' } })
+
+    fireEvent.click(screen.getByRole('button', { name: /Preview Resume/i }))
+
+    expect(screen.getByText('Resume Preview')).toBeInTheDocument()
+    expect(screen.getByText('Jane Smith')).toBeInTheDocument()
+    expect(screen.queryByText('Jane Doe')).not.toBeInTheDocument()
+  })
+
+  it('renders nothing for a zero-entry section (Education) inside the Preview modal', async () => {
+    mockFetchSequence([{ ok: true, json: () => Promise.resolve(resumeFixture) }])
+
+    const { container } = renderResume()
+
+    await screen.findByDisplayValue('Jane Doe')
+    fireEvent.click(screen.getByRole('button', { name: /Preview Resume/i }))
+
+    const dialog = container.querySelector('[data-testid="resume-preview-dialog"]')
+    expect(within(dialog).getByText('Resume Preview')).toBeInTheDocument()
+    // Education has zero entries in the fixture -- the label must not render inside the modal
+    // (the underlying editor form still has its own "Education" section heading, so this
+    // assertion is scoped to the modal dialog only).
+    expect(within(dialog).queryByText('Education')).not.toBeInTheDocument()
+    expect(within(dialog).queryByText('Projects')).not.toBeInTheDocument()
+  })
+
+  it('dismisses the Preview modal via the Close button', async () => {
+    mockFetchSequence([{ ok: true, json: () => Promise.resolve(resumeFixture) }])
+
+    renderResume()
+
+    await screen.findByDisplayValue('Jane Doe')
+    fireEvent.click(screen.getByRole('button', { name: /Preview Resume/i }))
+    expect(screen.getByText('Resume Preview')).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: /^Close$/i }))
+    expect(screen.queryByText('Resume Preview')).not.toBeInTheDocument()
+  })
+
+  it('dismisses the Preview modal via the Escape key', async () => {
+    mockFetchSequence([{ ok: true, json: () => Promise.resolve(resumeFixture) }])
+
+    renderResume()
+
+    await screen.findByDisplayValue('Jane Doe')
+    fireEvent.click(screen.getByRole('button', { name: /Preview Resume/i }))
+    expect(screen.getByText('Resume Preview')).toBeInTheDocument()
+
+    fireEvent.keyDown(document, { key: 'Escape' })
+    expect(screen.queryByText('Resume Preview')).not.toBeInTheDocument()
+  })
+
+  it('dismisses the Preview modal via a backdrop click', async () => {
+    mockFetchSequence([{ ok: true, json: () => Promise.resolve(resumeFixture) }])
+
+    const { container } = renderResume()
+
+    await screen.findByDisplayValue('Jane Doe')
+    fireEvent.click(screen.getByRole('button', { name: /Preview Resume/i }))
+    expect(screen.getByText('Resume Preview')).toBeInTheDocument()
+
+    const backdrop = container.querySelector('[data-testid="resume-preview-backdrop"]')
+    fireEvent.click(backdrop)
+    expect(screen.queryByText('Resume Preview')).not.toBeInTheDocument()
   })
 })

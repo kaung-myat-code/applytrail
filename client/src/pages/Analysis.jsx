@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import styles from './Analysis.module.css'
+import { displayCase } from '../lib/keywordCasing'
 
 function ScoreDisplay({ score, summary, strengths, gaps }) {
   const scoreColor = score >= 70 ? styles.scoreGreen : score >= 40 ? styles.scoreYellow : styles.scoreRed
@@ -54,7 +55,7 @@ function KeywordGroups({ keywords }) {
         </div>
         <div className={styles.keywordBadges}>
           {matched.length > 0 ? matched.map((kw, i) => (
-            <span key={i} className={`${styles.keywordBadge} ${styles.badgeMatched}`}>{kw}</span>
+            <span key={i} className={`${styles.keywordBadge} ${styles.badgeMatched}`}>{displayCase(kw)}</span>
           )) : <span className={styles.noKeywords}>No keywords matched</span>}
         </div>
       </div>
@@ -66,7 +67,7 @@ function KeywordGroups({ keywords }) {
         </div>
         <div className={styles.keywordBadges}>
           {missing.length > 0 ? missing.map((kw, i) => (
-            <span key={i} className={`${styles.keywordBadge} ${styles.badgeMissing}`}>{kw}</span>
+            <span key={i} className={`${styles.keywordBadge} ${styles.badgeMissing}`}>{displayCase(kw)}</span>
           )) : <span className={styles.noKeywords}>All keywords covered</span>}
         </div>
       </div>
@@ -78,7 +79,7 @@ function KeywordGroups({ keywords }) {
         </div>
         <div className={styles.keywordBadges}>
           {bonus.length > 0 ? bonus.map((kw, i) => (
-            <span key={i} className={`${styles.keywordBadge} ${styles.badgeBonus}`}>{kw}</span>
+            <span key={i} className={`${styles.keywordBadge} ${styles.badgeBonus}`}>{displayCase(kw)}</span>
           )) : <span className={styles.noKeywords}>No bonus keywords</span>}
         </div>
       </div>
@@ -129,7 +130,7 @@ function SectionFindings({ sections }) {
               <div className={styles.sectionItems}>
                 <span className={styles.itemsLabel}>Matched:</span>
                 {section.matchedItems.map((item, i) => (
-                  <span key={i} className={`${styles.keywordBadge} ${styles.badgeMatched}`}>{item}</span>
+                  <span key={i} className={`${styles.keywordBadge} ${styles.badgeMatched}`}>{displayCase(item)}</span>
                 ))}
               </div>
             )}
@@ -138,7 +139,7 @@ function SectionFindings({ sections }) {
               <div className={styles.sectionItems}>
                 <span className={styles.itemsLabel}>Missing:</span>
                 {section.missingItems.map((item, i) => (
-                  <span key={i} className={`${styles.keywordBadge} ${styles.badgeMissing}`}>{item}</span>
+                  <span key={i} className={`${styles.keywordBadge} ${styles.badgeMissing}`}>{displayCase(item)}</span>
                 ))}
               </div>
             )}

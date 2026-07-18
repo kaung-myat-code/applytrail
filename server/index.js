@@ -8,6 +8,7 @@ const { getProvider } = require('./lib/analysis/engine')
 const { sanitizeError } = require('./lib/analysis/providers/ai')
 const { validateMatchReport, validateSuggestions } = require('./lib/analysis/validate')
 const { validateResume } = require('./lib/validateResume')
+const { defaultResumeData } = require('./lib/defaultResumeData')
 const { applyPatches } = require('./lib/tailor/applyPatches')
 const pdfmake = require('pdfmake')
 const { buildResumePdfDefinition } = require('./lib/pdf')
@@ -407,9 +408,7 @@ app.post('/api/resume-library', (req, res) => {
   const name = req.body.name || 'Untitled Resume'
   const id = generateId()
   const now = new Date().toISOString().split('T')[0]
-  const resumeData = req.body.resume_data || {
-    name: '', contact: {}, summary: '', experience: [], projects: [], education: [], skills: []
-  }
+  const resumeData = req.body.resume_data || defaultResumeData()
 
   const validation = validateResume(resumeData)
   if (!validation.ok) {

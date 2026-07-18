@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import styles from './CoverLetter.module.css'
 
 function CoverLetter() {
+  const location = useLocation()
   const [postings, setPostings] = useState([])
   const [selectedId, setSelectedId] = useState('')
   const [coverLetter, setCoverLetter] = useState('')
@@ -11,12 +12,21 @@ function CoverLetter() {
   const [copied, setCopied] = useState(false)
   const [savedApplication, setSavedApplication] = useState(null)
   const [saving, setSaving] = useState(false)
+  const [showSavedBanner, setShowSavedBanner] = useState(!!location.state?.justSavedPosting)
 
   useEffect(() => {
     fetch('/api/job-postings')
       .then(res => res.json())
       .then(data => setPostings(data))
       .catch(err => console.error('Failed to load postings:', err))
+  }, [])
+
+  useEffect(() => {
+    if (showSavedBanner) {
+      const timer = setTimeout(() => setShowSavedBanner(false), 3000)
+      return () => clearTimeout(timer)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   async function handleGenerate(e) {
@@ -106,6 +116,7 @@ function CoverLetter() {
   return (
     <div className={styles.page}>
       <h1>Cover Letter Generator</h1>
+      {showSavedBanner && <div className={styles.savedBanner}>Job posting saved. Select it below to generate a cover letter.</div>}
       <p className={styles.description}>
         Select a job posting and generate a tailored cover letter paragraph based on your resume.
       </p>

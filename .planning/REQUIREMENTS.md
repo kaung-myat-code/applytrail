@@ -53,7 +53,7 @@ Each requirement below maps 1:1 to a tracked GitHub issue (#2-#8) filed against 
 - [ ] **UX-ISSUE-03**: `POST /api/resume-library` creates a valid resume version when given no/empty body (contact defaults to empty strings, not `{}`), covered by a regression test — closes GitHub #3
 - [ ] **UX-ISSUE-04**: Match-analysis keyword whitelist (`server/lib/analysis/keywords.js`) covers product/data-analytics/business-soft-skill terms in addition to the existing technical whitelist — closes GitHub #4
 - [ ] **UX-ISSUE-05**: Generated cover-letter paragraphs and suggestion bullets have correct possessive-apostrophe and acronym-casing handling and vary their templates/keyword usage to read less generic — closes GitHub #5
-- [ ] **UX-ISSUE-06**: Resume editor requires confirmation before deleting an experience/project/education entry or bullet, shows a "Saved" / "Unsaved changes" indicator near the save action, and offers a read-only resume preview — closes GitHub #6
+- [x] **UX-ISSUE-06**: Resume editor requires confirmation before deleting an experience/project/education entry or bullet, shows a "Saved" / "Unsaved changes" indicator near the save action, and offers a read-only resume preview — closes GitHub #6
 - [ ] **UX-ISSUE-07**: Top-level navigation is collapsed into grouped sections reflecting the linear job-search workflow, with contextual "Continue to [next step]" CTAs on workflow pages — closes GitHub #7
 - [ ] **UX-ISSUE-08**: `npx eslint .` passes cleanly (`client/dist` excluded, `prop-types` added, unused vars removed) — closes GitHub #8
 
@@ -113,7 +113,7 @@ Each requirement below maps 1:1 to a tracked GitHub issue (#2-#8) filed against 
 | UX-ISSUE-03 | Phase 14 | Pending |
 | UX-ISSUE-04 | Phase 14 | Pending |
 | UX-ISSUE-05 | Phase 14 | Pending |
-| UX-ISSUE-06 | Phase 14 | Pending |
+| UX-ISSUE-06 | Phase 14 | Complete |
 | UX-ISSUE-07 | Phase 14 | Pending |
 | UX-ISSUE-08 | Phase 14 | Pending |
 

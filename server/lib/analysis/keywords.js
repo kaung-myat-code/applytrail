@@ -98,7 +98,30 @@ const TECH_KEYWORDS = new Set([
   'agile', 'scrum', 'kanban', 'lean', 'tdd', 'bdd', 'ci', 'cd',
   'devops', 'gitops', 'mlops', 'microservices', 'serverless', 'lamda',
   'event-driven', 'cqrs', 'ddd',
+
+  // --- Product / Data / Business skills ---
+  'ab-testing', 'b2b', 'b2c', 'cohort-analysis', 'cross-functional',
+  'dashboarding', 'dashboards', 'data-visualization', 'experimentation',
+  'forecasting', 'go-to-market', 'kpi', 'kpis', 'okr', 'okrs',
+  'prioritization', 'product metrics', 'product-strategy', 'roadmapping',
+  'roi', 'seo', 'stakeholder communication', 'stakeholder-management',
 ])
+
+/**
+ * Maps known lowercase acronyms/terms to their conventional display casing.
+ * Consumed by callers that render extracted keywords back to the user
+ * (e.g. the Analysis page's keyword badges) so "sql" displays as "SQL"
+ * instead of naive Title Case. Any keyword not present here is left as-is
+ * by the caller's own casing logic.
+ */
+const ACRONYM_CASING = {
+  sql: 'SQL', api: 'API', apis: 'APIs', aws: 'AWS', gcp: 'GCP', css: 'CSS',
+  html: 'HTML', ui: 'UI', ux: 'UX', ci: 'CI', cd: 'CD', tdd: 'TDD', bdd: 'BDD',
+  php: 'PHP', rest: 'REST', restful: 'RESTful', grpc: 'gRPC', graphql: 'GraphQL',
+  json: 'JSON', xml: 'XML', yaml: 'YAML', jwt: 'JWT', oauth: 'OAuth',
+  saml: 'SAML', ldap: 'LDAP', kpi: 'KPI', kpis: 'KPIs', okr: 'OKR', okrs: 'OKRs',
+  roi: 'ROI', seo: 'SEO', b2b: 'B2B', b2c: 'B2C', nosql: 'NoSQL', dotnet: '.NET',
+}
 
 /**
  * Extract meaningful keywords from text.
@@ -111,12 +134,16 @@ const TECH_KEYWORDS = new Set([
 function extractKeywords(text) {
   if (!text || typeof text !== 'string') return []
 
-  const tokens = text
-    .toLowerCase()
+  const lower = text.toLowerCase()
+
+  const tokens = lower
     .split(/[^a-z0-9.+#-]+/)
     .filter(t => t.length >= 2 && t.length <= 30 && TECH_KEYWORDS.has(t))
 
-  return [...new Set(tokens)]
+  const phrases = [...TECH_KEYWORDS]
+    .filter(member => member.includes(' ') && lower.includes(member))
+
+  return [...new Set([...tokens, ...phrases])]
 }
 
 /**
@@ -174,4 +201,4 @@ function extractResumeKeywords(resume) {
   return [...keywords]
 }
 
-module.exports = { TECH_KEYWORDS, extractKeywords, extractResumeKeywords }
+module.exports = { TECH_KEYWORDS, extractKeywords, extractResumeKeywords, ACRONYM_CASING }

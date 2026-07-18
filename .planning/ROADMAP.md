@@ -363,7 +363,7 @@ Plans:
 
 **Goal**: Resolve the UX and quality issues surfaced by the 2026-07-05 exploratory UAT (`feedback/feedback.md`, GitHub issues #2-#8) -- clarify the job-posting-vs-application workflow, restructure navigation around the linear job-search path, fix the Resume Library creation bug, add resume-editor safety features, broaden analysis keyword coverage, improve generated-text quality, and get lint to a clean baseline
 **Depends on**: Phase 13
-**Requirements**: TBD (fully scoped in `14-CONTEXT.md`; formal REQUIREMENTS.md entries to be assigned during planning)
+**Requirements**: UX-ISSUE-02, UX-ISSUE-03, UX-ISSUE-04, UX-ISSUE-05, UX-ISSUE-06, UX-ISSUE-07, UX-ISSUE-08
 **Success Criteria** (what must be TRUE):
 
   1. Saving a job posting on New Application redirects to Cover Letter with an explicit "Save Application" confirmation step, and the Applications list clarifies "applied on" vs. "last status change" dates

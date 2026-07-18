@@ -12,6 +12,7 @@ function Resume() {
   const [savedMessage, setSavedMessage] = useState('')
   const [saveError, setSaveError] = useState('')
   const [skillsText, setSkillsText] = useState('')
+  const [dirty, setDirty] = useState(false)
 
   useEffect(() => {
     loadResume()
@@ -40,10 +41,12 @@ function Resume() {
   }
 
   function handleFieldChange(field, value) {
+    setDirty(true)
     setResumeData((prev) => ({ ...prev, [field]: value }))
   }
 
   function handleContactChange(field, value) {
+    setDirty(true)
     setResumeData((prev) => ({
       ...prev,
       contact: { ...prev.contact, [field]: value },
@@ -52,6 +55,7 @@ function Resume() {
 
   // --- Experience handlers ---
   function handleExperienceChange(index, field, value) {
+    setDirty(true)
     setResumeData((prev) => {
       const updated = [...prev.experience]
       updated[index] = { ...updated[index], [field]: value }
@@ -60,6 +64,7 @@ function Resume() {
   }
 
   function handleExperienceBulletChange(expIndex, bulletIndex, value) {
+    setDirty(true)
     setResumeData((prev) => {
       const updated = [...prev.experience]
       const bullets = [...updated[expIndex].bullets]
@@ -70,6 +75,7 @@ function Resume() {
   }
 
   function addExperienceBullet(expIndex) {
+    setDirty(true)
     setResumeData((prev) => {
       const updated = [...prev.experience]
       updated[expIndex] = {
@@ -81,6 +87,8 @@ function Resume() {
   }
 
   function removeExperienceBullet(expIndex, bulletIndex) {
+    if (!window.confirm('Remove this bullet point?')) return
+    setDirty(true)
     setResumeData((prev) => {
       const updated = [...prev.experience]
       const bullets = updated[expIndex].bullets.filter((_, i) => i !== bulletIndex)
@@ -90,6 +98,7 @@ function Resume() {
   }
 
   function addExperience() {
+    setDirty(true)
     setResumeData((prev) => ({
       ...prev,
       experience: [
@@ -100,6 +109,8 @@ function Resume() {
   }
 
   function removeExperience(index) {
+    if (!window.confirm("Remove this experience entry? This can't be undone until you save.")) return
+    setDirty(true)
     setResumeData((prev) => ({
       ...prev,
       experience: prev.experience.filter((_, i) => i !== index),
@@ -108,6 +119,7 @@ function Resume() {
 
   // --- Projects handlers ---
   function handleProjectChange(index, field, value) {
+    setDirty(true)
     setResumeData((prev) => {
       const updated = [...prev.projects]
       updated[index] = { ...updated[index], [field]: value }
@@ -116,6 +128,7 @@ function Resume() {
   }
 
   function handleProjectBulletChange(projIndex, bulletIndex, value) {
+    setDirty(true)
     setResumeData((prev) => {
       const updated = [...prev.projects]
       const bullets = [...updated[projIndex].bullets]
@@ -126,6 +139,7 @@ function Resume() {
   }
 
   function addProjectBullet(projIndex) {
+    setDirty(true)
     setResumeData((prev) => {
       const updated = [...prev.projects]
       updated[projIndex] = {
@@ -137,6 +151,8 @@ function Resume() {
   }
 
   function removeProjectBullet(projIndex, bulletIndex) {
+    if (!window.confirm('Remove this bullet point?')) return
+    setDirty(true)
     setResumeData((prev) => {
       const updated = [...prev.projects]
       const bullets = updated[projIndex].bullets.filter((_, i) => i !== bulletIndex)
@@ -146,6 +162,7 @@ function Resume() {
   }
 
   function addProject() {
+    setDirty(true)
     setResumeData((prev) => ({
       ...prev,
       projects: [
@@ -156,6 +173,8 @@ function Resume() {
   }
 
   function removeProject(index) {
+    if (!window.confirm("Remove this project entry? This can't be undone until you save.")) return
+    setDirty(true)
     setResumeData((prev) => ({
       ...prev,
       projects: prev.projects.filter((_, i) => i !== index),
@@ -164,6 +183,7 @@ function Resume() {
 
   // --- Education handlers ---
   function handleEducationChange(index, field, value) {
+    setDirty(true)
     setResumeData((prev) => {
       const updated = [...prev.education]
       updated[index] = { ...updated[index], [field]: value }
@@ -172,6 +192,7 @@ function Resume() {
   }
 
   function addEducation() {
+    setDirty(true)
     setResumeData((prev) => ({
       ...prev,
       education: [
@@ -182,6 +203,8 @@ function Resume() {
   }
 
   function removeEducation(index) {
+    if (!window.confirm("Remove this education entry? This can't be undone until you save.")) return
+    setDirty(true)
     setResumeData((prev) => ({
       ...prev,
       education: prev.education.filter((_, i) => i !== index),
@@ -226,7 +249,7 @@ function Resume() {
         setResumeData(dataToSave)
         setSaving(false)
         setSavedMessage('Saved!')
-        setTimeout(() => setSavedMessage(''), 2000)
+        setDirty(false)
       })
       .catch((err) => {
         console.error('Failed to save resume:', err)
@@ -453,7 +476,10 @@ function Resume() {
             type="text"
             placeholder="JavaScript, React, Node.js, ..."
             value={skillsText}
-            onChange={(e) => setSkillsText(e.target.value)}
+            onChange={(e) => {
+              setDirty(true)
+              setSkillsText(e.target.value)
+            }}
           />
           <p className={styles.skillsHint}>Separate skills with commas</p>
         </SectionEditor>
@@ -511,8 +537,11 @@ function Resume() {
           >
             {saving ? 'Saving...' : 'Save'}
           </button>
-          {savedMessage && (
-            <span className={styles.savedMessage}>{savedMessage}</span>
+          {dirty && (
+            <span className={styles.unsavedIndicator}>● Unsaved changes</span>
+          )}
+          {!dirty && savedMessage && (
+            <span className={styles.savedMessage}>✓ Saved</span>
           )}
           {saveError && (
             <span className={styles.saveError}>{saveError}</span>

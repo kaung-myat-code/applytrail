@@ -237,3 +237,21 @@
   font-weight: 500;
   margin-bottom: var(--space-4);
 }
+
+.confirmRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.confirmPrompt {
+  font-size: 0.9rem;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.confirmActions {
+  display: flex;
+  gap: var(--space-3);
+}

@@ -1,16 +1,19 @@
 import { useState, useEffect } from 'react'
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import styles from './CoverLetter.module.css'
+import modalStyles from '../components/CreateApplicationModal.module.css'
 
 function CoverLetter() {
   const location = useLocation()
+  const navigate = useNavigate()
   const [postings, setPostings] = useState([])
   const [selectedId, setSelectedId] = useState('')
   const [coverLetter, setCoverLetter] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [copied, setCopied] = useState(false)
-  const [savedApplication, setSavedApplication] = useState(null)
+  const [confirming, setConfirming] = useState(false)
+  const [saveError, setSaveError] = useState('')
   const [saving, setSaving] = useState(false)
   const [showSavedBanner, setShowSavedBanner] = useState(!!location.state?.justSavedPosting)
 
@@ -37,7 +40,8 @@ function CoverLetter() {
     setError('')
     setCoverLetter('')
     setCopied(false)
-    setSavedApplication(null)
+    setConfirming(false)
+    setSaveError('')
 
     try {
       const res = await fetch('/api/generate-cover-letter', {
@@ -70,9 +74,20 @@ function CoverLetter() {
     }
   }
 
-  async function handleSave() {
+  function handleSaveClick() {
+    setConfirming(true)
+    setSaveError('')
+  }
+
+  function handleCancelSave() {
+    setConfirming(false)
+    setSaveError('')
+  }
+
+  async function handleConfirmSave() {
+    if (saving) return
     setSaving(true)
-    setError('')
+    setSaveError('')
     try {
       const res = await fetch('/api/applications', {
         method: 'POST',
@@ -87,9 +102,9 @@ function CoverLetter() {
       if (!res.ok) {
         throw new Error(data.error || 'Failed to save application')
       }
-      setSavedApplication(data.application)
+      navigate('/applications')
     } catch {
-      setError('Failed to save application')
+      setSaveError('Failed to save application. Try again.')
     } finally {
       setSaving(false)
     }
@@ -128,7 +143,7 @@ function CoverLetter() {
             className={styles.select}
             id="posting"
             value={selectedId}
-            onChange={e => { setSelectedId(e.target.value); setSavedApplication(null) }}
+            onChange={e => { setSelectedId(e.target.value); setConfirming(false); setSaveError('') }}
             required
           >
             <option value="">Select a job posting...</option>
@@ -165,17 +180,36 @@ function CoverLetter() {
             </span>
           </div>
 
-          {!savedApplication ? (
+          {!confirming ? (
             <button
               className={styles.saveButton}
-              onClick={handleSave}
+              onClick={handleSaveClick}
               disabled={saving}
             >
               {saving ? 'Saving...' : 'Save Application'}
             </button>
           ) : (
-            <div className={styles.saved}>
-              Application saved — <Link to="/applications">View in Applications</Link>
+            <div className={styles.confirmRow}>
+              <span className={styles.confirmPrompt}>Save this cover letter as a new application?</span>
+              <div className={styles.confirmActions}>
+                <button
+                  className={modalStyles.btnPrimary}
+                  onClick={handleConfirmSave}
+                  disabled={saving}
+                >
+                  {saving ? 'Saving...' : 'Confirm & Save'}
+                </button>
+                <button
+                  className={modalStyles.btn}
+                  onClick={handleCancelSave}
+                  disabled={saving}
+                >
+                  Cancel
+                </button>
+              </div>
+              {saveError && (
+                <div className={styles.error}>{saveError}</div>
+              )}
             </div>
           )}
         </div>

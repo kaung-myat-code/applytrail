@@ -152,3 +152,7 @@ None - no external service configuration required.
 ---
 *Phase: 14-ux-quality-polish-from-user-feedback*
 *Completed: 2026-07-18*
+
+## Self-Check: PASSED
+
+All created/modified files confirmed present on disk; all four task/summary commit hashes (`58d95a0`, `ee682e6`, `4261a38`, `c29689a`) confirmed present in `git log --oneline --all`.

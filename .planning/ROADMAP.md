@@ -2,7 +2,7 @@
 
 ## Overview
 
-A local web MVP that migrates a CLI-based job application workflow into a React + Express web app. v1.0 (Phases 1-4) delivered the core workflow: resume editing, job posting input, cover letter generation, and application tracking. v1.1 Release Polish (Phases 5-8) transformed it into a publicly deployed portfolio piece with production server configuration, demo data, live deployment on Render, and polished documentation. v2.0 Resume Tailoring Flow (Phases 9-13) adds an end-to-end resume optimization workflow: manage multiple resume versions, analyze against job postings, generate and review section-by-section suggestions, create tailored resumes, and export to PDF/JSON.
+A local web MVP that migrates a CLI-based job application workflow into a React + Express web app. v1.0 (Phases 1-4) delivered the core workflow: resume editing, job posting input, cover letter generation, and application tracking. v1.1 Release Polish (Phases 5-8) transformed it into a publicly deployed portfolio piece with production server configuration, demo data, live deployment on Render, and polished documentation. v2.0 Resume Tailoring Flow (Phases 9-14) adds an end-to-end resume optimization workflow: manage multiple resume versions, analyze against job postings, generate and review section-by-section suggestions, create tailored resumes, export to PDF/JSON, and polish the workflow based on user feedback.
 
 ## Milestones
 
@@ -51,6 +51,7 @@ Archive: [v1.1-ROADMAP.md](milestones/v1.1-ROADMAP.md) | [v1.1-REQUIREMENTS.md](
 - [x] **Phase 11.5: AI Analysis Provider 🔶 INSERTED** - Multi-provider AI analysis (Gemini, OpenRouter, Groq) with provider selection toggle, API key config, and automatic fallback chain to heuristic
 - [x] **Phase 12: Tailored Resume Generation** - Apply accepted patches to create a new resume version with side-by-side diff review (completed 2026-07-16)
 - [x] **Phase 13: Application Pre-fill and Export** - Pre-fill application from job posting, export resume as PDF or JSON (completed 2026-07-17)
+- [ ] **Phase 14: UX & Quality Polish from User Feedback** - Resolve GitHub issues #2-#8 from 2026-07-05 UAT: workflow clarity, nav restructuring, resume-library bug fix, editor safety, analysis/writing quality, and lint cleanup
 
 ## Phase Details
 
@@ -358,17 +359,26 @@ Plans:
 
 **UI hint**: yes
 
-## Backlog
+### Phase 14: UX & Quality Polish from User Feedback
 
-### Phase 999.1: UX & Quality Polish from User Feedback (BACKLOG)
+**Goal**: Resolve the UX and quality issues surfaced by the 2026-07-05 exploratory UAT (`feedback/feedback.md`, GitHub issues #2-#8) -- clarify the job-posting-vs-application workflow, restructure navigation around the linear job-search path, fix the Resume Library creation bug, add resume-editor safety features, broaden analysis keyword coverage, improve generated-text quality, and get lint to a clean baseline
+**Depends on**: Phase 13
+**Requirements**: TBD (fully scoped in `14-CONTEXT.md`; formal REQUIREMENTS.md entries to be assigned during planning)
+**Success Criteria** (what must be TRUE):
 
-**Goal:** [Captured for future planning]
-**Requirements:** TBD
-**Source:** `feedback/feedback.md` (2026-07-05 exploratory test) + GitHub issues #2-#8
+  1. Saving a job posting on New Application redirects to Cover Letter with an explicit "Save Application" confirmation step, and the Applications list clarifies "applied on" vs. "last status change" dates
+  2. Top-level navigation is collapsed into grouped sections reflecting the linear workflow, with contextual "Continue to next step" CTAs on workflow pages
+  3. `POST /api/resume-library` creates a valid empty resume version (contact defaults to empty strings, not `{}`), covered by a regression test
+  4. Resume editor has delete confirmations, a saved/unsaved-changes indicator, and a read-only preview
+  5. Match-analysis keyword whitelist covers product/data/business-soft-skill terms in addition to technical terms
+  6. Generated cover-letter and suggestion text fixes possessive-apostrophe and acronym-casing bugs and varies templates to reduce genericness
+  7. `npx eslint .` passes cleanly (client/dist excluded, prop-types added, unused vars removed)
+
+**Plans**: 0 plans
 
 Plans:
 
-- [ ] TBD (promote with /gsd-review-backlog when ready)
+- [ ] TBD (run /gsd-plan-phase 14 to break down; full decisions already captured in `14-CONTEXT.md`)
 
 Tracked issues:
 
@@ -380,10 +390,12 @@ Tracked issues:
 - #7 Simplify top-level navigation to reflect linear job-search workflow
 - #8 Fix lint failures (exclude client/dist, missing prop-types, unused vars) and add API contract test coverage
 
+**UI hint**: yes
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 9 -> 10 -> 11 -> 11.5 -> 12 -> 13
+Phases execute in numeric order: 9 -> 10 -> 11 -> 11.5 -> 12 -> 13 -> 14
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -401,3 +413,4 @@ Phases execute in numeric order: 9 -> 10 -> 11 -> 11.5 -> 12 -> 13
 | 11.5 AI Analysis Provider 🔶 INSERTED | v2.0 | 2/2 | Complete | 2026-07-03 |
 | 12. Tailored Resume Generation | v2.0 | 3/3 | Complete    | 2026-07-16 |
 | 13. Application Pre-fill and Export | v2.0 | 3/3 | Complete    | 2026-07-17 |
+| 14. UX & Quality Polish from User Feedback | v2.0 | 0/? | Not started | — |

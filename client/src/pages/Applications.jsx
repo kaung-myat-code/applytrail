@@ -111,46 +111,49 @@ function Applications() {
       {error && <div className={styles.error}>{error}</div>}
 
       <div className={styles.list}>
-        {applications.map(app => (
-          <div key={app.id} className={styles.card}>
-            <div className={styles.cardHeader}>
-              <div>
-                <div className={styles.company}>{app.company}</div>
-                <div className={styles.role}>{app.role}</div>
+        {applications.map(app => {
+          const days = daysSinceLastChange(app)
+          return (
+            <div key={app.id} className={styles.card}>
+              <div className={styles.cardHeader}>
+                <div>
+                  <div className={styles.company}>{app.company}</div>
+                  <div className={styles.role}>{app.role}</div>
+                </div>
+                <span className={`${styles.statusBadge} ${STATUS_CLASSES[app.status] || ''}`}>
+                  {app.status}
+                </span>
               </div>
-              <span className={`${styles.statusBadge} ${STATUS_CLASSES[app.status] || ''}`}>
-                {app.status}
-              </span>
-            </div>
 
-            <div className={styles.meta}>
-              <span>Applied: {app.date_applied}</span>
-              <span>{daysSinceLastChange(app)} days since last change</span>
-            </div>
-
-            {isStale(app) && app.status !== 'withdrawn' && app.status !== 'rejected' && (
-              <div className={styles.stale}>
-                <span>&#9888;</span> Needs follow-up ({daysSinceLastChange(app)} days)
+              <div className={styles.meta}>
+                <span>Applied on {app.date_applied}</span>
+                <span>Last status change: {days} day{days === 1 ? '' : 's'} ago</span>
               </div>
-            )}
 
-            <div className={styles.statusRow}>
-              <select
-                className={styles.statusSelect}
-                value={app.status}
-                onChange={e => handleStatusChange(app.id, e.target.value)}
-                disabled={updatingId === app.id}
-              >
-                {STATUS_OPTIONS.map(s => (
-                  <option key={s} value={s}>{s}</option>
-                ))}
-              </select>
-              {successId === app.id && (
-                <span className={styles.success}>Updated</span>
+              {isStale(app) && app.status !== 'withdrawn' && app.status !== 'rejected' && (
+                <div className={styles.stale}>
+                  <span>&#9888;</span> Needs follow-up — no status change in {days} days
+                </div>
               )}
+
+              <div className={styles.statusRow}>
+                <select
+                  className={styles.statusSelect}
+                  value={app.status}
+                  onChange={e => handleStatusChange(app.id, e.target.value)}
+                  disabled={updatingId === app.id}
+                >
+                  {STATUS_OPTIONS.map(s => (
+                    <option key={s} value={s}>{s}</option>
+                  ))}
+                </select>
+                {successId === app.id && (
+                  <span className={styles.success}>Updated</span>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )

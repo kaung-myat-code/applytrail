@@ -80,6 +80,7 @@
   margin-top: var(--space-3);
   font-size: 0.8rem;
   color: var(--color-muted);
+  flex-wrap: wrap;
 }
 
 .meta span {

@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import styles from './NewApplication.module.css'
 
 function NewApplication() {
+  const navigate = useNavigate()
   const [company, setCompany] = useState('')
   const [role, setRole] = useState('')
   const [postingText, setPostingText] = useState('')
@@ -23,13 +25,7 @@ function NewApplication() {
 
       if (!res.ok) throw new Error('Request failed')
 
-      setCompany('')
-      setRole('')
-      setPostingText('')
-      setMessage('Job posting saved!')
-      setMessageType('success')
-
-      setTimeout(() => setMessage(''), 3000)
+      navigate('/cover-letter', { state: { justSavedPosting: true } })
     } catch {
       setMessage('Failed to save. Please try again.')
       setMessageType('error')

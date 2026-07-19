@@ -228,3 +228,30 @@
 .saved a:hover {
   opacity: 0.7;
 }
+
+.savedBanner {
+  color: var(--color-success);
+  background: var(--color-success-bg);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  margin-bottom: var(--space-4);
+}
+
+.confirmRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.confirmPrompt {
+  font-size: 0.9rem;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.confirmActions {
+  display: flex;
+  gap: var(--space-3);
+}

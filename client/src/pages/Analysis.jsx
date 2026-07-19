@@ -355,7 +355,7 @@ function Analysis() {
             state={{ suggestions, resumeId: selectedResumeId, postingId: selectedPostingId, provider }}
             className={styles.reviewButton}
           >
-            Review {suggestions.length} Suggestions
+            Continue to Review Suggestions →
           </Link>
         </div>
       )}

@@ -374,7 +374,7 @@ Plans:
   6. Generated cover-letter and suggestion text fixes possessive-apostrophe and acronym-casing bugs and varies templates to reduce genericness
   7. `npx eslint .` passes cleanly (client/dist excluded, prop-types added, unused vars removed)
 
-**Plans**: 5/8 plans executed
+**Plans**: 7/8 plans executed
 
 Plans:
 **Wave 1**
@@ -387,8 +387,8 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 14-03-PLAN.md — Cover-letter and suggestion writing-quality fixes (closes #5)
-- [ ] 14-05-PLAN.md — Nav restructuring + continue CTAs (closes #7)
+- [x] 14-03-PLAN.md — Cover-letter and suggestion writing-quality fixes (closes #5)
+- [x] 14-05-PLAN.md — Nav restructuring + continue CTAs (closes #7)
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
@@ -427,4 +427,4 @@ Phases execute in numeric order: 9 -> 10 -> 11 -> 11.5 -> 12 -> 13 -> 14
 | 11.5 AI Analysis Provider 🔶 INSERTED | v2.0 | 2/2 | Complete | 2026-07-03 |
 | 12. Tailored Resume Generation | v2.0 | 3/3 | Complete    | 2026-07-16 |
 | 13. Application Pre-fill and Export | v2.0 | 3/3 | Complete    | 2026-07-17 |
-| 14. UX & Quality Polish from User Feedback | v2.0 | 5/8 | In Progress|  |
+| 14. UX & Quality Polish from User Feedback | v2.0 | 7/8 | In Progress|  |

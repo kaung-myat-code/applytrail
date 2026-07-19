@@ -5,7 +5,7 @@
  * Returns a MatchReport with score, keyword groups, and section findings.
  */
 
-const { extractKeywords, extractResumeKeywords } = require('../keywords')
+const { extractKeywords, extractResumeKeywords, ACRONYM_CASING } = require('../keywords')
 
 /**
  * Compute keyword match data for a single section.
@@ -230,6 +230,27 @@ function capitalize(str) {
 }
 
 /**
+ * Display-case a lowercase extracted keyword: use the known acronym casing
+ * if present (e.g. 'sql' -> 'SQL'), otherwise fall back to simple
+ * capitalization. Unlike keywords.js consumers that render arbitrary text,
+ * every input here is always an already-lowercase extracted keyword, so an
+ * unconditional capitalize() fallback is safe.
+ */
+function displayCase(kw) {
+  return ACRONYM_CASING[kw] || capitalize(kw)
+}
+
+/**
+ * Deterministically pick one of several phrasing variants based on a seed
+ * string, so output stays reproducible/testable while still varying across
+ * different missing-keyword sets.
+ */
+function pickVariant(variants, seed) {
+  const sum = [...String(seed)].reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+  return variants[sum % variants.length]
+}
+
+/**
  * Generate per-section improvement suggestions from the match report.
  * @param {object} resume - Resume data object
  * @param {object} report - MatchReport from analyzeResume
@@ -264,8 +285,8 @@ function generateSuggestions(resume, report) {
     if (summary) {
       // Modify: append keywords to existing summary
       const kwPhrase = topMissingForSummary.length === 1
-        ? capitalize(topMissingForSummary[0])
-        : topMissingForSummary.slice(0, -1).map(capitalize).join(', ') + ' and ' + capitalize(topMissingForSummary[topMissingForSummary.length - 1])
+        ? displayCase(topMissingForSummary[0])
+        : topMissingForSummary.slice(0, -1).map(displayCase).join(', ') + ' and ' + displayCase(topMissingForSummary[topMissingForSummary.length - 1])
       const suggested = summary + (summary.endsWith('.') ? ' ' : '. ') + 'Experienced in ' + kwPhrase + '.'
       suggestions.push({
         id: nextId(),
@@ -277,7 +298,7 @@ function generateSuggestions(resume, report) {
       })
     } else {
       // Add: no summary exists
-      const kwPhrase = matched.slice(0, 3).map(capitalize).join(', ')
+      const kwPhrase = matched.slice(0, 3).map(displayCase).join(', ')
       const suggested = kwPhrase
         ? 'Professional with experience in ' + kwPhrase + '.'
         : 'Professional with relevant industry experience.'
@@ -305,36 +326,60 @@ function generateSuggestions(resume, report) {
       section: 'skills',
       type: 'add',
       current: null,
-      suggested: capitalize(kw),
-      reason: "'" + kw + "' appears in the job posting but is not in your skills list.",
+      suggested: displayCase(kw),
+      reason: "'" + displayCase(kw) + "' appears in the job posting but is not in your skills list.",
     })
   }
 
   // --- Experience suggestions (add) ---
+  const EXPERIENCE_TEMPLATES = [
+    kwText => 'Led ' + kwText + ' initiatives that improved project delivery and team productivity.',
+    kwText => 'Drove ' + kwText + ' efforts, partnering across teams to ship measurable improvements.',
+    kwText => 'Applied ' + kwText + ' to streamline workflows and boost team output.',
+  ]
+
   const topMissingForExp = missing.slice(0, 3)
-  for (const kw of topMissingForExp) {
-    usedForExperience.add(kw)
+  for (let i = 0; i < topMissingForExp.length; i += 2) {
+    const pair = topMissingForExp.slice(i, i + 2)
+    for (const kw of pair) usedForExperience.add(kw)
+
+    const kwText = pair.map(displayCase).join(' and ')
+    const reasonText = pair.map(displayCase).join(' or ')
+    const template = pickVariant(EXPERIENCE_TEMPLATES, kwText)
+
     suggestions.push({
       id: nextId(),
       section: 'experience',
       type: 'add',
       current: null,
-      suggested: 'Led ' + kw + ' initiatives that improved project delivery and team productivity.',
-      reason: 'No experience bullets mention ' + kw + ', which is a key requirement in this job posting.',
+      suggested: template(kwText),
+      reason: 'No experience bullets mention ' + reasonText + ', which is a key requirement in this job posting.',
     })
   }
 
   // --- Projects suggestions (add) ---
+  const PROJECT_TEMPLATES = [
+    kwText => 'Implemented ' + kwText + ' solutions to address real-world technical challenges.',
+    kwText => 'Built a project centered on ' + kwText + ', solving a concrete real-world problem.',
+    kwText => 'Delivered a ' + kwText + '-driven project from concept through completion.',
+  ]
+
   const remainingForProjects = missing.filter(kw => !usedForExperience.has(kw)).slice(0, 2)
-  for (const kw of remainingForProjects) {
-    usedForProjects.add(kw)
+  for (let i = 0; i < remainingForProjects.length; i += 2) {
+    const pair = remainingForProjects.slice(i, i + 2)
+    for (const kw of pair) usedForProjects.add(kw)
+
+    const kwText = pair.map(displayCase).join(' and ')
+    const reasonText = pair.map(displayCase).join(' or ')
+    const template = pickVariant(PROJECT_TEMPLATES, kwText)
+
     suggestions.push({
       id: nextId(),
       section: 'projects',
       type: 'add',
       current: null,
-      suggested: 'Implemented ' + kw + ' solutions to address real-world technical challenges.',
-      reason: 'Consider adding a project that demonstrates ' + kw + ' experience.',
+      suggested: template(kwText),
+      reason: 'Consider adding a project that demonstrates ' + reasonText + ' experience.',
     })
   }
 

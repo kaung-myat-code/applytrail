@@ -94,6 +94,25 @@ function pickBestBullets(bullets, count) {
 }
 
 /**
+ * Return the grammatically correct possessive form of a name.
+ * Names ending in "s" (case-insensitive) get a bare trailing apostrophe;
+ * all others get the standard apostrophe-s suffix.
+ */
+function possessive(name) {
+  return name.toLowerCase().endsWith('s') ? `${name}'` : `${name}'s`
+}
+
+/**
+ * Deterministically pick one of several phrasing variants based on a seed
+ * string, so output stays reproducible/testable while still varying across
+ * different (company, role) pairs.
+ */
+function pickVariant(variants, seed) {
+  const sum = [...String(seed)].reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
+  return variants[sum % variants.length]
+}
+
+/**
  * Build the intro sentence mentioning role, company, and top skills.
  */
 function buildIntro(role, company, matchedSkills) {
@@ -101,7 +120,13 @@ function buildIntro(role, company, matchedSkills) {
     ? ` with hands-on experience in ${matchedSkills.slice(0, 3).join(', ')}`
     : ''
 
-  return `My background in software development${skillMention} aligns well with your need for a ${role} at ${company}.`
+  const variants = [
+    `My background in software development${skillMention} aligns well with your need for a ${role} at ${company}.`,
+    `I'm excited to apply for the ${role} role at ${company}, where my background${skillMention} directly supports what you're looking for.`,
+    `With a background in software development${skillMention}, I believe I would be a strong fit for the ${role} position at ${company}.`,
+  ]
+
+  return pickVariant(variants, company + role)
 }
 
 /**
@@ -150,7 +175,13 @@ function buildAchievementSentence(usedBullets, allMatchedBullets) {
  * Build the closing sentence about contributing to the company.
  */
 function buildClosing(company, role) {
-  return `I would welcome the chance to bring this experience to the ${role} position and contribute to ${company}'s goals.`
+  const variants = [
+    `I would welcome the chance to bring this experience to the ${role} position and contribute to ${possessive(company)} goals.`,
+    `I would be glad to bring this experience to the ${role} role and help drive ${possessive(company)} goals forward.`,
+    `I'm looking forward to the opportunity to support ${possessive(company)} goals as your next ${role}.`,
+  ]
+
+  return pickVariant(variants, company + role)
 }
 
 /**
@@ -166,7 +197,7 @@ function generateCoverLetter(resume, jobPosting) {
     return `I am writing to express my interest in the ${role} position at ${company}. ` +
       `${resume.summary || 'I bring a strong background in software development with experience across the full stack.'} ` +
       `I am confident that my skills and experience would be a valuable addition to your team. ` +
-      `I would welcome the opportunity to discuss how I can contribute to ${company}'s goals.`
+      `I would welcome the opportunity to discuss how I can contribute to ${possessive(company)} goals.`
   }
 
   const parts = []
@@ -191,4 +222,4 @@ function generateCoverLetter(resume, jobPosting) {
   return parts.join(' ')
 }
 
-module.exports = { extractKeywords, matchResumeToJob, generateCoverLetter }
+module.exports = { extractKeywords, matchResumeToJob, generateCoverLetter, possessive }

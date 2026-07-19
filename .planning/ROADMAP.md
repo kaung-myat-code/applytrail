@@ -374,16 +374,16 @@ Plans:
   6. Generated cover-letter and suggestion text fixes possessive-apostrophe and acronym-casing bugs and varies templates to reduce genericness
   7. `npx eslint .` passes cleanly (client/dist excluded, prop-types added, unused vars removed)
 
-**Plans**: 8 plans
+**Plans**: 5/8 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 14-01-PLAN.md — Resume Library "New Resume" bug fix + regression test (closes #3)
-- [ ] 14-02-PLAN.md — Keyword whitelist broadening + acronym display casing (closes #4)
-- [ ] 14-04-PLAN.md — Workflow clarity: New Application redirect, Save Application confirm, date labels (closes #2)
-- [ ] 14-06-PLAN.md — Resume editor safety: delete confirm, saved/unsaved indicator, preview modal (closes #6)
-- [ ] 14-07-PLAN.md — Lint prerequisites: exclude client/dist, add prop-types dependency (part of #8)
+- [x] 14-01-PLAN.md — Resume Library "New Resume" bug fix + regression test (closes #3)
+- [x] 14-02-PLAN.md — Keyword whitelist broadening + acronym display casing (closes #4)
+- [x] 14-04-PLAN.md — Workflow clarity: New Application redirect, Save Application confirm, date labels (closes #2)
+- [x] 14-06-PLAN.md — Resume editor safety: delete confirm, saved/unsaved indicator, preview modal (closes #6)
+- [x] 14-07-PLAN.md — Lint prerequisites: exclude client/dist, add prop-types dependency (part of #8)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -427,4 +427,4 @@ Phases execute in numeric order: 9 -> 10 -> 11 -> 11.5 -> 12 -> 13 -> 14
 | 11.5 AI Analysis Provider 🔶 INSERTED | v2.0 | 2/2 | Complete | 2026-07-03 |
 | 12. Tailored Resume Generation | v2.0 | 3/3 | Complete    | 2026-07-16 |
 | 13. Application Pre-fill and Export | v2.0 | 3/3 | Complete    | 2026-07-17 |
-| 14. UX & Quality Polish from User Feedback | v2.0 | 0/8 | Planned | — |
+| 14. UX & Quality Polish from User Feedback | v2.0 | 5/8 | In Progress|  |

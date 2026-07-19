@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useParams } from 'react-router-dom'
 import styles from './Resume.module.css'
+import modalStyles from '../components/CreateApplicationModal.module.css'
 import SectionEditor from '../components/SectionEditor'
 
 function Resume() {
@@ -12,11 +13,45 @@ function Resume() {
   const [savedMessage, setSavedMessage] = useState('')
   const [saveError, setSaveError] = useState('')
   const [skillsText, setSkillsText] = useState('')
+  const [dirty, setDirty] = useState(false)
+  const [showPreview, setShowPreview] = useState(false)
+  const previewButtonRef = useRef(null)
+  const closeButtonRef = useRef(null)
 
   useEffect(() => {
     loadResume()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
+
+  useEffect(() => {
+    if (!showPreview) return
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [showPreview])
+
+  useEffect(() => {
+    if (!showPreview) return
+    function handleKeyDown(e) {
+      if (e.key === 'Escape') {
+        closePreview()
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [showPreview])
+
+  useEffect(() => {
+    if (showPreview) {
+      closeButtonRef.current?.focus()
+    }
+  }, [showPreview])
+
+  function closePreview() {
+    setShowPreview(false)
+    previewButtonRef.current?.focus()
+  }
 
   function loadResume() {
     setLoading(true)
@@ -40,10 +75,12 @@ function Resume() {
   }
 
   function handleFieldChange(field, value) {
+    setDirty(true)
     setResumeData((prev) => ({ ...prev, [field]: value }))
   }
 
   function handleContactChange(field, value) {
+    setDirty(true)
     setResumeData((prev) => ({
       ...prev,
       contact: { ...prev.contact, [field]: value },
@@ -52,6 +89,7 @@ function Resume() {
 
   // --- Experience handlers ---
   function handleExperienceChange(index, field, value) {
+    setDirty(true)
     setResumeData((prev) => {
       const updated = [...prev.experience]
       updated[index] = { ...updated[index], [field]: value }
@@ -60,6 +98,7 @@ function Resume() {
   }
 
   function handleExperienceBulletChange(expIndex, bulletIndex, value) {
+    setDirty(true)
     setResumeData((prev) => {
       const updated = [...prev.experience]
       const bullets = [...updated[expIndex].bullets]
@@ -70,6 +109,7 @@ function Resume() {
   }
 
   function addExperienceBullet(expIndex) {
+    setDirty(true)
     setResumeData((prev) => {
       const updated = [...prev.experience]
       updated[expIndex] = {
@@ -81,6 +121,8 @@ function Resume() {
   }
 
   function removeExperienceBullet(expIndex, bulletIndex) {
+    if (!window.confirm('Remove this bullet point?')) return
+    setDirty(true)
     setResumeData((prev) => {
       const updated = [...prev.experience]
       const bullets = updated[expIndex].bullets.filter((_, i) => i !== bulletIndex)
@@ -90,6 +132,7 @@ function Resume() {
   }
 
   function addExperience() {
+    setDirty(true)
     setResumeData((prev) => ({
       ...prev,
       experience: [
@@ -100,6 +143,8 @@ function Resume() {
   }
 
   function removeExperience(index) {
+    if (!window.confirm("Remove this experience entry? This can't be undone until you save.")) return
+    setDirty(true)
     setResumeData((prev) => ({
       ...prev,
       experience: prev.experience.filter((_, i) => i !== index),
@@ -108,6 +153,7 @@ function Resume() {
 
   // --- Projects handlers ---
   function handleProjectChange(index, field, value) {
+    setDirty(true)
     setResumeData((prev) => {
       const updated = [...prev.projects]
       updated[index] = { ...updated[index], [field]: value }
@@ -116,6 +162,7 @@ function Resume() {
   }
 
   function handleProjectBulletChange(projIndex, bulletIndex, value) {
+    setDirty(true)
     setResumeData((prev) => {
       const updated = [...prev.projects]
       const bullets = [...updated[projIndex].bullets]
@@ -126,6 +173,7 @@ function Resume() {
   }
 
   function addProjectBullet(projIndex) {
+    setDirty(true)
     setResumeData((prev) => {
       const updated = [...prev.projects]
       updated[projIndex] = {
@@ -137,6 +185,8 @@ function Resume() {
   }
 
   function removeProjectBullet(projIndex, bulletIndex) {
+    if (!window.confirm('Remove this bullet point?')) return
+    setDirty(true)
     setResumeData((prev) => {
       const updated = [...prev.projects]
       const bullets = updated[projIndex].bullets.filter((_, i) => i !== bulletIndex)
@@ -146,6 +196,7 @@ function Resume() {
   }
 
   function addProject() {
+    setDirty(true)
     setResumeData((prev) => ({
       ...prev,
       projects: [
@@ -156,6 +207,8 @@ function Resume() {
   }
 
   function removeProject(index) {
+    if (!window.confirm("Remove this project entry? This can't be undone until you save.")) return
+    setDirty(true)
     setResumeData((prev) => ({
       ...prev,
       projects: prev.projects.filter((_, i) => i !== index),
@@ -164,6 +217,7 @@ function Resume() {
 
   // --- Education handlers ---
   function handleEducationChange(index, field, value) {
+    setDirty(true)
     setResumeData((prev) => {
       const updated = [...prev.education]
       updated[index] = { ...updated[index], [field]: value }
@@ -172,6 +226,7 @@ function Resume() {
   }
 
   function addEducation() {
+    setDirty(true)
     setResumeData((prev) => ({
       ...prev,
       education: [
@@ -182,6 +237,8 @@ function Resume() {
   }
 
   function removeEducation(index) {
+    if (!window.confirm("Remove this education entry? This can't be undone until you save.")) return
+    setDirty(true)
     setResumeData((prev) => ({
       ...prev,
       education: prev.education.filter((_, i) => i !== index),
@@ -226,7 +283,7 @@ function Resume() {
         setResumeData(dataToSave)
         setSaving(false)
         setSavedMessage('Saved!')
-        setTimeout(() => setSavedMessage(''), 2000)
+        setDirty(false)
       })
       .catch((err) => {
         console.error('Failed to save resume:', err)
@@ -252,6 +309,11 @@ function Resume() {
       </div>
     )
   }
+
+  const previewSkills = skillsText
+    .split(',')
+    .map((s) => s.trim())
+    .filter((s) => s.length > 0)
 
   return (
     <div className={styles.page}>
@@ -453,7 +515,10 @@ function Resume() {
             type="text"
             placeholder="JavaScript, React, Node.js, ..."
             value={skillsText}
-            onChange={(e) => setSkillsText(e.target.value)}
+            onChange={(e) => {
+              setDirty(true)
+              setSkillsText(e.target.value)
+            }}
           />
           <p className={styles.skillsHint}>Separate skills with commas</p>
         </SectionEditor>
@@ -511,14 +576,122 @@ function Resume() {
           >
             {saving ? 'Saving...' : 'Save'}
           </button>
-          {savedMessage && (
-            <span className={styles.savedMessage}>{savedMessage}</span>
+          <button
+            type="button"
+            ref={previewButtonRef}
+            className={styles.addButton}
+            onClick={() => setShowPreview(true)}
+          >
+            Preview Resume
+          </button>
+          {dirty && (
+            <span className={styles.unsavedIndicator}>● Unsaved changes</span>
+          )}
+          {!dirty && savedMessage && (
+            <span className={styles.savedMessage}>✓ Saved</span>
           )}
           {saveError && (
             <span className={styles.saveError}>{saveError}</span>
           )}
         </div>
       </div>
+
+      {showPreview && (
+        <div
+          className={modalStyles.backdrop}
+          data-testid="resume-preview-backdrop"
+          onClick={closePreview}
+        >
+          <div
+            className={modalStyles.dialog}
+            data-testid="resume-preview-dialog"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className={modalStyles.title}>Resume Preview</h2>
+            <p className={modalStyles.subtext}>
+              This is how your resume data is structured. Close this to keep editing.
+            </p>
+
+            <div className={modalStyles.field}>
+              <strong>{resumeData.name}</strong>
+              {resumeData.contact?.email && <span> · {resumeData.contact.email}</span>}
+              {resumeData.contact?.github && <span> · {resumeData.contact.github}</span>}
+              {resumeData.contact?.location && <span> · {resumeData.contact.location}</span>}
+            </div>
+
+            {resumeData.summary && (
+              <div className={modalStyles.field}>
+                <span className={modalStyles.label}>Summary</span>
+                <p>{resumeData.summary}</p>
+              </div>
+            )}
+
+            {previewSkills.length > 0 && (
+              <div className={modalStyles.field}>
+                <span className={modalStyles.label}>Skills</span>
+                <p>{previewSkills.join(', ')}</p>
+              </div>
+            )}
+
+            {(resumeData.experience || []).length > 0 && (
+              <div className={modalStyles.field}>
+                <span className={modalStyles.label}>Experience</span>
+                {(resumeData.experience || []).map((exp, i) => (
+                  <div key={i}>
+                    <strong>{exp.company}</strong>
+                    <span> — {exp.role} · {exp.period}</span>
+                    <ul>
+                      {(exp.bullets || []).map((b, j) => (
+                        <li key={j}>{b}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {(resumeData.projects || []).length > 0 && (
+              <div className={modalStyles.field}>
+                <span className={modalStyles.label}>Projects</span>
+                {(resumeData.projects || []).map((proj, i) => (
+                  <div key={i}>
+                    <strong>{proj.name}</strong>
+                    {proj.description && <p>{proj.description}</p>}
+                    <ul>
+                      {(proj.bullets || []).map((b, j) => (
+                        <li key={j}>{b}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {(resumeData.education || []).length > 0 && (
+              <div className={modalStyles.field}>
+                <span className={modalStyles.label}>Education</span>
+                {(resumeData.education || []).map((edu, i) => (
+                  <div key={i}>
+                    <strong>{edu.degree}</strong>
+                    <span> — {edu.school} · {edu.year}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div className={modalStyles.footer}>
+              <button
+                type="button"
+                ref={closeButtonRef}
+                className={modalStyles.btn}
+                onClick={closePreview}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

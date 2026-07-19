@@ -237,6 +237,16 @@
   animation: fadeInUp var(--duration-normal) var(--ease-out);
 }
 
+.unsavedIndicator {
+  color: var(--color-warning);
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  animation: fadeInUp var(--duration-normal) var(--ease-out);
+}
+
 @keyframes fadeInUp {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }

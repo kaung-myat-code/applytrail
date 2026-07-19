@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
 import styles from './Analysis.module.css'
 import { displayCase } from '../lib/keywordCasing'
 
@@ -39,6 +40,13 @@ function ScoreDisplay({ score, summary, strengths, gaps }) {
       )}
     </div>
   )
+}
+
+ScoreDisplay.propTypes = {
+  score: PropTypes.number.isRequired,
+  summary: PropTypes.string,
+  strengths: PropTypes.arrayOf(PropTypes.string),
+  gaps: PropTypes.arrayOf(PropTypes.string),
 }
 
 function KeywordGroups({ keywords }) {
@@ -85,6 +93,14 @@ function KeywordGroups({ keywords }) {
       </div>
     </div>
   )
+}
+
+KeywordGroups.propTypes = {
+  keywords: PropTypes.shape({
+    matched: PropTypes.arrayOf(PropTypes.string),
+    missing: PropTypes.arrayOf(PropTypes.string),
+    bonus: PropTypes.arrayOf(PropTypes.string),
+  }).isRequired,
 }
 
 function SectionFindings({ sections }) {
@@ -150,8 +166,16 @@ function SectionFindings({ sections }) {
   )
 }
 
+SectionFindings.propTypes = {
+  sections: PropTypes.objectOf(PropTypes.shape({
+    matchRate: PropTypes.number,
+    summary: PropTypes.string,
+    matchedItems: PropTypes.arrayOf(PropTypes.string),
+    missingItems: PropTypes.arrayOf(PropTypes.string),
+  })).isRequired,
+}
+
 function Analysis() {
-  const navigate = useNavigate()
   const [resumeVersions, setResumeVersions] = useState([])
   const [selectedResumeId, setSelectedResumeId] = useState('')
   const [postings, setPostings] = useState([])

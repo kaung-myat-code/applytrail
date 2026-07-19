@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import PropTypes from 'prop-types'
 import ResumeDiffViewer from './ResumeDiffViewer'
 import styles from './SuggestionCard.module.css'
 
@@ -128,6 +129,24 @@ function SuggestionCard({ suggestion, decision, onAccept, onReject, onEdit }) {
       )}
     </div>
   )
+}
+
+SuggestionCard.propTypes = {
+  suggestion: PropTypes.shape({
+    id: PropTypes.string,
+    type: PropTypes.oneOf(['add', 'modify', 'remove']),
+    section: PropTypes.string,
+    current: PropTypes.string,
+    suggested: PropTypes.string,
+    reason: PropTypes.string,
+  }).isRequired,
+  decision: PropTypes.shape({
+    status: PropTypes.oneOf(['accepted', 'rejected', 'edited']),
+    editedContent: PropTypes.string,
+  }),
+  onAccept: PropTypes.func.isRequired,
+  onReject: PropTypes.func.isRequired,
+  onEdit: PropTypes.func.isRequired,
 }
 
 export default SuggestionCard

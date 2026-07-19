@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types'
 import styles from './SectionEditor.module.css'
 
 function SectionEditor({ title, children }) {
@@ -7,6 +8,11 @@ function SectionEditor({ title, children }) {
       {children}
     </div>
   )
+}
+
+SectionEditor.propTypes = {
+  title: PropTypes.string.isRequired,
+  children: PropTypes.node,
 }
 
 export default SectionEditor

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import PropTypes from 'prop-types'
 import styles from './CreateApplicationModal.module.css'
 
 const STATUS_OPTIONS = ['drafted', 'applied', 'interviewing', 'offered', 'rejected', 'withdrawn']
@@ -198,6 +199,18 @@ function CreateApplicationModal({
       </div>
     </div>
   )
+}
+
+CreateApplicationModal.propTypes = {
+  mode: PropTypes.string,
+  company: PropTypes.string,
+  role: PropTypes.string,
+  postingText: PropTypes.string,
+  postingId: PropTypes.string,
+  resumeVersionId: PropTypes.string,
+  resumeVersionName: PropTypes.string,
+  onCancel: PropTypes.func.isRequired,
+  onSuccess: PropTypes.func.isRequired,
 }
 
 export default CreateApplicationModal

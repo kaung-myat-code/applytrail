@@ -165,7 +165,7 @@ function Dashboard() {
                 <span className={styles.stepNum}>2</span>
                 <div>
                   <strong>Add job postings</strong>
-                  <p>Paste job listings you're interested in</p>
+                  <p>Paste job listings you&apos;re interested in</p>
                 </div>
               </div>
               <div className={styles.step}>

@@ -1,4 +1,5 @@
 import ReactDiffViewer from 'react-diff-viewer-continued'
+import PropTypes from 'prop-types'
 import styles from './ResumeDiffViewer.module.css'
 
 function ResumeDiffViewer({ current, suggested }) {
@@ -20,6 +21,11 @@ function ResumeDiffViewer({ current, suggested }) {
       />
     </div>
   )
+}
+
+ResumeDiffViewer.propTypes = {
+  current: PropTypes.string,
+  suggested: PropTypes.string,
 }
 
 export default ResumeDiffViewer

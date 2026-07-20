@@ -50,12 +50,12 @@
 Each requirement below maps 1:1 to a tracked GitHub issue (#2-#8) filed against the 2026-07-05 exploratory UAT (`feedback/feedback.md`). See `.planning/phases/14-ux-quality-polish-from-user-feedback/14-CONTEXT.md` for the full locked-decision breakdown (D-01 through D-15) behind each item.
 
 - [x] **UX-ISSUE-02**: Saving a job posting on New Application redirects to Cover Letter with a transitional confirmation, and "Save Application" on Cover Letter is a distinct confirmed action (separate from "Generate") that redirects to the Applications list on success — closes GitHub #2
-- [ ] **UX-ISSUE-03**: `POST /api/resume-library` creates a valid resume version when given no/empty body (contact defaults to empty strings, not `{}`), covered by a regression test — closes GitHub #3
-- [ ] **UX-ISSUE-04**: Match-analysis keyword whitelist (`server/lib/analysis/keywords.js`) covers product/data-analytics/business-soft-skill terms in addition to the existing technical whitelist — closes GitHub #4
-- [ ] **UX-ISSUE-05**: Generated cover-letter paragraphs and suggestion bullets have correct possessive-apostrophe and acronym-casing handling and vary their templates/keyword usage to read less generic — closes GitHub #5
+- [x] **UX-ISSUE-03**: `POST /api/resume-library` creates a valid resume version when given no/empty body (contact defaults to empty strings, not `{}`), covered by a regression test — closes GitHub #3
+- [x] **UX-ISSUE-04**: Match-analysis keyword whitelist (`server/lib/analysis/keywords.js`) covers product/data-analytics/business-soft-skill terms in addition to the existing technical whitelist — closes GitHub #4
+- [x] **UX-ISSUE-05**: Generated cover-letter paragraphs and suggestion bullets have correct possessive-apostrophe and acronym-casing handling and vary their templates/keyword usage to read less generic — closes GitHub #5
 - [x] **UX-ISSUE-06**: Resume editor requires confirmation before deleting an experience/project/education entry or bullet, shows a "Saved" / "Unsaved changes" indicator near the save action, and offers a read-only resume preview — closes GitHub #6
-- [ ] **UX-ISSUE-07**: Top-level navigation is collapsed into grouped sections reflecting the linear job-search workflow, with contextual "Continue to [next step]" CTAs on workflow pages — closes GitHub #7
-- [ ] **UX-ISSUE-08**: `npx eslint .` passes cleanly (`client/dist` excluded, `prop-types` added, unused vars removed) — closes GitHub #8
+- [x] **UX-ISSUE-07**: Top-level navigation is collapsed into grouped sections reflecting the linear job-search workflow, with contextual "Continue to [next step]" CTAs on workflow pages — closes GitHub #7
+- [x] **UX-ISSUE-08**: `npx eslint .` passes cleanly (`client/dist` excluded, `prop-types` added, unused vars removed) — closes GitHub #8
 
 ## Future Requirements
 
@@ -110,12 +110,12 @@ Each requirement below maps 1:1 to a tracked GitHub issue (#2-#8) filed against 
 | EXPORT-01 | Phase 13 | Complete |
 | EXPORT-02 | Phase 13 | Complete |
 | UX-ISSUE-02 | Phase 14 | Complete |
-| UX-ISSUE-03 | Phase 14 | Pending |
-| UX-ISSUE-04 | Phase 14 | Pending |
-| UX-ISSUE-05 | Phase 14 | Pending |
+| UX-ISSUE-03 | Phase 14 | Complete |
+| UX-ISSUE-04 | Phase 14 | Complete |
+| UX-ISSUE-05 | Phase 14 | Complete |
 | UX-ISSUE-06 | Phase 14 | Complete |
-| UX-ISSUE-07 | Phase 14 | Pending |
-| UX-ISSUE-08 | Phase 14 | Pending |
+| UX-ISSUE-07 | Phase 14 | Complete |
+| UX-ISSUE-08 | Phase 14 | Complete |
 
 ---
 *Requirements defined: 2026-07-02*

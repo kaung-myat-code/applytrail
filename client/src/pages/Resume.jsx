@@ -605,9 +605,12 @@ function Resume() {
           <div
             className={modalStyles.dialog}
             data-testid="resume-preview-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="resume-preview-modal-title"
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className={modalStyles.title}>Resume Preview</h2>
+            <h2 id="resume-preview-modal-title" className={modalStyles.title}>Resume Preview</h2>
             <p className={modalStyles.subtext}>
               This is how your resume data is structured. Close this to keep editing.
             </p>

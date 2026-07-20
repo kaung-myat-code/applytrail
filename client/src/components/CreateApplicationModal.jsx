@@ -110,8 +110,14 @@ function CreateApplicationModal({
       data-testid="modal-backdrop"
       onClick={onCancel}
     >
-      <div className={styles.dialog} onClick={e => e.stopPropagation()}>
-        <h2 className={styles.title}>{title}</h2>
+      <div
+        className={styles.dialog}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="create-app-modal-title"
+        onClick={e => e.stopPropagation()}
+      >
+        <h2 id="create-app-modal-title" className={styles.title}>{title}</h2>
         <p className={styles.subtext}>
           Review the details below, then confirm to add this to your application tracker.
         </p>

@@ -89,6 +89,8 @@ function Navbar() {
               <button
                 type="button"
                 className={`${styles.groupTrigger} ${isActiveGroup ? styles.active : ''}`}
+                aria-haspopup="true"
+                aria-expanded={isOpen}
                 onClick={() => setOpenGroup(isOpen ? null : item.label)}
               >
                 {item.label} <span aria-hidden="true">▾</span>

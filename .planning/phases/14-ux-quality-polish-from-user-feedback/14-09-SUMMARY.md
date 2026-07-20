@@ -125,3 +125,11 @@ None - no external service configuration required.
 ---
 *Phase: 14-ux-quality-polish-from-user-feedback*
 *Completed: 2026-07-21*
+
+## Self-Check: PASSED
+
+- FOUND: server/lib/analysis/analyze-route.test.js
+- FOUND: .planning/phases/14-ux-quality-polish-from-user-feedback/14-09-SUMMARY.md
+- FOUND commit: 9ecff07 (test: add failing regression test)
+- FOUND commit: 165c715 (fix: .ok -> .valid)
+- FOUND commit: 1eafb81 (chore: wire test into npm test)

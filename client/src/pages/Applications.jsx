@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import styles from './Applications.module.css'
+import { isStale, daysSinceLastChange } from '../lib/applicationStatus'
 
 const STATUS_OPTIONS = ['drafted', 'applied', 'interviewing', 'offered', 'rejected', 'withdrawn']
 
@@ -11,19 +12,6 @@ const STATUS_CLASSES = {
   offered: styles.statusOffered,
   rejected: styles.statusRejected,
   withdrawn: styles.statusWithdrawn,
-}
-
-function isStale(application) {
-  const lastChange = new Date(application.last_status_change || application.date_applied)
-  const now = new Date()
-  const daysSince = Math.floor((now - lastChange) / (1000 * 60 * 60 * 24))
-  return daysSince >= 10
-}
-
-function daysSinceLastChange(application) {
-  const lastChange = new Date(application.last_status_change || application.date_applied)
-  const now = new Date()
-  return Math.floor((now - lastChange) / (1000 * 60 * 60 * 24))
 }
 
 function Applications() {
@@ -130,7 +118,7 @@ function Applications() {
                 <span>Last status change: {days} day{days === 1 ? '' : 's'} ago</span>
               </div>
 
-              {isStale(app) && app.status !== 'withdrawn' && app.status !== 'rejected' && (
+              {isStale(app) && (
                 <div className={styles.stale}>
                   <span>&#9888;</span> Needs follow-up — no status change in {days} days
                 </div>

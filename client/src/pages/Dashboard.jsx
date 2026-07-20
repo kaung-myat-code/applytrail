@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import styles from './Dashboard.module.css'
+import { isStale } from '../lib/applicationStatus'
 
 function Dashboard() {
   const [stats, setStats] = useState(null)
@@ -26,11 +27,7 @@ function Dashboard() {
           postingsRes.json(),
         ])
 
-        const stale = applications.filter(app => {
-          const lastChange = new Date(app.last_status_change || app.date_applied)
-          const days = Math.floor((Date.now() - lastChange) / (1000 * 60 * 60 * 24))
-          return days >= 10 && app.status !== 'withdrawn' && app.status !== 'rejected'
-        })
+        const stale = applications.filter(isStale)
 
         const statusCounts = applications.reduce((acc, app) => {
           acc[app.status] = (acc[app.status] || 0) + 1

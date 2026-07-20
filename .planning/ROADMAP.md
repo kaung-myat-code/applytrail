@@ -374,7 +374,7 @@ Plans:
   6. Generated cover-letter and suggestion text fixes possessive-apostrophe and acronym-casing bugs and varies templates to reduce genericness
   7. `npx eslint .` passes cleanly (client/dist excluded, prop-types added, unused vars removed)
 
-**Plans**: 8/8 plans complete
+**Plans**: 9 plans (8 complete + 1 gap-closure)
 
 Plans:
 **Wave 1**
@@ -393,6 +393,10 @@ Plans:
 **Wave 3** *(blocked on Wave 2 completion)*
 
 - [x] 14-08-PLAN.md — PropTypes + unused-var + unescaped-entity fixes across flagged components (closes #8)
+
+**Gap Closure** *(from UAT G-14-5)*
+
+- [ ] 14-09-PLAN.md — Fix `/api/analyze` HTTP 500: correct `.ok`→`.valid` validation field name at three call sites + regression test (closes G-14-5)
 
 Tracked issues:
 

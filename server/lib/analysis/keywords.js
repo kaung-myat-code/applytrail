@@ -138,7 +138,11 @@ function extractKeywords(text) {
 
   const tokens = lower
     .split(/[^a-z0-9.+#-]+/)
-    .filter(t => t.length >= 2 && t.length <= 30 && TECH_KEYWORDS.has(t))
+    // Lower bound is 1 (not 2) so single-character whitelist entries like
+    // 'c' and 'r' remain reachable. This is still safe against noise
+    // because TECH_KEYWORDS.has(t) is the actual gate — no other
+    // single-character token can match unless it's explicitly whitelisted.
+    .filter(t => t.length >= 1 && t.length <= 30 && TECH_KEYWORDS.has(t))
 
   const phrases = [...TECH_KEYWORDS]
     .filter(member => member.includes(' ') && lower.includes(member))

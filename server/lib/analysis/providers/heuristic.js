@@ -5,7 +5,7 @@
  * Returns a MatchReport with score, keyword groups, and section findings.
  */
 
-const { extractKeywords, extractResumeKeywords, ACRONYM_CASING } = require('../keywords')
+const { extractKeywords, extractResumeKeywords, ACRONYM_CASING, keywordsMatch } = require('../keywords')
 
 /**
  * Compute keyword match data for a single section.
@@ -18,9 +18,7 @@ function matchSection(sectionKeywords, postingKeywords) {
   const missing = []
 
   for (const pk of postingKeywords) {
-    const found = sectionKeywords.some(sk =>
-      sk.includes(pk) || pk.includes(sk)
-    )
+    const found = sectionKeywords.some(sk => keywordsMatch(sk, pk))
     if (found) {
       matched.push(pk)
     } else {
@@ -106,7 +104,7 @@ function analyzeResume(resume, jobPosting) {
   const bonusKeywords = []
 
   for (const pk of postingKeywords) {
-    const found = resumeKeywords.some(rk => rk.includes(pk) || pk.includes(rk))
+    const found = resumeKeywords.some(rk => keywordsMatch(rk, pk))
     if (found) {
       matchedKeywords.push(pk)
     } else {
@@ -115,7 +113,7 @@ function analyzeResume(resume, jobPosting) {
   }
 
   for (const rk of resumeKeywords) {
-    const isPostingKeyword = postingKeywords.some(pk => pk.includes(rk) || rk.includes(pk))
+    const isPostingKeyword = postingKeywords.some(pk => keywordsMatch(pk, rk))
     if (!isPostingKeyword) {
       bonusKeywords.push(rk)
     }
@@ -317,7 +315,7 @@ function generateSuggestions(resume, report) {
   const skills = (resume.skills || []).map(s => s.toLowerCase().trim())
   const missingSkills = missing.filter(kw => {
     // Only suggest skills not already in the skills list
-    return !skills.some(sk => sk.includes(kw) || kw.includes(sk))
+    return !skills.some(sk => keywordsMatch(sk, kw))
   }).slice(0, 5)
 
   for (const kw of missingSkills) {

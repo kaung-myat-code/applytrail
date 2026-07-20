@@ -201,4 +201,38 @@ function extractResumeKeywords(resume) {
   return [...keywords]
 }
 
-module.exports = { TECH_KEYWORDS, extractKeywords, extractResumeKeywords, ACRONYM_CASING }
+/**
+ * Normalize a keyword/skill string for exact comparison: lowercase, trim,
+ * and collapse whitespace/underscore separators to a single canonical
+ * hyphen so equivalent phrasings (e.g. "react native" vs "react-native")
+ * compare equal without resorting to substring containment.
+ */
+function normalizeKeyword(str) {
+  return String(str).toLowerCase().trim().replace(/[\s_]+/g, '-')
+}
+
+/**
+ * Compare two keyword/skill strings for an exact (normalized) match.
+ * Deliberately NOT a substring check — plain `.includes()` comparisons
+ * produce false positives like "django".includes("go") or
+ * "javascript".includes("java"), which silently mark unrelated posting
+ * keywords as matched.
+ */
+function keywordsMatch(a, b) {
+  return normalizeKeyword(a) === normalizeKeyword(b)
+}
+
+/**
+ * Check whether `keyword` appears in `text` as a whole word/phrase rather
+ * than as an arbitrary substring — avoids the same false-positive class as
+ * keywordsMatch (e.g. "go" inside "django") when scanning longer free text
+ * such as resume bullets.
+ */
+function textContainsKeyword(text, keyword) {
+  if (!text || !keyword) return false
+  const escaped = String(keyword).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  const pattern = new RegExp(`(?:^|[^a-z0-9])${escaped}(?:$|[^a-z0-9])`, 'i')
+  return pattern.test(String(text))
+}
+
+module.exports = { TECH_KEYWORDS, extractKeywords, extractResumeKeywords, ACRONYM_CASING, keywordsMatch, textContainsKeyword }

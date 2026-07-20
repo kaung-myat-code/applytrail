@@ -5,7 +5,7 @@
  * Designed to be replaceable — swap this module for an LLM API call later.
  */
 
-const { extractKeywords } = require('./analysis/keywords')
+const { extractKeywords, keywordsMatch, textContainsKeyword } = require('./analysis/keywords')
 
 /**
  * Match resume content to job posting keywords.
@@ -17,19 +17,19 @@ function matchResumeToJob(resume, postingText) {
     return { matchedSkills: [], matchedExperience: [], matchedProjects: [] }
   }
 
-  // Match skills (case-insensitive substring)
+  // Match skills (exact match after normalization — not substring, which
+  // produced false positives like "django" matching a "go" requirement)
   const matchedSkills = (resume.skills || []).filter(skill => {
-    const lower = skill.toLowerCase()
-    return keywords.some(kw => lower.includes(kw) || kw.includes(lower))
+    return keywords.some(kw => keywordsMatch(skill, kw))
   })
 
-  // Match experience bullets
+  // Match experience bullets (word-boundary aware, not raw substring)
   const matchedExperience = []
   const seenExpBullets = new Set()
   for (const exp of resume.experience || []) {
     for (const bullet of exp.bullets || []) {
       const lower = bullet.toLowerCase()
-      const matches = keywords.some(kw => lower.includes(kw))
+      const matches = keywords.some(kw => textContainsKeyword(lower, kw))
       if (matches && !seenExpBullets.has(lower)) {
         seenExpBullets.add(lower)
         matchedExperience.push(bullet)
@@ -37,13 +37,13 @@ function matchResumeToJob(resume, postingText) {
     }
   }
 
-  // Match project bullets
+  // Match project bullets (word-boundary aware, not raw substring)
   const matchedProjects = []
   const seenProjBullets = new Set()
   for (const proj of resume.projects || []) {
     for (const bullet of proj.bullets || []) {
       const lower = bullet.toLowerCase()
-      const matches = keywords.some(kw => lower.includes(kw))
+      const matches = keywords.some(kw => textContainsKeyword(lower, kw))
       if (matches && !seenProjBullets.has(lower)) {
         seenProjBullets.add(lower)
         matchedProjects.push(bullet)

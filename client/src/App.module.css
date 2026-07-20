@@ -7,7 +7,15 @@
 
 .main {
   padding: var(--space-8) 0 var(--space-10);
-  animation: fadeInUp var(--duration-slow) var(--ease-out) both;
+  /* fill-mode is intentionally "backwards" (not "both"): "both" would hold
+     the ending keyframe's transform:translateY(0) on this element forever
+     after the animation completes. Since this <main> wraps every routed
+     page, a lingering non-`none` transform here silently becomes the
+     containing block for every position:fixed descendant (dialogs/modals)
+     app-wide instead of the viewport, making them render at the wrong
+     size/position. "backwards" still prevents a flash of unanimated
+     content during animation-delay, without pinning transform afterward. */
+  animation: fadeInUp var(--duration-slow) var(--ease-out) backwards;
   animation-delay: 100ms;
 }
 

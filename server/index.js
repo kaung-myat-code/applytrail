@@ -20,7 +20,22 @@ const DEMO_DIR = path.join(__dirname, 'demo-data')
 app.use(express.json())
 
 if (process.env.NODE_ENV === 'production') {
-  app.use(helmet({ contentSecurityPolicy: false }))
+  // Scoped CSP rather than disabling it outright: the built client only
+  // needs 'unsafe-inline' for style-src (a handful of components use the
+  // inline `style` attribute) and the Google Fonts stylesheet/font hosts
+  // referenced in client/index.html. Everything else stays same-origin.
+  app.use(helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        scriptSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+        fontSrc: ["'self'", 'https://fonts.gstatic.com'],
+        imgSrc: ["'self'", 'data:'],
+        connectSrc: ["'self'"],
+      },
+    },
+  }))
   app.use(compression())
 }
 

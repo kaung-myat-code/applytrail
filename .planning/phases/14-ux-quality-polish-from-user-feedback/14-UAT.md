@@ -1,14 +1,18 @@
 ---
-status: complete
+status: testing
 phase: 14-ux-quality-polish-from-user-feedback
 source: [14-VERIFICATION.md]
 started: 2026-07-20T00:00:00Z
-updated: 2026-07-20T00:00:00Z
+updated: 2026-07-21T00:00:00Z
 ---
 
 ## Current Test
 
-[testing complete]
+number: 5
+name: Analysis page keyword badge visual rendering
+expected: |
+  On the Analysis page for a job posting containing acronyms (e.g. SQL, API), run the match analysis with the heuristic provider. The match report and keyword badges render (Matched/Missing/Bonus sections visible, no 'Analysis failed' error); acronym keywords display as 'SQL'/'API', not 'Sql'/'Api', and read naturally alongside Title-Cased non-acronym keywords.
+awaiting: user response
 
 ## Tests
 
@@ -29,17 +33,16 @@ expected: Resize the browser to a narrow/mobile viewport (~375px wide), open the
 result: pass
 
 ### 5. Analysis page keyword badge visual rendering
-expected: On the Analysis page for a job posting containing acronyms (e.g. SQL, API), visually confirm the Matched/Missing/Bonus keyword badges and section-level badges render 'SQL'/'API' in correct casing, not 'Sql'/'Api', and read naturally alongside Title-Cased non-acronym keywords.
-result: issue
-reported: "Driven via chrome-devtools MCP: submitting the Analyze Match form (resume=mr3ldtxymun8qiljd, posting=1782465761338, provider=heuristic) returns HTTP 500 'Analysis failed. Check server logs for details.' Never reaches the keyword badges to check casing. Root cause found by reproducing the heuristic call directly in Node: server/index.js checks `reportValidation.ok` / `suggestionsValidation.ok` (lines 796, 835, 859) but server/lib/analysis/validate.js's validateMatchReport/validateSuggestions return `{ valid, errors }`, never `.ok`. So the check `!reportValidation.ok` is always true and /api/analyze 500s on every request, on every provider path."
-severity: blocker
+expected: On the Analysis page for a job posting containing acronyms (e.g. SQL, API), run the match analysis with the heuristic provider. The match report and keyword badges render (Matched/Missing/Bonus sections visible, no 'Analysis failed' error); acronym keywords display as 'SQL'/'API', not 'Sql'/'Api', and read naturally alongside Title-Cased non-acronym keywords.
+result: pending
+note: "Blocking bug G-14-5 (POST /api/analyze 500 on every request) fixed by plan 14-09 — server/index.js now checks .valid instead of the nonexistent .ok on validateMatchReport/validateSuggestions results. Verifier independently confirmed HTTP 200 with a live reproduction of this exact posting. The original visual casing check was never reached before and still needs a human/browser pass."
 
 ## Summary
 
 total: 5
 passed: 4
-issues: 1
-pending: 0
+issues: 0
+pending: 1
 skipped: 0
 blocked: 0
 
@@ -47,16 +50,16 @@ blocked: 0
 
 - gap_id: G-14-5
   truth: "Analysis page returns a match report and keyword badges render acronyms in correct casing"
-  status: failed
-  reason: "User reported: /api/analyze always returns HTTP 500 because index.js checks .ok on validateMatchReport/validateSuggestions results, but lib/analysis/validate.js returns .valid instead of .ok — so the analysis feature is completely broken, not a casing issue"
+  status: code_fixed_pending_reverify
+  reason: "Root cause (server/index.js checking .ok instead of .valid on validate.js's { valid, errors } return shape) fixed by gap-closure plan 14-09. Verifier independently reproduced the exact failing request (job_posting_id 1782465761338) and confirmed HTTP 200. The visual acronym-casing half of the original truth statement was never exercised (blocked by the 500) and still needs the Test 5 human check above."
   severity: blocker
   test: 5
-  root_cause: "Field name mismatch between server/index.js (checks .ok) and server/lib/analysis/validate.js (returns .valid) at index.js lines 796, 835, 859"
+  root_cause: "Field name mismatch between server/index.js (checked .ok) and server/lib/analysis/validate.js (returns .valid) at index.js lines 796, 835, 859"
   artifacts:
     - path: "server/index.js"
-      issue: "checks reportValidation.ok / suggestionsValidation.ok which are always undefined"
+      issue: "RESOLVED — checks reportValidation.valid / suggestionsValidation.valid, verified against live server response"
     - path: "server/lib/analysis/validate.js"
-      issue: "validateMatchReport and validateSuggestions return { valid, errors } not { ok, errors }"
+      issue: "unchanged — validateMatchReport and validateSuggestions return { valid, errors }, now correctly consumed"
   missing:
-    - "Fix index.js to check .valid instead of .ok (or rename validate.js's return field to .ok) at all three call sites in the /api/analyze handler"
+    - "Human confirmation that keyword badges render acronyms (SQL/API) in correct casing now that the endpoint returns data (Test 5 above)"
   debug_session: ""

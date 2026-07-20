@@ -197,8 +197,13 @@ function Analysis() {
       fetch('/api/job-postings').then(res => res.json()),
     ])
       .then(([libraryData, postingsData]) => {
-        setResumeVersions(libraryData.versions || [])
-        setSelectedResumeId(libraryData.selected_id || '')
+        const versions = libraryData.versions || []
+        setResumeVersions(versions)
+        // Fall back to the first version when there is no selected_id, so
+        // the controlled <select> always has a matching option — otherwise
+        // the browser visually shows the first <option> while React state
+        // stays empty, and submitting silently analyzes the wrong resume.
+        setSelectedResumeId(libraryData.selected_id || versions[0]?.id || '')
         setPostings(postingsData)
       })
       .catch(err => {

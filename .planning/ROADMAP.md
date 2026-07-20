@@ -374,7 +374,7 @@ Plans:
   6. Generated cover-letter and suggestion text fixes possessive-apostrophe and acronym-casing bugs and varies templates to reduce genericness
   7. `npx eslint .` passes cleanly (client/dist excluded, prop-types added, unused vars removed)
 
-**Plans**: 9 plans (8 complete + 1 gap-closure)
+**Plans**: 9/9 plans complete
 
 Plans:
 **Wave 1**
@@ -396,7 +396,7 @@ Plans:
 
 **Gap Closure** *(from UAT G-14-5)*
 
-- [ ] 14-09-PLAN.md — Fix `/api/analyze` HTTP 500: correct `.ok`→`.valid` validation field name at three call sites + regression test (closes G-14-5)
+- [x] 14-09-PLAN.md — Fix `/api/analyze` HTTP 500: correct `.ok`→`.valid` validation field name at three call sites + regression test (closes G-14-5)
 
 Tracked issues:
 
@@ -431,4 +431,4 @@ Phases execute in numeric order: 9 -> 10 -> 11 -> 11.5 -> 12 -> 13 -> 14
 | 11.5 AI Analysis Provider 🔶 INSERTED | v2.0 | 2/2 | Complete | 2026-07-03 |
 | 12. Tailored Resume Generation | v2.0 | 3/3 | Complete    | 2026-07-16 |
 | 13. Application Pre-fill and Export | v2.0 | 3/3 | Complete    | 2026-07-17 |
-| 14. UX & Quality Polish from User Feedback | v2.0 | 8/8 | Complete   | 2026-07-19 |
+| 14. UX & Quality Polish from User Feedback | v2.0 | 9/9 | Complete   | 2026-07-19 |

@@ -6,6 +6,8 @@ import { displayCase } from '../lib/keywordCasing'
 
 function ScoreDisplay({ score, summary, strengths, gaps }) {
   const scoreColor = score >= 70 ? styles.scoreGreen : score >= 40 ? styles.scoreYellow : styles.scoreRed
+  const safeStrengths = Array.isArray(strengths) ? strengths : []
+  const safeGaps = Array.isArray(gaps) ? gaps : []
 
   return (
     <div className={styles.scoreSection}>
@@ -17,22 +19,22 @@ function ScoreDisplay({ score, summary, strengths, gaps }) {
         <div className={styles.scoreSummary}>{summary}</div>
       </div>
 
-      {strengths.length > 0 && (
+      {safeStrengths.length > 0 && (
         <div className={styles.strengths}>
           <h3 className={styles.subheading}>Strengths</h3>
           <ul>
-            {strengths.map((s, i) => (
+            {safeStrengths.map((s, i) => (
               <li key={i}>{s}</li>
             ))}
           </ul>
         </div>
       )}
 
-      {gaps.length > 0 && (
+      {safeGaps.length > 0 && (
         <div className={styles.gaps}>
           <h3 className={styles.subheading}>Gaps to Address</h3>
           <ul>
-            {gaps.map((g, i) => (
+            {safeGaps.map((g, i) => (
               <li key={i}>{g}</li>
             ))}
           </ul>
@@ -50,7 +52,7 @@ ScoreDisplay.propTypes = {
 }
 
 function KeywordGroups({ keywords }) {
-  const { matched, missing, bonus } = keywords
+  const { matched = [], missing = [], bonus = [] } = keywords || {}
 
   return (
     <div className={styles.keywordSection}>
@@ -112,13 +114,14 @@ function SectionFindings({ sections }) {
     projects: 'Projects',
     education: 'Education',
   }
+  const safeSections = sections || {}
 
   return (
     <div className={styles.sectionsSection}>
       <h3 className={styles.sectionTitle}>Section Analysis</h3>
 
       {sectionOrder.map(key => {
-        const section = sections[key]
+        const section = safeSections[key]
         if (!section) return null
 
         const matchPercent = Math.round(section.matchRate * 100)

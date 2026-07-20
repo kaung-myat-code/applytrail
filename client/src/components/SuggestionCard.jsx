@@ -44,7 +44,7 @@ function SuggestionCard({ suggestion, decision, onAccept, onReject, onEdit }) {
           </div>
           <div className={styles.previewBlock}>
             <span className={styles.previewLabel}>Suggested:</span>
-            <p className={styles.previewText}>{decision?.editedContent || suggestion.suggested}</p>
+            <p className={styles.previewText}>{decision?.editedContent ?? suggestion.suggested}</p>
           </div>
         </div>
       )}
@@ -53,7 +53,7 @@ function SuggestionCard({ suggestion, decision, onAccept, onReject, onEdit }) {
         <div className={styles.preview}>
           <div className={styles.previewBlock}>
             <span className={styles.previewLabel}>Suggested addition:</span>
-            <p className={styles.previewText}>{decision?.editedContent || suggestion.suggested}</p>
+            <p className={styles.previewText}>{decision?.editedContent ?? suggestion.suggested}</p>
           </div>
         </div>
       )}
@@ -70,7 +70,7 @@ function SuggestionCard({ suggestion, decision, onAccept, onReject, onEdit }) {
       {showDiff && suggestion.type === 'modify' && (
         <ResumeDiffViewer
           current={suggestion.current}
-          suggested={decision?.editedContent || suggestion.suggested}
+          suggested={decision?.editedContent ?? suggestion.suggested}
         />
       )}
 
@@ -121,7 +121,7 @@ function SuggestionCard({ suggestion, decision, onAccept, onReject, onEdit }) {
           )}
           <button
             className={styles.editButton}
-            onClick={() => { setIsEditing(true); setEditedText(decision?.editedContent || suggestion.suggested) }}
+            onClick={() => { setIsEditing(true); setEditedText(decision?.editedContent ?? suggestion.suggested) }}
           >
             Edit
           </button>

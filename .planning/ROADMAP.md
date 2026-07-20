@@ -51,7 +51,7 @@ Archive: [v1.1-ROADMAP.md](milestones/v1.1-ROADMAP.md) | [v1.1-REQUIREMENTS.md](
 - [x] **Phase 11.5: AI Analysis Provider 🔶 INSERTED** - Multi-provider AI analysis (Gemini, OpenRouter, Groq) with provider selection toggle, API key config, and automatic fallback chain to heuristic
 - [x] **Phase 12: Tailored Resume Generation** - Apply accepted patches to create a new resume version with side-by-side diff review (completed 2026-07-16)
 - [x] **Phase 13: Application Pre-fill and Export** - Pre-fill application from job posting, export resume as PDF or JSON (completed 2026-07-17)
-- [ ] **Phase 14: UX & Quality Polish from User Feedback** - Resolve GitHub issues #2-#8 from 2026-07-05 UAT: workflow clarity, nav restructuring, resume-library bug fix, editor safety, analysis/writing quality, and lint cleanup
+- [x] **Phase 14: UX & Quality Polish from User Feedback** - Resolve GitHub issues #2-#8 from 2026-07-05 UAT: workflow clarity, nav restructuring, resume-library bug fix, editor safety, analysis/writing quality, and lint cleanup
 
 ## Phase Details
 

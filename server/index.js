@@ -793,7 +793,7 @@ app.post('/api/analyze', async (req, res) => {
           const isFallback = aiProvider !== providerName
           const reportValidation = validateMatchReport(report)
           const suggestionsValidation = validateSuggestions(suggestions, resume)
-          if (!reportValidation.ok || !suggestionsValidation.ok) {
+          if (!reportValidation.valid || !suggestionsValidation.valid) {
             const shapeError = new Error(`Provider ${aiProvider} returned an invalid report/suggestions shape`)
             console.error(shapeError.message, reportValidation.errors, suggestionsValidation.errors)
             lastError = shapeError
@@ -832,7 +832,7 @@ app.post('/api/analyze', async (req, res) => {
       const sanitizedReason = sanitizeError(selectedProviderError || lastError || new Error('Unknown error'))
       const reportValidation = validateMatchReport(report)
       const suggestionsValidation = validateSuggestions(suggestions, resume)
-      if (!reportValidation.ok || !suggestionsValidation.ok) {
+      if (!reportValidation.valid || !suggestionsValidation.valid) {
         console.error('Heuristic fallback produced an invalid report/suggestions shape:', reportValidation.errors, suggestionsValidation.errors)
         return res.status(500).json({ error: 'Analysis failed. Check server logs for details.' })
       }
@@ -856,7 +856,7 @@ app.post('/api/analyze', async (req, res) => {
     const suggestions = provider.generateSuggestions(resume, report)
     const reportValidation = validateMatchReport(report)
     const suggestionsValidation = validateSuggestions(suggestions, resume)
-    if (!reportValidation.ok || !suggestionsValidation.ok) {
+    if (!reportValidation.valid || !suggestionsValidation.valid) {
       console.error('Heuristic provider produced an invalid report/suggestions shape:', reportValidation.errors, suggestionsValidation.errors)
       return res.status(500).json({ error: 'Analysis failed. Check server logs for details.' })
     }

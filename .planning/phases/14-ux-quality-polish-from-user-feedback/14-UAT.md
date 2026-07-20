@@ -1,5 +1,5 @@
 ---
-status: testing
+status: complete
 phase: 14-ux-quality-polish-from-user-feedback
 source: [14-VERIFICATION.md]
 started: 2026-07-20T00:00:00Z
@@ -8,11 +8,7 @@ updated: 2026-07-21T00:00:00Z
 
 ## Current Test
 
-number: 5
-name: Analysis page keyword badge visual rendering
-expected: |
-  On the Analysis page for a job posting containing acronyms (e.g. SQL, API), run the match analysis with the heuristic provider. The match report and keyword badges render (Matched/Missing/Bonus sections visible, no 'Analysis failed' error); acronym keywords display as 'SQL'/'API', not 'Sql'/'Api', and read naturally alongside Title-Cased non-acronym keywords.
-awaiting: user response
+[testing complete]
 
 ## Tests
 
@@ -34,15 +30,15 @@ result: pass
 
 ### 5. Analysis page keyword badge visual rendering
 expected: On the Analysis page for a job posting containing acronyms (e.g. SQL, API), run the match analysis with the heuristic provider. The match report and keyword badges render (Matched/Missing/Bonus sections visible, no 'Analysis failed' error); acronym keywords display as 'SQL'/'API', not 'Sql'/'Api', and read naturally alongside Title-Cased non-acronym keywords.
-result: pending
-note: "Blocking bug G-14-5 (POST /api/analyze 500 on every request) fixed by plan 14-09 — server/index.js now checks .valid instead of the nonexistent .ok on validateMatchReport/validateSuggestions results. Verifier independently confirmed HTTP 200 with a live reproduction of this exact posting. The original visual casing check was never reached before and still needs a human/browser pass."
+result: pass
+note: "Verified live via chrome-devtools MCP against pitchIN/Fullstack Developer posting (job_posting_id 1782465761338) with heuristic provider. First attempt still reproduced the 500 because the running dev server process predated the 165c715 fix commit (started 23:49, fix landed 00:12) — restarted server, re-ran, confirmed HTTP 200 with full match report (score, gaps, keyword sections) rendering. Acronyms API, APIs, CSS, SEO, PHP, RESTful all rendered in correct casing alongside Title-Cased keywords (React, Angular, Figma, Typescript, etc.), consistent with the ACRONYM_CASING map in client/src/lib/keywordCasing.js."
 
 ## Summary
 
 total: 5
-passed: 4
+passed: 5
 issues: 0
-pending: 1
+pending: 0
 skipped: 0
 blocked: 0
 
@@ -50,8 +46,8 @@ blocked: 0
 
 - gap_id: G-14-5
   truth: "Analysis page returns a match report and keyword badges render acronyms in correct casing"
-  status: code_fixed_pending_reverify
-  reason: "Root cause (server/index.js checking .ok instead of .valid on validate.js's { valid, errors } return shape) fixed by gap-closure plan 14-09. Verifier independently reproduced the exact failing request (job_posting_id 1782465761338) and confirmed HTTP 200. The visual acronym-casing half of the original truth statement was never exercised (blocked by the 500) and still needs the Test 5 human check above."
+  status: resolved
+  reason: "Root cause (server/index.js checking .ok instead of .valid on validate.js's { valid, errors } return shape) fixed by gap-closure plan 14-09 (commit 165c715). Test 5 re-verified live via chrome-devtools MCP after restarting the dev server (which had been running pre-fix code): match report renders with HTTP 200, and acronym keywords (API, APIs, CSS, SEO, PHP, RESTful) display in correct casing."
   severity: blocker
   test: 5
   root_cause: "Field name mismatch between server/index.js (checked .ok) and server/lib/analysis/validate.js (returns .valid) at index.js lines 796, 835, 859"
@@ -60,6 +56,7 @@ blocked: 0
       issue: "RESOLVED — checks reportValidation.valid / suggestionsValidation.valid, verified against live server response"
     - path: "server/lib/analysis/validate.js"
       issue: "unchanged — validateMatchReport and validateSuggestions return { valid, errors }, now correctly consumed"
-  missing:
-    - "Human confirmation that keyword badges render acronyms (SQL/API) in correct casing now that the endpoint returns data (Test 5 above)"
+  missing: []
   debug_session: ""
+  resolved_by: "14-09"
+  resolved_at: "2026-07-21"

@@ -1,10 +1,19 @@
 /**
- * Shared application-staleness rules.
+ * Shared application-status constants and staleness rules.
  *
- * Single source of truth for the "N days since last status change" rule so
- * Applications.jsx and Dashboard.jsx cannot drift apart when the threshold
- * or excluded-status list changes.
+ * Single source of truth for the status enum (within the client package) so
+ * CreateApplicationModal.jsx and Applications.jsx cannot drift apart, and
+ * for the "N days since last status change" rule so Applications.jsx and
+ * Dashboard.jsx cannot drift apart either.
+ *
+ * NOTE: server/index.js maintains its own VALID_STATUSES copy of this enum.
+ * client/ and server/ are separate npm packages with no shared module
+ * boundary (see client/src/lib/keywordCasing.js for the same documented
+ * tradeoff), so keep STATUS_OPTIONS below in sync with server/index.js's
+ * VALID_STATUSES whenever a status is added, renamed, or removed.
  */
+
+export const STATUS_OPTIONS = ['drafted', 'applied', 'interviewing', 'offered', 'rejected', 'withdrawn']
 
 const STALE_THRESHOLD_DAYS = 10
 const STALE_EXCLUDED_STATUSES = ['withdrawn', 'rejected']

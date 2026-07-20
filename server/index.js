@@ -280,6 +280,11 @@ app.get('/api/applications', (req, res) => {
   res.json(applications)
 })
 
+// NOTE: client/src/lib/applicationStatus.js's STATUS_OPTIONS is the client-side
+// copy of this same enum. client/ and server/ are separate npm packages with
+// no shared module boundary, so keep the two lists in sync whenever a status
+// is added, renamed, or removed -- otherwise the client dropdown can offer a
+// status this API then rejects with a 400.
 const VALID_STATUSES = ['drafted', 'applied', 'interviewing', 'offered', 'rejected', 'withdrawn']
 
 app.post('/api/applications', (req, res) => {

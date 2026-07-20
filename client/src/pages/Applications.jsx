@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import styles from './Applications.module.css'
-import { isStale, daysSinceLastChange } from '../lib/applicationStatus'
-
-const STATUS_OPTIONS = ['drafted', 'applied', 'interviewing', 'offered', 'rejected', 'withdrawn']
+import { isStale, daysSinceLastChange, STATUS_OPTIONS } from '../lib/applicationStatus'
 
 const STATUS_CLASSES = {
   drafted: styles.statusDrafted,

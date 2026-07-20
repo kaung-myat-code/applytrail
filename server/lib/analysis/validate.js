@@ -161,6 +161,36 @@ function validateSuggestions(suggestions, resume) {
 }
 
 /**
+ * Normalize text for lenient-but-still-exact substring comparison.
+ *
+ * LLM providers (e.g. Gemini) reliably introduce benign formatting drift when
+ * echoing resume text back as a suggestion's `current` field -- extra/collapsed
+ * whitespace, smart quotes instead of straight quotes, or a trailing ellipsis
+ * when truncating a long bullet. None of these change the substance of the
+ * text, so they should not cause findInResume to reject a legitimate match.
+ * This intentionally does NOT do fuzzy/token-overlap matching -- genuinely
+ * paraphrased or fabricated text must still fail, since the match determines
+ * whether a string-replacement patch can actually be applied to the resume.
+ * @param {string} str
+ * @returns {string}
+ */
+function normalizeText(str) {
+  if (typeof str !== 'string') return ''
+  return str
+    .trim()
+    // Curly/smart quotes and apostrophes -> straight equivalents
+    .replace(/[‘’‚‛]/g, "'")
+    .replace(/[“”„‟]/g, '"')
+    // Trailing ellipsis (unicode "…" or literal "...") used when the model
+    // truncates a long bullet instead of quoting it in full
+    .replace(/(\.\.\.|…)\s*$/, '')
+    // Collapse any run of whitespace (including newlines) to a single space
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase()
+}
+
+/**
  * Search for a string value in the resume's relevant section.
  * @param {object} resume
  * @param {string} section
@@ -170,23 +200,27 @@ function validateSuggestions(suggestions, resume) {
 function findInResume(resume, section, value) {
   if (!resume || !value) return false
 
+  const normValue = normalizeText(value)
+  if (!normValue) return false
+
   switch (section) {
     case 'summary':
-      return (resume.summary || '').includes(value)
+      return normalizeText(resume.summary || '').includes(normValue)
 
     case 'skills':
-      return (resume.skills || []).some(s =>
-        s.includes(value) || value.includes(s)
-      )
+      return (resume.skills || []).some(s => {
+        const normSkill = normalizeText(s)
+        return normSkill.includes(normValue) || normValue.includes(normSkill)
+      })
 
     case 'experience':
       return (resume.experience || []).some(e =>
-        (e.bullets || []).some(b => b.includes(value))
+        (e.bullets || []).some(b => normalizeText(b).includes(normValue))
       )
 
     case 'projects':
       return (resume.projects || []).some(p =>
-        (p.bullets || []).some(b => b.includes(value))
+        (p.bullets || []).some(b => normalizeText(b).includes(normValue))
       )
 
     default:

@@ -219,3 +219,36 @@
   from { opacity: 0; transform: translateY(4px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page > h1 {
+    font-size: 1.75rem;
+  }
+
+  .cardHeader {
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .meta {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .btn,
+  .btnPrimary,
+  .btnDanger {
+    min-height: 44px;
+  }
+
+  .renameForm {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .renameInput {
+    min-width: 0;
+    width: 100%;
+  }
+}

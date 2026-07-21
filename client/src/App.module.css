@@ -29,3 +29,13 @@
     transform: translateY(0);
   }
 }
+
+@media (max-width: 640px) {
+  .app {
+    padding: 0 var(--space-4);
+  }
+
+  .main {
+    padding: var(--space-6) 0 var(--space-8);
+  }
+}

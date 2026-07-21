@@ -322,3 +322,39 @@
   color: var(--color-muted);
   margin-top: var(--space-1);
 }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page > h1 {
+    font-size: 1.75rem;
+  }
+
+  .section {
+    padding: var(--space-5);
+  }
+
+  .entryRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .bulletRow {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .removeButton {
+    align-self: flex-end;
+  }
+
+  .saveRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .saveButton {
+    width: 100%;
+    min-height: 44px;
+  }
+}

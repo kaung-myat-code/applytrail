@@ -255,3 +255,39 @@
   display: flex;
   gap: var(--space-3);
 }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page > h1 {
+    font-size: 1.75rem;
+  }
+
+  .form {
+    padding: var(--space-5);
+  }
+
+  .result {
+    padding: var(--space-5);
+  }
+
+  .paragraph {
+    overflow-wrap: break-word;
+  }
+
+  .resultActions {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .generateButton,
+  .saveButton,
+  .copyButton {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .confirmActions {
+    flex-direction: column;
+  }
+}

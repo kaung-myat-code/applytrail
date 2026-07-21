@@ -108,3 +108,23 @@
   color: var(--color-danger);
   background: var(--color-danger-bg);
 }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page > h1 {
+    font-size: 1.75rem;
+  }
+
+  .form {
+    padding: var(--space-5);
+  }
+
+  .textarea {
+    overflow-wrap: break-word;
+  }
+
+  .submitButton {
+    width: 100%;
+    min-height: 44px;
+  }
+}

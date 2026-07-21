@@ -186,6 +186,7 @@ Environment variables:
 
 * `NODE_ENV=production` — enables helmet, compression, and static file serving (set in render.yaml)
 * `PORT` — auto-set by Render
+* `VITE_GOATCOUNTER_SITE` — your GoatCounter site code; enables privacy-friendly pageview analytics in production. Unset it locally to avoid tracking during development. On Render this is set as a service environment variable (build-time, since Vite inlines `VITE_*` vars at build).
 
 Data resets on each redeploy (acceptable for a portfolio demo).
 

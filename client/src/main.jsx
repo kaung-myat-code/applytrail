@@ -11,7 +11,10 @@ import CoverLetter from './pages/CoverLetter.jsx'
 import Analysis from './pages/Analysis.jsx'
 import ReviewSuggestions from './pages/ReviewSuggestions.jsx'
 import PreviewTailored from './pages/PreviewTailored.jsx'
+import { initAnalytics } from './lib/analytics.js'
 import './index.css'
+
+initAnalytics()
 
 const router = createBrowserRouter([
   {

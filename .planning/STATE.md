@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-07-16)
 
 Phase: 14 (ux-quality-polish-from-user-feedback) — COMPLETE
 Status: Phase 14 complete, ready to plan next phase
-Last activity: 2026-07-21 — Phase 14 UAT completed (5/5 passed, 0 issues), VERIFICATION.md canonicalized to passed
+Last activity: 2026-07-21 - Completed quick task 260721-t54: Add GoatCounter analytics to ApplyTrail
 
 Progress: [███████░░░░] 40%
 
@@ -116,6 +116,7 @@ Resume file: .planning/phases/14-ux-quality-polish-from-user-feedback/14-UI-SPEC
 
 | Date | Task | Status |
 |------|------|--------|
+| 2026-07-21 | Add GoatCounter analytics (env-gated, [260721-t54-goatcounter-analytics](./quick/260721-t54-goatcounter-analytics/)) | ✅ Complete |
 | 2026-07-21 | Update README.md for shipped v2.0 Resume Tailoring Flow | ✅ Complete |
 | 2026-07-05 | Fix OpenRouter rate limit error handling | ✅ Complete |
 | 2026-07-05 | Add Groq/OpenRouter provider keys for fallback options | ✅ Complete |

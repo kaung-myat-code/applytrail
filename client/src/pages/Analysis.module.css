@@ -455,3 +455,41 @@
   box-shadow: var(--shadow-md);
   transform: translateY(-1px);
 }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page > h1 {
+    font-size: 1.75rem;
+  }
+
+  .form {
+    padding: var(--space-5);
+  }
+
+  .analyzeButton {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .scoreSection,
+  .keywordSection,
+  .sectionsSection {
+    padding: var(--space-5);
+  }
+
+  .scoreHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+
+  .scoreSummary,
+  .sectionSummaryText {
+    overflow-wrap: break-word;
+  }
+
+  .sectionCardHeader {
+    flex-wrap: wrap;
+    gap: var(--space-1);
+  }
+}

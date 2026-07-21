@@ -160,3 +160,31 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .page {
+    padding: var(--space-4);
+  }
+
+  .nameField {
+    font-size: 1.25rem;
+  }
+
+  .entryMeta,
+  .entryDescription,
+  .bulletList {
+    overflow-wrap: break-word;
+  }
+
+  .footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-3);
+  }
+
+  .saveButton {
+    width: 100%;
+    min-height: 44px;
+  }
+}

@@ -78,6 +78,7 @@ function Applications() {
       <div className={styles.page}>
         <h1>Applications</h1>
         <div className={styles.empty}>
+          <span className={styles.emptyIcon} aria-hidden="true">📭</span>
           <p>No applications yet. Generate a cover letter first to save an application.</p>
           <p>
             <Link to="/cover-letter">Go to Cover Letter Generator</Link>

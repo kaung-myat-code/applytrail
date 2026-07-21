@@ -30,6 +30,10 @@
   --color-warning-bg: #fef9ee;
   --color-danger: #c74040;
   --color-danger-bg: #fef2f2;
+  /* Neutral status tokens — back the drafted/withdrawn status pills
+     (application states with no color meaning of their own) */
+  --color-neutral-bg: #f3f4f6;
+  --color-neutral-text: #6b7280;
 
   /* Typography */
   --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
@@ -63,6 +67,11 @@
   --duration-normal: 250ms;
   --duration-slow: 400ms;
 }
+
+/* Mobile breakpoint convention (project-wide):
+   768px — tablet / stacked layouts, collapsed grids
+   480px — phone-specific tweaks (rare; only when 768px isn't tight enough)
+   Page gutters/padding are tightened separately in App.module.css at 640px. */
 
 body {
   font-family: var(--font-body);

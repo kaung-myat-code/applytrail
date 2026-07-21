@@ -116,6 +116,7 @@ Resume file: .planning/phases/14-ux-quality-polish-from-user-feedback/14-UI-SPEC
 
 | Date | Task | Status |
 |------|------|--------|
+| 2026-07-22 | Consolidate slides/pitch.md, intro.md, tech-stack.md into one up-to-date deck ([260722-u91-consolidate-slides-into-one-deck](./quick/260722-u91-consolidate-slides-into-one-deck/)) | ✅ Complete |
 | 2026-07-21 | Polish UI/UX (spacing, color tokens, mobile responsiveness, unified empty/error/loading states) via frontend-design skill ([260721-wdq-polish-ui-ux-using-frontend-design-tidy-](./quick/260721-wdq-polish-ui-ux-using-frontend-design-tidy-/)) | ⚠️ Needs manual 375px browser check |
 | 2026-07-21 | Fix remaining GoatCounter CSP block — beacon origin *.goatcounter.com allowlisted in connectSrc ([260721-vks-fix-remaining-goatcounter-csp-block-add-](./quick/260721-vks-fix-remaining-goatcounter-csp-block-add-/)) | ✅ Complete |
 | 2026-07-21 | Fix GoatCounter analytics blocked by production CSP (allowlist gc.zgo.at in scriptSrc/connectSrc, [260721-vc7-fix-goatcounter-analytics-not-receiving-](./quick/260721-vc7-fix-goatcounter-analytics-not-receiving-/)) | ✅ Complete |

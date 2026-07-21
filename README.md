@@ -44,6 +44,23 @@ No login. No job-board scraping. No cloud account required to start.
 </tr>
 </table>
 
+<table>
+<tr>
+<td width="34%">
+<img src="docs/screenshots/resume-library.png" width="100%" alt="Resume library listing multiple tailored resume versions">
+<p align="center"><sub>Resume library with tailored versions</sub></p>
+</td>
+<td width="33%">
+<img src="docs/screenshots/analysis.png" width="100%" alt="Match analysis showing compatibility score, gaps, and keyword breakdown">
+<p align="center"><sub>Match analysis with compatibility score</sub></p>
+</td>
+<td width="33%">
+<img src="docs/screenshots/review-suggestions.png" width="100%" alt="Review suggestions page with accept, reject, and edit controls per suggestion">
+<p align="center"><sub>Section-by-section suggestion review</sub></p>
+</td>
+</tr>
+</table>
+
 ---
 
 ## How it works

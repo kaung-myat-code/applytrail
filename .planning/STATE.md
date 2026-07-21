@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-07-16)
 
 Phase: 14 (ux-quality-polish-from-user-feedback) — COMPLETE
 Status: Phase 14 complete, ready to plan next phase
-Last activity: 2026-07-21 - Completed quick task 260721-t54: Add GoatCounter analytics to ApplyTrail
+Last activity: 2026-07-21 - Completed quick task 260721-vc7: Fix GoatCounter analytics not receiving data in production (CSP fix)
 
 Progress: [███████░░░░] 40%
 
@@ -116,6 +116,7 @@ Resume file: .planning/phases/14-ux-quality-polish-from-user-feedback/14-UI-SPEC
 
 | Date | Task | Status |
 |------|------|--------|
+| 2026-07-21 | Fix GoatCounter analytics blocked by production CSP (allowlist gc.zgo.at in scriptSrc/connectSrc, [260721-vc7-fix-goatcounter-analytics-not-receiving-](./quick/260721-vc7-fix-goatcounter-analytics-not-receiving-/)) | ✅ Complete |
 | 2026-07-21 | Enable GoatCounter analytics in production via render.yaml (site: kaungmyat) | ✅ Complete |
 | 2026-07-21 | Add GoatCounter analytics (env-gated, [260721-t54-goatcounter-analytics](./quick/260721-t54-goatcounter-analytics/)) | ✅ Complete |
 | 2026-07-21 | Update README.md for shipped v2.0 Resume Tailoring Flow | ✅ Complete |

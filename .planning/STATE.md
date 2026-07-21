@@ -116,6 +116,7 @@ Resume file: .planning/phases/14-ux-quality-polish-from-user-feedback/14-UI-SPEC
 
 | Date | Task | Status |
 |------|------|--------|
+| 2026-07-21 | Update README.md for shipped v2.0 Resume Tailoring Flow | ✅ Complete |
 | 2026-07-05 | Fix OpenRouter rate limit error handling | ✅ Complete |
 | 2026-07-05 | Add Groq/OpenRouter provider keys for fallback options | ✅ Complete |
 | 2026-07-04 | Update Phase 11.5 planning for multi-provider support | ✅ Complete |

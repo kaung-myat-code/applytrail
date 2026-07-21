@@ -156,7 +156,13 @@
   box-shadow: var(--shadow-sm);
 }
 
-.empty p:first-child {
+.emptyIcon {
+  display: block;
+  font-size: 1.8rem;
+  margin-bottom: var(--space-2);
+}
+
+.empty p:first-of-type {
   font-size: 1.1rem;
   margin-bottom: var(--space-3);
 }

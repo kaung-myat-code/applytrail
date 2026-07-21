@@ -246,6 +246,16 @@
   padding: var(--space-10);
   color: var(--color-muted);
   font-size: 0.95rem;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.loadingIcon {
+  display: inline-block;
+  margin-right: var(--space-2);
+  animation: pulseOpacity 1.4s var(--ease-out) infinite;
 }
 
 .error {
@@ -254,7 +264,19 @@
   color: var(--color-danger);
   font-size: 0.95rem;
   background: var(--color-danger-bg);
+  border: 1px solid var(--color-border-light);
   border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.errorIcon {
+  display: inline-block;
+  margin-right: var(--space-2);
+}
+
+@keyframes pulseOpacity {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
 }
 
 /* Responsive */

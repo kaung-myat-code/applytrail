@@ -57,7 +57,10 @@ function Dashboard() {
   if (loading) {
     return (
       <div className={styles.page}>
-        <div className={styles.loading}>Loading dashboard...</div>
+        <div className={styles.loading}>
+          <span className={styles.loadingIcon} aria-hidden="true">⏳</span>
+          Loading dashboard...
+        </div>
       </div>
     )
   }
@@ -65,7 +68,10 @@ function Dashboard() {
   if (error) {
     return (
       <div className={styles.page}>
-        <div className={styles.error}>{error}</div>
+        <div className={styles.error}>
+          <span className={styles.errorIcon} aria-hidden="true">⚠️</span>
+          {error}
+        </div>
       </div>
     )
   }

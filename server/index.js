@@ -32,7 +32,7 @@ if (process.env.NODE_ENV === 'production') {
         styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
         fontSrc: ["'self'", 'https://fonts.gstatic.com'],
         imgSrc: ["'self'", 'data:'],
-        connectSrc: ["'self'", 'https://gc.zgo.at'],
+        connectSrc: ["'self'", 'https://gc.zgo.at', 'https://*.goatcounter.com'],
       },
     },
   }))

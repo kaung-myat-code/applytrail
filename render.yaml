@@ -8,3 +8,5 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: VITE_GOATCOUNTER_SITE
+        value: kaungmyat

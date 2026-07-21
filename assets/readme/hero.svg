@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="1200" height="430" viewBox="0 0 1200 430"
+     role="img" aria-labelledby="hero-title hero-desc">
+  <title id="hero-title">ApplyTrail</title>
+  <desc id="hero-desc">ApplyTrail is a local web app for job applications: edit a resume, generate a tailored cover letter, and track each application's status along a trail from Drafted to Applied, Interviewing, and Offered.</desc>
+
+  <defs>
+    <clipPath id="hero-frame">
+      <rect width="1200" height="430" rx="28"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#hero-frame)">
+    <rect width="1200" height="430" fill="#faf9f7"/>
+    <rect x="0.5" y="0.5" width="1199" height="429" rx="27.5" fill="none" stroke="#e8e5f0" stroke-width="1"/>
+
+    <!-- Title block -->
+    <g transform="translate(70 66)">
+      <text x="0" y="0" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif"
+            font-size="14" font-weight="600" letter-spacing="2.5" fill="#8a839b">JOB APPLICATION TRACKER</text>
+
+      <text x="0" y="62" font-family="Georgia,'Times New Roman',serif" font-size="58" fill="#1a1625">Apply<tspan fill="#5b4cdb">Trail</tspan></text>
+
+      <text x="0" y="102" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif"
+            font-size="19" fill="#4a4458">Resume &#8594; cover letter &#8594; tracked applications.</text>
+      <text x="0" y="128" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif"
+            font-size="19" fill="#4a4458">One local app, no CLI required.</text>
+
+      <text x="0" y="172" font-family="ui-monospace,SFMono-Regular,Menlo,monospace"
+            font-size="14" fill="#8a839b">React 18 &#183; Express &#183; JSON files &#183; local-first</text>
+
+      <g transform="translate(0 196)">
+        <rect x="0" y="0" width="286" height="30" rx="15" fill="#fef9ee"/>
+        <circle cx="17" cy="15" r="4" fill="#c07d2b"/>
+        <text x="30" y="20" font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif"
+              font-size="13.5" fill="#c07d2b">10+ days silent &#8594; flagged for follow-up</text>
+      </g>
+    </g>
+
+    <!-- Trail -->
+    <g id="trail-base" transform="translate(70 356)">
+      <line x1="0" y1="0" x2="1060" y2="0" stroke="#e8e5f0" stroke-width="3" stroke-linecap="round" stroke-dasharray="1 12"/>
+
+      <circle cx="0" cy="0" r="16" fill="#ffffff" stroke="#c9c3dc" stroke-width="2.5"/>
+      <circle cx="353" cy="0" r="16" fill="#ffffff" stroke="#c9c3dc" stroke-width="2.5"/>
+      <circle cx="706" cy="0" r="16" fill="#ffffff" stroke="#c9c3dc" stroke-width="2.5"/>
+      <circle cx="1060" cy="0" r="16" fill="#ffffff" stroke="#c9c3dc" stroke-width="2.5"/>
+
+      <g font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="13" fill="#8a839b" text-anchor="middle">
+        <text x="0" y="-34">Day 0</text>
+        <text x="353" y="-34">Day 3</text>
+        <text x="706" y="-34">Day 9</text>
+        <text x="1060" y="-34">Day 16</text>
+      </g>
+
+      <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif" font-size="16" font-weight="600" fill="#1a1625" text-anchor="middle">
+        <text x="0" y="46">Drafted</text>
+        <text x="353" y="46">Applied</text>
+        <text x="706" y="46">Interviewing</text>
+        <text x="1060" y="46">Offered</text>
+      </g>
+    </g>
+
+    <g id="trail-fill" transform="translate(70 356)">
+      <line x1="0" y1="0" x2="1060" y2="0" stroke="#5b4cdb" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="0" cy="0" r="10" fill="#5b4cdb"/>
+      <circle cx="353" cy="0" r="10" fill="#5b4cdb"/>
+      <circle cx="706" cy="0" r="10" fill="#c07d2b"/>
+      <circle cx="1060" cy="0" r="10" fill="#2d9d78"/>
+    </g>
+
+    <text x="1130" y="34" font-family="ui-monospace,SFMono-Regular,Menlo,monospace" font-size="12.5"
+          fill="#c9c3dc" text-anchor="end">applytrail</text>
+  </g>
+</svg>

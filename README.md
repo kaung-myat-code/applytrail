@@ -1,55 +1,64 @@
-# ApplyTrail
+<p align="center">
+  <img src="./assets/readme/hero.svg" width="100%" alt="ApplyTrail — resume, cover letter, and tracked applications in one local app, no CLI required">
+</p>
 
-[![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)](https://react.dev/)
-[![Express](https://img.shields.io/badge/Express-4-000000?logo=express&logoColor=white)](https://expressjs.com/)
-[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
-[![Deploy](https://img.shields.io/badge/Deploy-Render-46E3B7?logo=render&logoColor=white)](https://render.com/)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+<p align="center">
+  <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white" alt="React 18"></a>
+  <a href="https://expressjs.com/"><img src="https://img.shields.io/badge/Express-4-000000?logo=express&logoColor=white" alt="Express 4"></a>
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&logoColor=white" alt="Node.js 18+"></a>
+  <a href="https://render.com/"><img src="https://img.shields.io/badge/Deploy-Render-46E3B7?logo=render&logoColor=white" alt="Deploy on Render"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License"></a>
+</p>
 
-A web app for managing job applications — from resume editing to cover letter generation to application tracking.
+<p align="center"><b><a href="https://applytrail.onrender.com">Live demo →</a></b></p>
 
-**Live Demo:** https://applytrail.onrender.com
+<br>
 
----
+<table>
+<tr>
+<td width="34%" valign="top">
 
-## Screenshots
+### Every application has a trail
 
-![Dashboard](docs/screenshots/dashboard.png)
-*Application dashboard with status overview*
+ApplyTrail keeps your resume, your cover letters, and every application you've sent in one place — as plain JSON files on your own disk. Paste a job posting, get a tailored cover letter paragraph, and see at a glance which applications have gone quiet for 10+ days.
 
-![Resume Editor](docs/screenshots/resume-editor.png)
-*Structured resume editor*
+No login. No job-board scraping. No cloud account required to start.
 
-![Applications](docs/screenshots/applications.png)
-*Application tracking with follow-up alerts*
+</td>
+<td width="66%">
+<img src="docs/screenshots/dashboard.png" width="100%" alt="ApplyTrail dashboard showing application counts and quick actions">
+</td>
+</tr>
+</table>
 
----
-
-## What It Does
-
-* Edit resume with structured sections (experience, projects, skills, education)
-* Paste job postings with company and role details
-* Generate tailored cover letter paragraphs via keyword matching
-* Save and track applications with status updates
-* Get follow-up reminders for stale applications (10+ days without status change)
-* Launch with demo data on first visit
-
----
-
-## Tech Stack
-
-| Layer | Technology |
-|-------|------------|
-| Frontend | React 18, Vite, React Router |
-| Backend | Express 4, Node.js |
-| Storage | JSON files on disk |
-| Styling | CSS Modules |
-| Deployment | Render free tier |
-| AI Analysis | Vercel AI SDK (Gemini, OpenRouter, Groq) |
+<table>
+<tr>
+<td width="50%">
+<img src="docs/screenshots/resume-editor.png" width="100%" alt="Structured resume editor with contact, experience, and skills sections">
+<p align="center"><sub>Structured resume editor</sub></p>
+</td>
+<td width="50%">
+<img src="docs/screenshots/applications.png" width="100%" alt="Application list with status badges and days-since-last-change">
+<p align="center"><sub>Applications tracked with follow-up alerts</sub></p>
+</td>
+</tr>
+</table>
 
 ---
 
-## Getting Started
+## How it works
+
+1. **Edit your resume** in structured sections — experience, projects, skills, education.
+2. **Paste a job posting** with the company and role.
+3. **Generate a cover letter paragraph** — matched against your resume by keyword overlap, or by an AI provider if you configure one.
+4. **Save the application** and track its status: drafted → applied → interviewing → offered.
+5. **Get flagged** when an application has sat untouched for 10+ days.
+
+Cover letter generation defaults to a plain heuristic — no API key, no network call, fully inspectable. Swap in a real LLM any time; see [AI Analysis Providers](#ai-analysis-providers) below.
+
+---
+
+## Getting started
 
 **Prerequisites:** Node.js 18+, npm
 
@@ -60,36 +69,46 @@ npm install
 npm run dev
 ```
 
-The app runs at:
-
 * Frontend: http://localhost:5173
 * API: http://localhost:3000
 
-Demo data is seeded automatically on first launch.
+Demo data is seeded automatically on first launch, so there's something to look at immediately.
 
 ---
 
-## AI Analysis Providers
+## AI analysis providers
 
-ApplyTrail supports multiple AI providers for resume analysis with automatic fallback. The default uses keyword matching (heuristic), but you can enable AI-powered analysis with:
+The default cover letter engine is keyword matching — deterministic, offline, and free. If you want AI-written analysis instead, ApplyTrail supports three providers with automatic fallback between them:
 
-* **Gemini** - Google's fast multimodal model
-* **OpenRouter** - Access to multiple models including free options
-* **Groq** - Ultra-fast inference with free tier
-
-**Quick Start:**
+| Provider | Notes |
+|----------|-------|
+| **Gemini** | Google's fast multimodal model |
+| **OpenRouter** | Access to multiple models, including free tiers |
+| **Groq** | Ultra-fast inference, free tier available |
 
 ```bash
-# Add to server/.env
+# server/.env
 ANALYSIS_PROVIDER=gemini
 GOOGLE_GENERATIVE_AI_API_KEY=your_key_here
 ```
 
-**Full Configuration Guide:** [AI_PROVIDERS.md](AI_PROVIDERS.md)
+Full setup and fallback order: [AI_PROVIDERS.md](AI_PROVIDERS.md)
 
 ---
 
-## Project Structure
+## Tech stack
+
+| Layer | Technology |
+|-------|------------|
+| Frontend | React 18, Vite, React Router |
+| Backend | Express 4, Node.js |
+| Storage | JSON files on disk |
+| Styling | CSS Modules |
+| Deployment | Render free tier |
+| AI Analysis | Vercel AI SDK (Gemini, OpenRouter, Groq) |
+
+<details>
+<summary><b>Project structure</b></summary>
 
 ```text
 .
@@ -107,15 +126,16 @@ GOOGLE_GENERATIVE_AI_API_KEY=your_key_here
 │   └── screenshots/         # App screenshots
 ├── slides/
 │   └── pitch.md             # Marp presentation
-├── render.yaml              # Render deployment config
-├── package.json             # Root config (concurrently)
-├── LICENSE                  # MIT License
+├── render.yaml               # Render deployment config
+├── package.json              # Root config (concurrently)
+├── LICENSE                   # MIT License
 └── README.md
 ```
 
----
+</details>
 
-## API Routes
+<details>
+<summary><b>API routes</b></summary>
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
@@ -127,9 +147,10 @@ GOOGLE_GENERATIVE_AI_API_KEY=your_key_here
 | POST | `/api/applications` | Save application |
 | GET | `/api/health` | Health check |
 
----
+</details>
 
-## Deployment
+<details>
+<summary><b>Deployment</b></summary>
 
 The app is deployed on Render free tier using the `render.yaml` blueprint.
 
@@ -148,8 +169,10 @@ Environment variables:
 
 Data resets on each redeploy (acceptable for a portfolio demo).
 
+</details>
+
 ---
 
 ## License
 
-This project is licensed under the MIT License — see [LICENSE](LICENSE) for details.
+MIT — see [LICENSE](LICENSE) for details.

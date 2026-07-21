@@ -67,12 +67,12 @@
   flex-shrink: 0;
 }
 
-.statusDrafted { background: #f3f4f6; color: #6b7280; }
+.statusDrafted { background: var(--color-neutral-bg); color: var(--color-neutral-text); }
 .statusApplied { background: var(--color-primary-light); color: var(--color-primary); }
 .statusInterviewing { background: var(--color-warning-bg); color: var(--color-warning); }
 .statusOffered { background: var(--color-success-bg); color: var(--color-success); }
 .statusRejected { background: var(--color-danger-bg); color: var(--color-danger); }
-.statusWithdrawn { background: #f3f4f6; color: #6b7280; }
+.statusWithdrawn { background: var(--color-neutral-bg); color: var(--color-neutral-text); }
 
 .meta {
   display: flex;

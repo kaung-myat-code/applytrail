@@ -116,6 +116,7 @@ Resume file: .planning/phases/14-ux-quality-polish-from-user-feedback/14-UI-SPEC
 
 | Date | Task | Status |
 |------|------|--------|
+| 2026-07-21 | Enable GoatCounter analytics in production via render.yaml (site: kaungmyat) | ✅ Complete |
 | 2026-07-21 | Add GoatCounter analytics (env-gated, [260721-t54-goatcounter-analytics](./quick/260721-t54-goatcounter-analytics/)) | ✅ Complete |
 | 2026-07-21 | Update README.md for shipped v2.0 Resume Tailoring Flow | ✅ Complete |
 | 2026-07-05 | Fix OpenRouter rate limit error handling | ✅ Complete |

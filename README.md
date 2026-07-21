@@ -20,7 +20,7 @@
 
 ### Every application has a trail
 
-ApplyTrail keeps your resume, your cover letters, and every application you've sent in one place — as plain JSON files on your own disk. Paste a job posting, get a tailored cover letter paragraph, and see at a glance which applications have gone quiet for 10+ days.
+ApplyTrail is a personal job-search workspace that keeps a library of resume versions on your own disk. Analyze any resume against a pasted job posting to get a match report — a compatibility score, strengths, gaps, and matched/missing keywords. Review the suggested improvements section by section, approve the ones you want, and generate a tailored resume as a new version without touching the original. Then track every application you send and see at a glance which ones have gone quiet for 10+ days — all as plain JSON files, no database required.
 
 No login. No job-board scraping. No cloud account required to start.
 
@@ -48,13 +48,15 @@ No login. No job-board scraping. No cloud account required to start.
 
 ## How it works
 
-1. **Edit your resume** in structured sections — experience, projects, skills, education.
+1. **Build your resume library** — create and maintain multiple resume versions, and pick which one to work from.
 2. **Paste a job posting** with the company and role.
-3. **Generate a cover letter paragraph** — matched against your resume by keyword overlap, or by an AI provider if you configure one.
-4. **Save the application** and track its status: drafted → applied → interviewing → offered.
-5. **Get flagged** when an application has sat untouched for 10+ days.
+3. **Run a match analysis** to get a compatibility score out of 100, with strengths, gaps to address, matched/missing/bonus keywords, and a per-section breakdown (Summary, Skills, Experience, Projects, Education).
+4. **Review suggestions section by section** — accept, reject, or edit each one with a side-by-side before/after comparison.
+5. **Generate a tailored resume**, saved as a new auto-named "Company - Role" version — the source resume is never modified.
+6. **Start an application** pre-filled from the analyzed posting, with the tailored resume version linked.
+7. **Export any version** as PDF or JSON, and get flagged when an application has sat untouched for 10+ days.
 
-Cover letter generation defaults to a plain heuristic — no API key, no network call, fully inspectable. Swap in a real LLM any time; see [AI Analysis Providers](#ai-analysis-providers) below.
+Cover letter and analysis generation default to a plain keyword heuristic — no API key, no network call, fully inspectable. Swap in a real AI provider any time; see [AI Analysis Providers](#ai-analysis-providers) below.
 
 ---
 
@@ -106,6 +108,7 @@ Full setup and fallback order: [AI_PROVIDERS.md](AI_PROVIDERS.md)
 | Styling | CSS Modules |
 | Deployment | Render free tier |
 | AI Analysis | Vercel AI SDK (Gemini, OpenRouter, Groq) |
+| Export | PDF (pdfmake), JSON |
 
 <details>
 <summary><b>Project structure</b></summary>
@@ -122,6 +125,8 @@ Full setup and fallback order: [AI_PROVIDERS.md](AI_PROVIDERS.md)
 │   ├── index.js             # API routes + production server
 │   ├── data/                # JSON file storage
 │   └── demo-data/           # Seed data for first launch
+├── resume_library/          # Versioned resume JSON + index.json (runtime-generated)
+├── drafts/                  # Ephemeral in-progress suggestion review state (runtime-generated)
 ├── docs/
 │   └── screenshots/         # App screenshots
 ├── slides/
@@ -141,10 +146,25 @@ Full setup and fallback order: [AI_PROVIDERS.md](AI_PROVIDERS.md)
 |--------|----------|-------------|
 | GET | `/api/resume` | Get resume data |
 | PUT | `/api/resume` | Update resume data |
+| GET | `/api/resume-library` | List resume versions |
+| POST | `/api/resume-library` | Create resume version |
+| GET | `/api/resume-library/:id` | Get a resume version |
+| PUT | `/api/resume-library/:id` | Update a resume version |
+| DELETE | `/api/resume-library/:id` | Delete a resume version |
+| PUT | `/api/resume-library/:id/select` | Set the active resume version |
+| GET | `/api/resume-library/:id/export/pdf` | Export a resume version as PDF |
+| GET | `/api/resume-library/:id/export/json` | Export a resume version as JSON |
+| POST | `/api/analyze` | Analyze a resume against a job posting, return match report + suggestions |
+| POST | `/api/drafts` | Create a suggestion-review draft |
+| GET | `/api/drafts/:id` | Get a suggestion-review draft |
+| POST | `/api/drafts/:id/save` | Apply accepted suggestions and save a new resume version |
+| DELETE | `/api/drafts/:id` | Discard a suggestion-review draft |
+| POST | `/api/generate-cover-letter` | Generate a keyword-matched cover letter paragraph |
 | GET | `/api/job-postings` | List job postings |
 | POST | `/api/job-postings` | Create job posting |
 | GET | `/api/applications` | List applications |
 | POST | `/api/applications` | Save application |
+| PUT | `/api/applications/:id` | Update an application's status |
 | GET | `/api/health` | Health check |
 
 </details>

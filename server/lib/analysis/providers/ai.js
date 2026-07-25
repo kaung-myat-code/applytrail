@@ -11,6 +11,7 @@ const { google } = require('@ai-sdk/google')
 const { createOpenAICompatible } = require('@ai-sdk/openai-compatible')
 const { groq } = require('@ai-sdk/groq')
 const { z } = require('zod')
+const { sanitizeError } = require('../sanitizeError')
 
 // --- Zod Schemas ---
 
@@ -70,17 +71,6 @@ function getModel(provider = 'gemini') {
     default:
       throw new Error(`Unknown AI provider: ${provider}. Available: gemini, openrouter, groq`)
   }
-}
-
-// --- Error sanitization ---
-
-function sanitizeError(err) {
-  let message = err.message || 'Unknown AI error'
-  // Only strip patterns that look like API keys
-  message = message.replace(/AIza[A-Za-z0-9_-]{30,}/g, '[redacted]')  // Google API key prefix
-  message = message.replace(/sk-[A-Za-z0-9]{20,}/g, '[redacted]')     // OpenAI-style keys
-  message = message.replace(/gsk_[A-Za-z0-9]{20,}/g, '[redacted]')    // Groq API key prefix
-  return message
 }
 
 // --- Rate limit detection ---

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams, useLocation, Link } from 'react-router-dom'
 import styles from './PreviewTailored.module.css'
 import CreateApplicationModal from '../components/CreateApplicationModal.jsx'
-import { isDefectSkip } from '../lib/skipReasons.js'
+import { isDefectSkip, isKnownReason } from '../lib/skipReasons.js'
 
 const SECTION_LABELS = { summary: 'Summary', skills: 'Skills', experience: 'Experience', projects: 'Projects' }
 const TYPE_LABELS = { add: 'add', modify: 'update', remove: 'remove' }
@@ -114,7 +114,8 @@ function PreviewTailored() {
   const skills = resume.skills || []
   const validationFailed = validation && validation.ok === false
   const defectSkips = skipped.filter(s => isDefectSkip(s.reason))
-  const staleSkips = skipped.filter(s => !isDefectSkip(s.reason))
+  const staleSkips = skipped.filter(s => !isDefectSkip(s.reason) && isKnownReason(s.reason))
+  const unknownSkips = skipped.filter(s => !isKnownReason(s.reason))
 
   return (
     <div className={styles.page}>
@@ -168,6 +169,22 @@ function PreviewTailored() {
             {staleSkips.map(s => (
               <li key={s.id}>
                 {SECTION_LABELS[s.section] || s.section} ({TYPE_LABELS[s.type] || s.type}) — the resume content it targeted no longer matches exactly.
+              </li>
+            ))}
+          </ul>
+          <p>These are not reflected in the resume below. Go back to suggestions to review or re-apply them manually.</p>
+        </div>
+      )}
+
+      {unknownSkips.length > 0 && (
+        <div className={styles.skippedWarning}>
+          <strong>
+            {unknownSkips.length === 1 ? 'One accepted suggestion was' : `${unknownSkips.length} accepted suggestions were`} not applied:
+          </strong>
+          <ul>
+            {unknownSkips.map(s => (
+              <li key={s.id}>
+                {SECTION_LABELS[s.section] || s.section} ({TYPE_LABELS[s.type] || s.type}) — not applied for an unrecognized reason.
               </li>
             ))}
           </ul>

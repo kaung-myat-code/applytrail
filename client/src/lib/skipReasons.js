@@ -12,6 +12,8 @@ export const SKIP_REASON = {
   UNSUPPORTED_COMBINATION: 'unsupported-combination',
 }
 
+const KNOWN_REASONS = new Set(Object.values(SKIP_REASON))
+
 /**
  * UNSUPPORTED_COMBINATION means a suggestion reached applyPatches with a
  * section this engine doesn't recognize -- every known section/type pairing
@@ -21,4 +23,15 @@ export const SKIP_REASON = {
  */
 export function isDefectSkip(reason) {
   return reason === SKIP_REASON.UNSUPPORTED_COMBINATION
+}
+
+/**
+ * True if `reason` is one this client version knows how to explain. A
+ * server ahead of the client (new SKIP_REASON value added but this file not
+ * yet updated -- see the "keep in sync" note above) would otherwise produce
+ * a skip the UI silently drops or mislabels. Callers should render a
+ * generic fallback message for unknown reasons instead.
+ */
+export function isKnownReason(reason) {
+  return KNOWN_REASONS.has(reason)
 }

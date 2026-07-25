@@ -239,6 +239,57 @@ test('projects + remove: skipped with NOT_FOUND when bullet absent', () => {
   assert.strictEqual(skip.reason, SKIP_REASON.NOT_FOUND)
 })
 
+// --- reachability guard ---
+// After Phase 15, every section the schema permits (suggestionSchema.js)
+// should be fully handled by applyPatches's switch, so SKIP_REASON.
+// UNSUPPORTED_COMBINATION should be provably impossible to hit for any
+// schema-permitted section x type pair. This walks the full cross product
+// derived directly from the schema (not a hardcoded list), so if the schema
+// ever grows a section without a matching applyPatches branch, this test
+// starts failing loudly instead of the gap going unnoticed.
+
+test('UNSUPPORTED_COMBINATION is unreachable for every schema-permitted section x type combination', () => {
+  const sections = suggestionSchema.shape.section.options
+  const types = suggestionSchema.shape.type.options
+
+  // Canary: if this fails, the schema's allowed sections/types changed --
+  // update applyPatches.js to handle the new combination(s), then update
+  // these expected lists deliberately.
+  assert.deepStrictEqual(
+    [...sections].sort(),
+    ['experience', 'projects', 'skills', 'summary'],
+    'suggestionSchema section enum changed -- verify applyPatches.js handles the new section before updating this list'
+  )
+  assert.deepStrictEqual(
+    [...types].sort(),
+    ['add', 'modify', 'remove'],
+    'suggestionSchema type enum changed -- verify applyPatches.js handles the new type before updating this list'
+  )
+
+  let walked = 0
+  for (const section of sections) {
+    for (const type of types) {
+      walked++
+      const id = `reach-${section}-${type}`
+      // `current`/`suggested` values are deliberately arbitrary: this test
+      // does not care whether the patch actually applies (that's covered by
+      // the per-combination tests above) -- only that the outcome is never
+      // the UNSUPPORTED_COMBINATION defect path.
+      const suggestion = { id, section, type, current: 'irrelevant probe value', suggested: 'irrelevant replacement', reason: 'r' }
+      const result = applyPatches(baseResume(), [suggestion], accept(id))
+      const skip = findSkipped(result, id)
+      if (skip) {
+        assert.notStrictEqual(
+          skip.reason,
+          SKIP_REASON.UNSUPPORTED_COMBINATION,
+          `section=${section} type=${type} unexpectedly hit the UNSUPPORTED_COMBINATION defect path`
+        )
+      }
+    }
+  }
+  assert.strictEqual(walked, 12, 'expected to walk all 12 schema-permitted section x type combinations')
+})
+
 // --- education (add / modify / remove) ---
 // Dropped from the AI provider's schema (server/lib/analysis/providers/ai.js)
 // rather than implemented here. Two layers of defense are tested:

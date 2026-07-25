@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams, useLocation, Link } from 'react-router-dom'
 import styles from './PreviewTailored.module.css'
 import CreateApplicationModal from '../components/CreateApplicationModal.jsx'
+import { isDefectSkip } from '../lib/skipReasons.js'
+
+const SECTION_LABELS = { summary: 'Summary', skills: 'Skills', experience: 'Experience', projects: 'Projects' }
+const TYPE_LABELS = { add: 'add', modify: 'update', remove: 'remove' }
 
 function PreviewTailored() {
   const navigate = useNavigate()
@@ -12,6 +16,7 @@ function PreviewTailored() {
   const [draft, setDraft] = useState(null)
   const [tailoredResume, setTailoredResume] = useState(null)
   const [validation, setValidation] = useState(null)
+  const [skipped, setSkipped] = useState([])
   const [sourceName, setSourceName] = useState('')
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(true)
@@ -37,6 +42,7 @@ function PreviewTailored() {
         setDraft(data)
         setTailoredResume(data.tailored_resume)
         setValidation(data.validation)
+        setSkipped(Array.isArray(data.skipped) ? data.skipped : [])
         setSourceName(data.source_name || '')
         const company = data.company || location.state?.company || ''
         const role = data.role || location.state?.role || ''
@@ -107,6 +113,8 @@ function PreviewTailored() {
   const education = resume.education || []
   const skills = resume.skills || []
   const validationFailed = validation && validation.ok === false
+  const defectSkips = skipped.filter(s => isDefectSkip(s.reason))
+  const staleSkips = skipped.filter(s => !isDefectSkip(s.reason))
 
   return (
     <div className={styles.page}>
@@ -132,6 +140,38 @@ function PreviewTailored() {
             ))}
           </ul>
           <p>Go back to suggestions and adjust your decisions before saving.</p>
+        </div>
+      )}
+
+      {defectSkips.length > 0 && (
+        <div className={styles.skippedErrors}>
+          <strong>
+            {defectSkips.length === 1 ? 'One suggestion' : `${defectSkips.length} suggestions`} could not be applied due to an internal error:
+          </strong>
+          <ul>
+            {defectSkips.map(s => (
+              <li key={s.id}>
+                {SECTION_LABELS[s.section] || s.section} ({TYPE_LABELS[s.type] || s.type}) — this is a bug, not something you can fix here.
+              </li>
+            ))}
+          </ul>
+          <p>You can still save; this section/field was left unchanged below. Please report this.</p>
+        </div>
+      )}
+
+      {staleSkips.length > 0 && (
+        <div className={styles.skippedWarning}>
+          <strong>
+            {staleSkips.length === 1 ? 'One accepted suggestion was' : `${staleSkips.length} accepted suggestions were`} not applied:
+          </strong>
+          <ul>
+            {staleSkips.map(s => (
+              <li key={s.id}>
+                {SECTION_LABELS[s.section] || s.section} ({TYPE_LABELS[s.type] || s.type}) — the resume content it targeted no longer matches exactly.
+              </li>
+            ))}
+          </ul>
+          <p>These are not reflected in the resume below. Go back to suggestions to review or re-apply them manually.</p>
         </div>
       )}
 

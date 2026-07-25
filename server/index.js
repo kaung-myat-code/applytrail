@@ -656,6 +656,8 @@ app.get('/api/drafts/:id', (req, res) => {
     ...draft,
     tailored_resume: result.resume,
     validation: result.validation,
+    applied: result.applied,
+    skipped: result.skipped,
     source_name
   })
 })
@@ -688,7 +690,7 @@ app.post('/api/drafts/:id/save', (req, res) => {
   writeResumeVersion(newId, result.resume)
 
   const index = readLibraryIndex()
-  const entry = { id: newId, name, created_at: now, updated_at: now, source_id: draft.resume_id }
+  const entry = { id: newId, name, created_at: now, updated_at: now, source_id: draft.resume_id, skipped_patches: result.skipped }
   index.versions.push(entry)
   writeLibraryIndex(index)
 

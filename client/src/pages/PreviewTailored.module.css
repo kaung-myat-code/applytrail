@@ -118,6 +118,32 @@
   padding-left: 1.25rem;
 }
 
+.skippedErrors {
+  background: var(--color-danger-bg);
+  color: var(--color-danger);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.skippedErrors ul {
+  margin: var(--space-2) 0;
+  padding-left: 1.25rem;
+}
+
+.skippedWarning {
+  background: var(--color-warning-bg);
+  color: var(--color-warning);
+  border-radius: var(--radius-sm);
+  padding: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.skippedWarning ul {
+  margin: var(--space-2) 0;
+  padding-left: 1.25rem;
+}
+
 .error {
   background: color-mix(in srgb, var(--color-danger) 10%, transparent);
   color: var(--color-danger);

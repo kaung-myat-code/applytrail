@@ -17,6 +17,36 @@
 const { validateResume } = require('../validateResume')
 
 /**
+ * Closed enum of reasons a decided (accepted/edited) suggestion may fail to
+ * apply. Exported so callers (routes, client) branch on stable machine
+ * values rather than parsing free-text log messages.
+ *
+ *   NOT_FOUND               - modify/remove target substring absent from
+ *                              every entry (experience/projects bullets,
+ *                              skills modify). Expected: the resume changed
+ *                              since the suggestion was generated.
+ *   CURRENT_MISMATCH         - modify/remove target's `current` no longer
+ *                              equals the live field value (summary modify/
+ *                              remove, exact-match comparison). Expected:
+ *                              same cause as NOT_FOUND, different section
+ *                              shape.
+ *   UNSUPPORTED_COMBINATION  - suggestion.section is not one of the four
+ *                              sections this engine handles (summary,
+ *                              skills, experience, projects). Every
+ *                              section/type pairing this engine recognizes
+ *                              is fully handled, so this is a code defect,
+ *                              not a data condition -- it means a
+ *                              suggestion reached here that should have
+ *                              been rejected upstream (e.g. at the AI
+ *                              provider's schema boundary).
+ */
+const SKIP_REASON = Object.freeze({
+  NOT_FOUND: 'not-found',
+  CURRENT_MISMATCH: 'current-mismatch',
+  UNSUPPORTED_COMBINATION: 'unsupported-combination',
+})
+
+/**
  * Deep clone via JSON round-trip. Resume data is plain JSON (no functions,
  * dates, or circular references), so this is safe and simple.
  * @param {object} resume
@@ -104,7 +134,12 @@ function applyAddToList(entries, suggestedBullet, kind) {
  * @param {object} resume - source resume JSON
  * @param {object[]} suggestions - array of suggestion objects
  * @param {object} decisions - map of suggestion id -> { status, editedContent? }
- * @returns {{ resume: object, validation: { ok: boolean, errors?: string[] } }}
+ * @returns {{
+ *   resume: object,
+ *   validation: { ok: boolean, errors?: string[] },
+ *   applied: { id: string, section: string, type: string }[],
+ *   skipped: { id: string, section: string, type: string, reason: string }[],
+ * }}
  */
 function applyPatches(resume, suggestions, decisions) {
   const cloned = deepClone(resume)
@@ -116,6 +151,18 @@ function applyPatches(resume, suggestions, decisions) {
     return d && (d.status === 'accepted' || d.status === 'edited')
   })
 
+  const applied = []
+  const skipped = []
+
+  function markApplied(suggestion) {
+    applied.push({ id: suggestion.id, section: suggestion.section, type: suggestion.type })
+  }
+
+  function markSkipped(suggestion, reason, logMessage) {
+    console.warn(`applyPatches: ${logMessage}`)
+    skipped.push({ id: suggestion.id, section: suggestion.section, type: suggestion.type, reason })
+  }
+
   for (const suggestion of accepted) {
     const decision = decisionMap[suggestion.id]
     const { section, type } = suggestion
@@ -125,11 +172,20 @@ function applyPatches(resume, suggestions, decisions) {
         if (type === 'modify') {
           if (cloned.summary === suggestion.current) {
             cloned.summary = resolveContent(suggestion, decision)
+            markApplied(suggestion)
           } else {
-            console.warn(`applyPatches: modify suggestion "${suggestion.id}" (summary) — current value does not match, skipped`)
+            markSkipped(suggestion, SKIP_REASON.CURRENT_MISMATCH, `modify suggestion "${suggestion.id}" (summary) — current value does not match, skipped`)
           }
         } else if (type === 'add') {
           cloned.summary = resolveContent(suggestion, decision)
+          markApplied(suggestion)
+        } else if (type === 'remove') {
+          if (cloned.summary === suggestion.current) {
+            cloned.summary = ''
+            markApplied(suggestion)
+          } else {
+            markSkipped(suggestion, SKIP_REASON.CURRENT_MISMATCH, `remove suggestion "${suggestion.id}" (summary) — current value does not match, skipped`)
+          }
         }
         break
       }
@@ -142,8 +198,19 @@ function applyPatches(resume, suggestions, decisions) {
           if (!alreadyPresent) {
             cloned.skills.push(value)
           }
+          markApplied(suggestion)
         } else if (type === 'remove') {
           cloned.skills = cloned.skills.filter(sk => sk !== suggestion.current)
+          markApplied(suggestion)
+        } else if (type === 'modify') {
+          const value = resolveContent(suggestion, decision)
+          const idx = cloned.skills.findIndex(sk => sk === suggestion.current)
+          if (idx !== -1) {
+            cloned.skills[idx] = value
+            markApplied(suggestion)
+          } else {
+            markSkipped(suggestion, SKIP_REASON.NOT_FOUND, `modify suggestion "${suggestion.id}" (skills) — current value not found, skipped`)
+          }
         }
         break
       }
@@ -152,16 +219,21 @@ function applyPatches(resume, suggestions, decisions) {
         if (!Array.isArray(cloned.experience)) cloned.experience = []
         if (type === 'add') {
           applyAddToList(cloned.experience, resolveContent(suggestion, decision), 'experience')
+          markApplied(suggestion)
         } else if (type === 'modify') {
           const replacement = resolveContent(suggestion, decision)
           const found = applyToAllEntries(cloned.experience, suggestion.current, replacement)
-          if (!found) {
-            console.warn(`applyPatches: modify suggestion "${suggestion.id}" (experience) — current value not found in any entry, skipped`)
+          if (found) {
+            markApplied(suggestion)
+          } else {
+            markSkipped(suggestion, SKIP_REASON.NOT_FOUND, `modify suggestion "${suggestion.id}" (experience) — current value not found in any entry, skipped`)
           }
         } else if (type === 'remove') {
           const found = applyToAllEntries(cloned.experience, suggestion.current, null)
-          if (!found) {
-            console.warn(`applyPatches: remove suggestion "${suggestion.id}" (experience) — current value not found in any entry, skipped`)
+          if (found) {
+            markApplied(suggestion)
+          } else {
+            markSkipped(suggestion, SKIP_REASON.NOT_FOUND, `remove suggestion "${suggestion.id}" (experience) — current value not found in any entry, skipped`)
           }
         }
         break
@@ -171,28 +243,33 @@ function applyPatches(resume, suggestions, decisions) {
         if (!Array.isArray(cloned.projects)) cloned.projects = []
         if (type === 'add') {
           applyAddToList(cloned.projects, resolveContent(suggestion, decision), 'projects')
+          markApplied(suggestion)
         } else if (type === 'modify') {
           const replacement = resolveContent(suggestion, decision)
           const found = applyToAllEntries(cloned.projects, suggestion.current, replacement)
-          if (!found) {
-            console.warn(`applyPatches: modify suggestion "${suggestion.id}" (projects) — current value not found in any entry, skipped`)
+          if (found) {
+            markApplied(suggestion)
+          } else {
+            markSkipped(suggestion, SKIP_REASON.NOT_FOUND, `modify suggestion "${suggestion.id}" (projects) — current value not found in any entry, skipped`)
           }
         } else if (type === 'remove') {
           const found = applyToAllEntries(cloned.projects, suggestion.current, null)
-          if (!found) {
-            console.warn(`applyPatches: remove suggestion "${suggestion.id}" (projects) — current value not found in any entry, skipped`)
+          if (found) {
+            markApplied(suggestion)
+          } else {
+            markSkipped(suggestion, SKIP_REASON.NOT_FOUND, `remove suggestion "${suggestion.id}" (projects) — current value not found in any entry, skipped`)
           }
         }
         break
       }
 
       default:
-        console.warn(`applyPatches: suggestion "${suggestion.id}" has unsupported section "${section}", skipped`)
+        markSkipped(suggestion, SKIP_REASON.UNSUPPORTED_COMBINATION, `suggestion "${suggestion.id}" has unsupported section "${section}", skipped`)
         break
     }
   }
 
-  return { resume: cloned, validation: validateResume(cloned) }
+  return { resume: cloned, validation: validateResume(cloned), applied, skipped }
 }
 
-module.exports = { applyPatches }
+module.exports = { applyPatches, SKIP_REASON }

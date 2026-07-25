@@ -41,10 +41,32 @@ const matchReportSchema = z.object({
   }),
 })
 
+// 'education' is deliberately excluded: applyPatches.js (server/lib/tailor/)
+// has no education-patch handling, and education content is factual rather
+// than something a writing suggestion should alter. Kept in sync with the
+// prompt instruction below, which tells the model not to suggest it.
 const suggestionSchema = z.object({
   id: z.string(),
-  section: z.enum(['summary', 'skills', 'experience', 'projects', 'education']),
+  section: z.enum(['summary', 'skills', 'experience', 'projects']),
   type: z.enum(['add', 'modify', 'remove']),
+  current: z.string().nullable(),
+  suggested: z.string(),
+  reason: z.string(),
+})
+
+// Permissive counterpart used only to receive the model's raw output from
+// generateObject without validating shape/enums up front. z.array(schema)
+// validates the whole array as a single unit -- if generateObject were
+// given the strict suggestionSchema directly, one out-of-enum item (e.g.
+// the model ignoring the "no education" instruction) would fail the entire
+// array and discard every otherwise-valid suggestion alongside it. Instead,
+// each item is validated individually against suggestionSchema after
+// generation (see generateSuggestions), so a single bad item is dropped on
+// its own rather than invalidating the batch.
+const rawSuggestionSchema = z.object({
+  id: z.string(),
+  section: z.string(),
+  type: z.string(),
   current: z.string().nullable(),
   suggested: z.string(),
   reason: z.string(),
@@ -211,6 +233,11 @@ async function generateSuggestions(resume, report, provider = 'gemini') {
       'Based on this MatchReport, generate actionable suggestions to improve the resume.',
       'Each suggestion must be a structured patch (add, modify, or remove) with clear reasoning referencing actual resume content.',
       '',
+      "Only use these section values: 'summary', 'skills', 'experience', 'projects'.",
+      "Do NOT generate suggestions for the education section under any circumstances -- education is",
+      'factual (degree, school, dates) and is not something a writing suggestion should change. If the',
+      'education section is missing relevant keywords, omit it rather than suggesting an education edit.',
+      '',
       "IMPORTANT: For 'modify' suggestions, the `current` field MUST be copied VERBATIM,",
       'character-for-character, from the resume JSON below (the exact summary text, an exact',
       'skills array entry, or an exact bullet string from experience/projects). Do not paraphrase,',
@@ -226,15 +253,32 @@ async function generateSuggestions(resume, report, provider = 'gemini') {
 
     const { object } = await generateObject({
       model: getModel(provider),
-      schema: z.array(suggestionSchema),
+      schema: z.array(rawSuggestionSchema),
       prompt,
       maxRetries: 3,
     })
 
-    return object
+    // Validate each suggestion individually against the strict schema so one
+    // bad item (e.g. the model emitting section: 'education' despite the
+    // prompt instruction, or an invalid type) is dropped on its own instead
+    // of failing the whole batch -- see rawSuggestionSchema comment above.
+    const validated = []
+    for (const item of object) {
+      const parsed = suggestionSchema.safeParse(item)
+      if (parsed.success) {
+        validated.push(parsed.data)
+      } else {
+        console.warn(
+          `ai.js generateSuggestions: dropped invalid suggestion (id=${item?.id ?? 'unknown'}, section=${item?.section}, type=${item?.type}):`,
+          parsed.error.message
+        )
+      }
+    }
+
+    return validated
   } catch (err) {
     handleAIError(err, 'suggestion generation', provider)
   }
 }
 
-module.exports = { analyzeResume, generateSuggestions, sanitizeError }
+module.exports = { analyzeResume, generateSuggestions, sanitizeError, suggestionSchema }

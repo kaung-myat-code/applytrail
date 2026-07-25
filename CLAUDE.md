@@ -84,7 +84,7 @@ A local web MVP that migrates an existing Claude Code job application workflow i
 ## Platform Requirements
 
 - macOS (current environment: Darwin 25.5.0, Apple Silicon via Homebrew)
-- Node.js 18+ (for Express and Vite)
+- Node.js 20.19+ (for Express, Vite, and native `require(esm)` support needed by the `ai` package)
 - npm (for package management)
 - Git installed
 - Browser (Chrome, Firefox, Safari)

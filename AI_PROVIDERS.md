@@ -129,7 +129,7 @@ The selected provider is missing its API key. Either:
 
 The AI SDK failed to load. Check:
 
-1. Node.js version (18+ required)
+1. Node.js version (20.19+ required — the `ai` package is ESM-only and needs native `require(esm)` support)
 2. Network connectivity
 3. API key validity
 

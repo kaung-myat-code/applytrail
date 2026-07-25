@@ -6,7 +6,7 @@
   <a href="https://github.com/kaung-myat-code/applytrail/actions/workflows/ci.yml"><img src="https://github.com/kaung-myat-code/applytrail/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white" alt="React 18"></a>
   <a href="https://expressjs.com/"><img src="https://img.shields.io/badge/Express-4-000000?logo=express&logoColor=white" alt="Express 4"></a>
-  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&logoColor=white" alt="Node.js 18+"></a>
+  <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-20.19+-339933?logo=node.js&logoColor=white" alt="Node.js 20.19+"></a>
   <a href="https://render.com/"><img src="https://img.shields.io/badge/Deploy-Render-46E3B7?logo=render&logoColor=white" alt="Deploy on Render"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License"></a>
 </p>
@@ -86,7 +86,7 @@ Cover letter and analysis generation default to a plain keyword heuristic — no
 
 ## Getting started
 
-**Prerequisites:** Node.js 18+, npm
+**Prerequisites:** Node.js 20.19+, npm
 
 ```bash
 git clone https://github.com/kaung-myat-code/applytrail.git

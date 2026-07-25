@@ -30,7 +30,7 @@ See: .planning/PROJECT.md (updated 2026-07-16)
 
 Phase: 14 (ux-quality-polish-from-user-feedback) — COMPLETE
 Status: Phase 14 complete, ready to plan next phase
-Last activity: 2026-07-21 - Completed quick task 260721-vks: Fix remaining GoatCounter CSP block (connectSrc wildcard for *.goatcounter.com)
+Last activity: 2026-07-25 - Completed quick task 260725-t92: Add GitHub Actions CI and Dependabot config for monorepo
 
 Progress: [███████░░░░] 40%
 
@@ -116,6 +116,7 @@ Resume file: .planning/phases/14-ux-quality-polish-from-user-feedback/14-UI-SPEC
 
 | Date | Task | Status |
 |------|------|--------|
+| 2026-07-25 | Add GitHub Actions CI workflow (Node 18.x/20.x matrix — lint, test, build) and Dependabot config (npm for root/client/server, github-actions) ([260725-t92-add-github-actions-ci-and-dependabot-con](./quick/260725-t92-add-github-actions-ci-and-dependabot-con/)) | ✅ Complete |
 | 2026-07-22 | Consolidate slides/pitch.md, intro.md, tech-stack.md into one up-to-date deck ([260722-u91-consolidate-slides-into-one-deck](./quick/260722-u91-consolidate-slides-into-one-deck/)) | ✅ Complete |
 | 2026-07-21 | Polish UI/UX (spacing, color tokens, mobile responsiveness, unified empty/error/loading states) via frontend-design skill ([260721-wdq-polish-ui-ux-using-frontend-design-tidy-](./quick/260721-wdq-polish-ui-ux-using-frontend-design-tidy-/)) | ⚠️ Needs manual 375px browser check |
 | 2026-07-21 | Fix remaining GoatCounter CSP block — beacon origin *.goatcounter.com allowlisted in connectSrc ([260721-vks-fix-remaining-goatcounter-csp-block-add-](./quick/260721-vks-fix-remaining-goatcounter-csp-block-add-/)) | ✅ Complete |

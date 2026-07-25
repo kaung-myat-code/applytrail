@@ -36,6 +36,8 @@
 - [x] **TAILOR-04**: Tailored resume is linked to its source resume via `source_id`
 - [x] **TAILOR-05**: User can return to suggestion review from preview without losing accepted/rejected edits
 - [x] **TAILOR-06**: Generated resume must conform to the resume JSON schema before it can be saved or exported
+- [x] **TAILOR-07**: Every accepted/edited suggestion either applies to the tailored resume or is surfaced to the user as skipped with a reason -- no combination of section and patch type silently no-ops
+- [x] **TAILOR-08**: AI-generated suggestions are scoped to summary/skills/experience/projects; education is excluded from suggestion generation since it is factual content, not something a writing suggestion should change
 
 ### Application Pre-fill & Export
 
@@ -116,6 +118,8 @@ Each requirement below maps 1:1 to a tracked GitHub issue (#2-#8) filed against 
 | UX-ISSUE-06 | Phase 14 | Complete |
 | UX-ISSUE-07 | Phase 14 | Complete |
 | UX-ISSUE-08 | Phase 14 | Complete |
+| TAILOR-07 | Phase 15 | Complete |
+| TAILOR-08 | Phase 15 | Complete |
 
 ---
 *Requirements defined: 2026-07-02*

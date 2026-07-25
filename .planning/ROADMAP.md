@@ -8,7 +8,7 @@ A local web MVP that migrates a CLI-based job application workflow into a React 
 
 - [x] **v1.0 MVP** - Phases 1-4 (shipped 2026-06-26)
 - [x] **v1.1 Release Polish** - Phases 5-8 (shipped 2026-06-27)
-- [ ] **v2.0 Resume Tailoring Flow** - Phases 9-14 (planned)
+- [ ] **v2.0 Resume Tailoring Flow** - Phases 9-15 (planned)
 
 ## Phases
 
@@ -52,6 +52,7 @@ Archive: [v1.1-ROADMAP.md](milestones/v1.1-ROADMAP.md) | [v1.1-REQUIREMENTS.md](
 - [x] **Phase 12: Tailored Resume Generation** - Apply accepted patches to create a new resume version with side-by-side diff review (completed 2026-07-16)
 - [x] **Phase 13: Application Pre-fill and Export** - Pre-fill application from job posting, export resume as PDF or JSON (completed 2026-07-17)
 - [x] **Phase 14: UX & Quality Polish from User Feedback** - Resolve GitHub issues #2-#8 from 2026-07-05 UAT: workflow clarity, nav restructuring, resume-library bug fix, editor safety, analysis/writing quality, and lint cleanup
+- [x] **Phase 15: Tailored Resume Patch Correctness** - Close silent no-ops in the patch-application engine, scope AI suggestions away from education, and surface skipped patches to the user (completed 2026-07-26)
 
 ## Phase Details
 
@@ -410,10 +411,36 @@ Tracked issues:
 
 **UI hint**: yes
 
+### Phase 15: Tailored Resume Patch Correctness
+
+**Goal**: Every accepted/edited suggestion in the tailoring workflow either applies to the resume or is visibly reported as skipped -- no combination of section and patch type silently no-ops
+**Depends on**: Phase 14
+**Requirements**: TAILOR-07, TAILOR-08
+**Success Criteria** (what must be TRUE):
+
+  1. `applyPatches.js` handles all section x type combinations the AI suggestion schema permits (summary, skills, experience, projects x add, modify, remove) -- summary+remove and skills+modify no longer silently no-op
+  2. `applyPatches` returns `{ applied, skipped }` with a closed `SKIP_REASON` enum (`not-found`, `current-mismatch`, `unsupported-combination`), so callers can distinguish expected skips from the defect path
+  3. AI-generated suggestions are scoped to summary/skills/experience/projects; `education` is rejected at the schema layer (`server/lib/analysis/providers/ai.js`) rather than generated and then silently dropped, and a single invalid suggestion no longer discards the rest of the batch
+  4. A regression test walks all 15 section x type combinations (including education) and asserts `UNSUPPORTED_COMBINATION` is unreachable for every schema-permitted combination
+  5. The tailored resume preview (`PreviewTailored.jsx`) surfaces skipped patches to the user -- distinguishing defect skips from stale-match skips from unrecognized-reason fallbacks -- instead of silently omitting them from the resume shown
+  6. `education` exclusion behavior and rationale are documented in `AI_PROVIDERS.md`
+
+**Plans**: 1/1 complete (ad hoc session -- no PLAN.md; implemented directly per user direction, see commit 7362556 "fix: close silent no-ops in tailored resume patch application" and follow-up hardening for the reachability test, generic-reason banner fallback, and documentation)
+
+Plans:
+
+- [x] Ad hoc: applyPatches.js branch fixes (summary+remove, skills+modify) + `{ applied, skipped }` return shape + `SKIP_REASON` enum
+- [x] Ad hoc: ai.js -- drop `education` from suggestion schema, per-item Zod validation so one bad suggestion doesn't discard the batch
+- [x] Ad hoc: PreviewTailored.jsx -- skipped-patch banners (defect / stale / unknown-reason fallback), `client/src/lib/skipReasons.js`
+- [x] Ad hoc: applyPatches.test.js -- full 15-combination coverage + reachability guard test, wired into `npm test`
+- [x] Ad hoc: AI_PROVIDERS.md -- documented education exclusion and rationale
+
+**UI hint**: yes
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 9 -> 10 -> 11 -> 11.5 -> 12 -> 13 -> 14
+Phases execute in numeric order: 9 -> 10 -> 11 -> 11.5 -> 12 -> 13 -> 14 -> 15
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -432,3 +459,4 @@ Phases execute in numeric order: 9 -> 10 -> 11 -> 11.5 -> 12 -> 13 -> 14
 | 12. Tailored Resume Generation | v2.0 | 3/3 | Complete    | 2026-07-16 |
 | 13. Application Pre-fill and Export | v2.0 | 3/3 | Complete    | 2026-07-17 |
 | 14. UX & Quality Polish from User Feedback | v2.0 | 9/9 | Complete   | 2026-07-19 |
+| 15. Tailored Resume Patch Correctness | v2.0 | 1/1 | Complete | 2026-07-26 |

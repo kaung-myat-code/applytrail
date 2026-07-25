@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Resume Tailoring Flow
-current_phase: 14
-current_phase_name: ux-quality-polish-from-user-feedback
+current_phase: 15
+current_phase_name: tailored-resume-patch-correctness
 status: complete
-stopped_at: Phase 14 verified complete (UAT 5/5 passed, 0 issues)
-last_updated: "2026-07-26T00:00:00.000Z"
+stopped_at: "Phase 15 complete (ad hoc session, no PLAN.md) — applyPatches silent no-ops closed, all 15 section×type combinations tested, education scoped out of AI suggestion schema, skipped patches surfaced in PreviewTailored UI"
+last_updated: "2026-07-26T04:30:00.000Z"
 last_activity: 2026-07-26
-last_activity_desc: "Completed quick task 260726-4jn: Fix README placeholder clone URL, add Why I built this section, add CI badge"
+last_activity_desc: "Completed Phase 15 (ad hoc): closed applyPatches silent no-ops (summary+remove, skills+modify), dropped education from AI suggestion schema with per-item validation, surfaced skipped patches in PreviewTailored UI (defect/stale/unknown-reason banners), added 15-combination regression coverage + reachability guard wired into npm test, documented education exclusion in AI_PROVIDERS.md"
 progress:
   total_phases: 15
-  completed_phases: 6
-  total_plans: 20
-  completed_plans: 20
-  percent: 40
+  completed_phases: 7
+  total_plans: 21
+  completed_plans: 21
+  percent: 47
 ---
 
 # Project State
@@ -24,15 +24,15 @@ progress:
 See: .planning/PROJECT.md (updated 2026-07-16)
 
 **Core value:** End-to-end job application workflow in a web UI -- from resume to cover letter to application tracking -- so the user can manage their job search from any browser.
-**Current focus:** No phase 15 defined yet — milestone v2.0 has no further phases in ROADMAP.md; awaiting `/gsd-new-milestone` or roadmap update
+**Current focus:** v2.0 milestone (Phases 9-15) is now fully complete. No further phases defined in ROADMAP.md; awaiting `/gsd-new-milestone` or roadmap update to plan the next milestone.
 
 ## Current Position
 
-Phase: 14 (ux-quality-polish-from-user-feedback) — COMPLETE
-Status: Phase 14 complete, ready to plan next phase
-Last activity: 2026-07-26 - Completed quick task 260726-4jn: Fix README placeholder clone URL, add Why I built this section, add CI badge
+Phase: 15 (tailored-resume-patch-correctness) — COMPLETE
+Status: Phase 15 complete (ad hoc session), v2.0 milestone (Phases 9-15) fully complete, ready to plan next milestone
+Last activity: 2026-07-26 - Completed Phase 15: closed applyPatches silent no-ops, scoped AI suggestions away from education, surfaced skipped patches in the UI, full 15-combination test coverage
 
-Progress: [███████░░░░] 40%
+Progress: [████████░░░] 47%
 
 ## Milestones Shipped
 
@@ -70,6 +70,7 @@ Progress: [███████░░░░] 40%
 | Phase 11-5 P03 | 1min | - tasks | - files |
 | 12 | 3 | - | - |
 | 13 | 3 | - | - |
+| 15 (ad hoc, no PLAN.md) | 1 | - | 8 files |
 
 ## Accumulated Context
 
@@ -95,11 +96,14 @@ Recent decisions affecting current work:
 - [Phase 12]: Draft-based tailoring flow -- ephemeral drafts (project-root `drafts/`) hold in-progress patch state; `applyPatches` deep-clones the source resume and only writes a new library version on explicit Save, so the source is never mutated
 - [Phase 12]: `?draft=<id>` URL search param (not React Router `location.state`) is the source of truth for cross-page draft state, so refresh survives on both Review and Preview pages
 - [Phase 12]: Resume.jsx branches on `useParams().id` (added via gap-closure plan 12-03) to fetch/save either a specific library version or the legacy singular resume -- fixed G-12-2 (Edit link on every library card previously always opened the legacy default resume)
+- [Phase 15]: Closed the Phase 12 CR-01/CR-02 deferred gap -- audited the full section×type matrix (not just the two known cases) and found a third silent no-op (skills+modify); split the fix by section: implemented summary+remove and skills+modify in applyPatches.js, but dropped education from the AI provider's suggestion schema instead of implementing it (education is factual, not something a writing suggestion should change)
+- [Phase 15]: `applyPatches` return shape changed from `{ resume, validation }` to `{ resume, validation, applied, skipped }` with a closed `SKIP_REASON` enum (`not-found`, `current-mismatch`, `unsupported-combination`) -- additive change, existing consumers reading only `resume`/`validation` are unaffected
+- [Phase 15]: AI provider's `generateObject` call for suggestions switched from a strict per-item Zod schema to a permissive schema + individual `safeParse` per item -- prevents one invalid suggestion (e.g. a stray education patch) from discarding the entire batch
+- [Phase 15]: client/ and server/ have no shared module boundary (separate npm packages), so `SKIP_REASON` is mirrored in `client/src/lib/skipReasons.js` rather than imported -- same pattern already established by `client/src/lib/keywordCasing.js` for `ACRONYM_CASING`
 
 ### Pending Todos
 
-- Phase 13: Application Pre-fill and Export
-- Deferred (Phase 12, CR-01/CR-02): applyPatches has no `education` section handling and no `summary`+`remove` handling -- both silently no-op. Not blocking Phase 13; revisit as a future gap-closure plan if it becomes user-visible.
+- None open. Phase 13 (Application Pre-fill and Export) and the Phase 12 CR-01/CR-02 deferred `applyPatches` gap are both resolved (Phase 15).
 
 ### Blockers/Concerns
 
@@ -108,9 +112,9 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-07-25T19:19:38.652Z
-Stopped at: Phase 14 UI-SPEC approved
-Resume file: .planning/phases/14-ux-quality-polish-from-user-feedback/14-UI-SPEC.md
+Last session: 2026-07-26T04:30:00.000Z
+Stopped at: Phase 15 complete (ad hoc session, no PLAN.md) -- v2.0 milestone (Phases 9-15) fully complete
+Resume file: None -- next step is planning the following milestone via `/gsd-new-milestone`
 
 ## Quick Tasks Completed
 

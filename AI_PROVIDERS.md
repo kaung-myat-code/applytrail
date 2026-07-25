@@ -22,6 +22,16 @@ When using an AI provider, the system automatically falls back in this order:
 
 This ensures analysis works even if your primary provider is unavailable.
 
+## Suggestion Generation Scope
+
+AI providers (Gemini, OpenRouter, Groq) generate section-by-section suggestions in addition to the match report. Suggestions are constrained to four sections: **summary, skills, experience, projects**.
+
+**Education is deliberately excluded.** The AI is instructed not to suggest education edits, and the suggestion schema (`server/lib/analysis/providers/ai.js`) rejects `section: 'education'` even if a model ignores that instruction — each suggestion is validated individually, so one rejected item doesn't discard the rest of the batch.
+
+**Why:** Education content (degree, school, dates) is factual, not something a writing suggestion should rewrite to better match a job posting. The patch engine that applies accepted suggestions (`server/lib/tailor/applyPatches.js`) has no education-patch handling for the same reason — this is a deliberate scope decision, not a missing feature. If an education suggestion somehow reaches the patch engine anyway (e.g. a draft persisted before this change), it's tracked as a defect (`SKIP_REASON.UNSUPPORTED_COMBINATION`) and surfaced to the user in the tailored-resume preview rather than silently dropped.
+
+If you need to update education content, edit it directly on the Resume page.
+
 ## Configuration
 
 ### 1. Set the Provider

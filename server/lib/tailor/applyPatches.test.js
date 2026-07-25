@@ -21,7 +21,7 @@
 
 const assert = require('assert')
 const { applyPatches, SKIP_REASON } = require('./applyPatches')
-const { suggestionSchema } = require('../analysis/providers/ai')
+const { suggestionSchema } = require('../analysis/providers/suggestionSchema')
 
 function test(name, fn) {
   try {

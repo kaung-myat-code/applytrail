@@ -12,6 +12,7 @@ const { createOpenAICompatible } = require('@ai-sdk/openai-compatible')
 const { groq } = require('@ai-sdk/groq')
 const { z } = require('zod')
 const { sanitizeError } = require('../sanitizeError')
+const { suggestionSchema } = require('./suggestionSchema')
 
 // --- Zod Schemas ---
 
@@ -41,18 +42,9 @@ const matchReportSchema = z.object({
   }),
 })
 
-// 'education' is deliberately excluded: applyPatches.js (server/lib/tailor/)
-// has no education-patch handling, and education content is factual rather
-// than something a writing suggestion should alter. Kept in sync with the
-// prompt instruction below, which tells the model not to suggest it.
-const suggestionSchema = z.object({
-  id: z.string(),
-  section: z.enum(['summary', 'skills', 'experience', 'projects']),
-  type: z.enum(['add', 'modify', 'remove']),
-  current: z.string().nullable(),
-  suggested: z.string(),
-  reason: z.string(),
-})
+// suggestionSchema lives in ./suggestionSchema.js (see comment there) so
+// applyPatches.test.js can import it without pulling in this module's
+// 'ai' package dependency.
 
 // Permissive counterpart used only to receive the model's raw output from
 // generateObject without validating shape/enums up front. z.array(schema)

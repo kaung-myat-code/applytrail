@@ -3,6 +3,7 @@
 </p>
 
 <p align="center">
+  <a href="https://github.com/kaung-myat-code/applytrail/actions/workflows/ci.yml"><img src="https://github.com/kaung-myat-code/applytrail/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white" alt="React 18"></a>
   <a href="https://expressjs.com/"><img src="https://img.shields.io/badge/Express-4-000000?logo=express&logoColor=white" alt="Express 4"></a>
   <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-18+-339933?logo=node.js&logoColor=white" alt="Node.js 18+"></a>
@@ -63,6 +64,12 @@ No login. No job-board scraping. No cloud account required to start.
 
 ---
 
+## Why I built this
+
+I was tired of tracking job applications in a spreadsheet and rewriting the same cover letter paragraph by hand for every posting. I wanted a local tool that could hold my resume versions, the postings I'd applied to, and my application status all in one place, without creating an account or sending my resume data to a third party. ApplyTrail is that tool -- built to run entirely on my own machine, with plain JSON files I can open and edit directly if something looks wrong.
+
+---
+
 ## How it works
 
 1. **Build your resume library** — create and maintain multiple resume versions, and pick which one to work from.
@@ -82,7 +89,7 @@ Cover letter and analysis generation default to a plain keyword heuristic — no
 **Prerequisites:** Node.js 18+, npm
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/applytrail.git
+git clone https://github.com/kaung-myat-code/applytrail.git
 cd applytrail
 npm install
 npm run dev

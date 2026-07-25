@@ -12,6 +12,6 @@
     "test": "cd client && npm run test && cd ../server && npm run test"
   },
   "devDependencies": {
-    "concurrently": "^9.0.0"
+    "concurrently": "^10.0.4"
   }
 }

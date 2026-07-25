@@ -7,13 +7,13 @@
     "test": "node lib/pdf.test.js && node lib/defaultResumeData.test.js && node lib/analysis/keywords.test.js && node lib/analysis/validate.test.js && node lib/analysis/providers/heuristic.test.js && node lib/analysis/analyze-route.test.js && node lib/cover-letter.test.js"
   },
   "dependencies": {
-    "@ai-sdk/google": "^4.0.7",
-    "@ai-sdk/groq": "^4.0.5",
-    "@ai-sdk/openai-compatible": "^3.0.5",
-    "ai": "^7.0.13",
+    "@ai-sdk/google": "^4.0.24",
+    "@ai-sdk/groq": "^4.0.13",
+    "@ai-sdk/openai-compatible": "^3.0.14",
+    "ai": "^7.0.37",
     "compression": "^1.8.1",
     "express": "^4.21.0",
-    "helmet": "^8.2.0",
+    "helmet": "^8.3.0",
     "pdfmake": "^0.3.11",
     "zod": "^3.23.0"
   }

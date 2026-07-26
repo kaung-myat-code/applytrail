@@ -10,10 +10,10 @@ End-to-end job application workflow in a web UI — from resume to cover letter 
 
 ## Current State
 
-**Shipped:** v1.1 Release Polish (2026-06-27)
+**Shipped:** v2.0 Resume Tailoring Flow (2026-07-26)
 **Live URL:** https://applytrail.onrender.com
 **Deployment:** Render free tier, auto-deploy from main branch
-**Status:** v1.0/v1.1 shipped (36/36 requirements). v2.0 Resume Tailoring Flow in progress — Phase 13 complete 2026-07-17 (application pre-fill from job posting + tailored resume, PDF/JSON export via pdfmake). Phase 14 remains.
+**Status:** v1.0, v1.1, and v2.0 all shipped. Resume library, provider-agnostic match analysis (heuristic + Gemini/OpenRouter/Groq), section-by-section suggestions, tailored resume generation with a hardened patch-application engine, and application pre-fill/export are all live in production. No milestone currently in progress — awaiting `/gsd-new-milestone`.
 
 <details>
 <summary>Previous milestone context</summary>
@@ -34,19 +34,9 @@ A local web MVP that migrated an existing Claude Code job application workflow i
 
 </details>
 
-## Current Milestone: v2.0 Resume Tailoring Flow
+## Next Milestone
 
-**Goal:** Build an end-to-end resume optimization workflow that analyzes a selected resume against a job posting, generates actionable improvement suggestions, lets users review every change, creates a new tailored resume version, and seamlessly starts a job application.
-
-**Target features:**
-- Resume Library — Manage multiple resume versions (select, create, rename, delete, organize)
-- Job Posting Analysis — Paste a job posting and analyze it against the selected resume
-- Resume Match Report — Display overall compatibility with the job posting, including strengths, gaps, missing keywords, and section-level analysis before suggestions are generated
-- Section-by-Section Suggestions — Generate improvements for Summary, Skills, Experience, Projects, Education, etc.
-- Review Interface — Compare the current and suggested content side-by-side, then accept, reject, or manually edit each suggestion before generating the tailored resume
-- Tailored Resume Generation — Create a new resume version (auto-named by target position) without overwriting the original
-- Application Pre-fill — Create a new application from the analyzed job posting with the tailored resume linked automatically
-- Export — Export any resume version as PDF, DOCX, or JSON
+Not yet scoped. Run `/gsd-new-milestone` to define the next milestone's goal and requirements.
 
 ## Requirements
 
@@ -67,8 +57,11 @@ A local web MVP that migrated an existing Claude Code job application workflow i
 - [x] Documentation is polished for public consumption (Phase 8)
 - [x] Release assets (screenshots, slides) are created (Phase 8)
 
-### Validated (v2.0, in progress)
+### Validated (v2.0)
 
+- [x] User can manage multiple resume versions — create, rename, delete, select as analysis base, migrated from the original single `resume.json` (Phase 9)
+- [x] User can analyze a selected resume against a job posting and see a compatibility score, keyword gaps, and section-level findings via a provider-agnostic engine (heuristic + Gemini/OpenRouter/Groq with automatic fallback) (Phase 10, Phase 11.5)
+- [x] User can review section-by-section suggestions and accept, reject, or edit each one individually or in bulk, with a side-by-side diff view (Phase 11)
 - [x] User can generate a tailored resume that applies only accepted suggestions to a copy of the source resume (Phase 12)
 - [x] Tailored resume is saved as a new version with auto-naming ("Company - Role"), without overwriting the source (Phase 12)
 - [x] User can preview the tailored resume before final save (Phase 12)
@@ -77,10 +70,12 @@ A local web MVP that migrated an existing Claude Code job application workflow i
 - [x] Source resume remains unchanged after generating a tailored resume (Phase 12)
 - [x] User can create a new application pre-filled from the analyzed job posting with the tailored resume linked automatically (Phase 13)
 - [x] User can export any resume library version as PDF or JSON (Phase 13)
+- [x] UX/quality issues from 2026-07-05 exploratory UAT resolved: workflow clarity, nav restructuring, resume-library bug fix, editor safety, analysis/writing quality, lint cleanup (Phase 14)
+- [x] Every accepted/edited suggestion either applies to the tailored resume or is surfaced to the user as a skipped patch with a reason — no section/patch-type combination silently no-ops (Phase 15, closes the CR-01/CR-02 gap deferred from Phase 12)
 
 ### Active
 
-- [ ] applyPatches must handle 'education' section patches and 'summary'+'remove' patches — currently silent no-ops (CR-01/CR-02, deferred from Phase 12, see 12-REVIEW.md)
+(None — awaiting next milestone scope via `/gsd-new-milestone`)
 
 ### Out of Scope
 
@@ -89,6 +84,12 @@ A local web MVP that migrated an existing Claude Code job application workflow i
 - Email sending — out of MVP scope
 - Payment/billing — no monetization
 - Mobile responsive design — desktop-first for MVP
+- Auto-optimize resume tailoring — removes user control, may produce dishonest content; user must review every change
+- ATS format checking — JSON schema already guarantees parseability
+- Real-time score updates — expensive, creates score-chasing behavior; analysis runs on demand
+- LinkedIn profile optimization — scope explosion
+- AI resume writing from scratch — system suggests improvements, never generates unreviewed content
+- DOCX export — PDF/JSON cover the near-term need; revisit if requested
 
 ## Tech Stack
 
@@ -126,6 +127,9 @@ A local web MVP that migrated an existing Claude Code job application workflow i
 | Route-param branching over component forking | `Resume.jsx` branches on `useParams().id` to target either the legacy singular resume or a specific library version, rather than splitting into two components | Implemented (Phase 12) |
 | pdfmake for PDF export | Pure-JS PDF generation (no headless browser) to respect the Render free-tier memory ceiling | Implemented (Phase 13) |
 | `resume_version_id` existence check on application creation | Format-only validation allowed orphaned/forged references into `applications.json`; existence check matches the sibling `job_posting_id` lookup pattern (code review CR-02) | Implemented (Phase 13) |
+| `applyPatches` returns `{ resume, validation, applied, skipped }` with a closed `SKIP_REASON` enum | Additive change so silent no-ops become visible skip reasons (`not-found`, `current-mismatch`, `unsupported-combination`) without breaking existing consumers reading only `resume`/`validation` | Implemented (Phase 15) |
+| Education excluded from AI suggestion schema rather than implemented as a patch type | Education is factual content, not something a writing suggestion should change | Implemented (Phase 15) |
+| AI provider suggestion validation switched from strict batch Zod schema to permissive schema + per-item `safeParse` | Prevents one invalid suggestion (e.g. a stray education patch) from discarding the entire suggestion batch | Implemented (Phase 15) |
 
 ## Milestones
 
@@ -133,9 +137,9 @@ A local web MVP that migrated an existing Claude Code job application workflow i
 |-----------|--------|--------|---------|
 | v1.0 MVP | 1-4 | Complete | 2026-06-26 |
 | v1.1 Release Polish | 5-8 | Complete | 2026-06-27 |
-| v2.0 Resume Tailoring Flow | TBD | Planning | — |
+| v2.0 Resume Tailoring Flow | 9-15 | Complete | 2026-07-26 |
 
-**Archives:** [v1.0](milestones/v1.0-phases/) | [v1.1 Roadmap](milestones/v1.1-ROADMAP.md) | [v1.1 Requirements](milestones/v1.1-REQUIREMENTS.md)
+**Archives:** [v1.0 phases](milestones/v1.0-phases/) | [v1.1 Roadmap](milestones/v1.1-ROADMAP.md) | [v1.1 Requirements](milestones/v1.1-REQUIREMENTS.md) | [v2.0 Roadmap](milestones/v2.0-ROADMAP.md) | [v2.0 Requirements](milestones/v2.0-REQUIREMENTS.md) | [v2.0 phases](milestones/v2.0-phases/)
 
 ## Evolution
 
@@ -155,4 +159,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-17 after Phase 13*
+*Last updated: 2026-07-26 after v2.0 milestone*

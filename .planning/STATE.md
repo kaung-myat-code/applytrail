@@ -2,37 +2,36 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Resume Tailoring Flow
-current_phase: 15
-current_phase_name: tailored-resume-patch-correctness
-status: complete
-stopped_at: "Phase 15 complete (implemented ad hoc, artifacts backfilled) — applyPatches silent no-ops closed, all 15 section×type combinations tested, education scoped out of AI suggestion schema, skipped patches surfaced in PreviewTailored UI"
-last_updated: "2026-07-26T04:30:00.000Z"
+current_phase: 0
+status: Awaiting next milestone
+stopped_at: Phase 15 complete (implemented ad hoc, artifacts backfilled for GSD tooling) -- v2.0 milestone (Phases 9-15) fully complete
+last_updated: "2026-07-26T11:47:16.090Z"
 last_activity: 2026-07-26
-last_activity_desc: "Completed Phase 15 (ad hoc): closed applyPatches silent no-ops (summary+remove, skills+modify), dropped education from AI suggestion schema with per-item validation, surfaced skipped patches in PreviewTailored UI (defect/stale/unknown-reason banners), added 15-combination regression coverage + reachability guard wired into npm test, documented education exclusion in AI_PROVIDERS.md"
+last_activity_desc: Milestone v2.0 completed and archived
 progress:
-  total_phases: 15
+  total_phases: 16
   completed_phases: 7
   total_plans: 21
   completed_plans: 21
-  percent: 47
+  percent: 44
+current_phase_name: tailored-resume-patch-correctness
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-07-16)
+See: .planning/PROJECT.md (updated 2026-07-26)
 
 **Core value:** End-to-end job application workflow in a web UI -- from resume to cover letter to application tracking -- so the user can manage their job search from any browser.
-**Current focus:** v2.0 milestone (Phases 9-15) is now fully complete. No further phases defined in ROADMAP.md; awaiting `/gsd-new-milestone` or roadmap update to plan the next milestone.
+**Current focus:** v1.0, v1.1, and v2.0 all shipped. No milestone currently in progress; awaiting `/gsd-new-milestone` to scope the next one.
 
 ## Current Position
 
-Phase: 15 (tailored-resume-patch-correctness) — COMPLETE
-Status: Phase 15 complete (implemented ad hoc, artifacts backfilled for GSD tooling), v2.0 milestone (Phases 9-15) fully complete, ready to plan next milestone
-Last activity: 2026-07-26 - Completed Phase 15: closed applyPatches silent no-ops, scoped AI suggestions away from education, surfaced skipped patches in the UI, full 15-combination test coverage
-
-Progress: [████████░░░] 47%
+Phase: Milestone v2.0 complete
+Plan: —
+Status: Awaiting next milestone
+Last activity: 2026-07-26 — Milestone v2.0 completed and archived
 
 ## Milestones Shipped
 
@@ -134,3 +133,7 @@ Resume file: None -- next step is planning the following milestone via `/gsd-new
 | 2026-07-04 | Update Phase 11.5 planning for multi-provider support | ✅ Complete |
 | 2026-07-04 | Fix fallback error message showing wrong provider's error | ✅ Complete |
 | 2026-07-04 | Resume schema audit (Phases 9, 10, 11.5) — 9 findings, 1 critical | ✅ Complete |
+
+## Operator Next Steps
+
+- Start the next milestone with /gsd-new-milestone

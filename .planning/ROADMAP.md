@@ -425,7 +425,7 @@ Tracked issues:
   5. The tailored resume preview (`PreviewTailored.jsx`) surfaces skipped patches to the user -- distinguishing defect skips from stale-match skips from unrecognized-reason fallbacks -- instead of silently omitting them from the resume shown
   6. `education` exclusion behavior and rationale are documented in `AI_PROVIDERS.md`
 
-**Plans**: 1/1 complete (ad hoc session -- no PLAN.md; implemented directly per user direction, see commit 7362556 "fix: close silent no-ops in tailored resume patch application" and follow-up hardening for the reachability test, generic-reason banner fallback, and documentation)
+**Plans**: 1/1 complete (implemented ad hoc, directly per user direction, ahead of `PLAN.md`/`SUMMARY.md` -- see commit 7362556 "fix: close silent no-ops in tailored resume patch application" and follow-up hardening for the reachability test, generic-reason banner fallback, and documentation; `15-01-PLAN.md`/`15-01-SUMMARY.md` were backfilled afterward so GSD phase-tracking tooling recognizes this phase as complete)
 
 Plans:
 

@@ -5,7 +5,7 @@ milestone_name: Resume Tailoring Flow
 current_phase: 15
 current_phase_name: tailored-resume-patch-correctness
 status: complete
-stopped_at: "Phase 15 complete (ad hoc session, no PLAN.md) — applyPatches silent no-ops closed, all 15 section×type combinations tested, education scoped out of AI suggestion schema, skipped patches surfaced in PreviewTailored UI"
+stopped_at: "Phase 15 complete (implemented ad hoc, artifacts backfilled) — applyPatches silent no-ops closed, all 15 section×type combinations tested, education scoped out of AI suggestion schema, skipped patches surfaced in PreviewTailored UI"
 last_updated: "2026-07-26T04:30:00.000Z"
 last_activity: 2026-07-26
 last_activity_desc: "Completed Phase 15 (ad hoc): closed applyPatches silent no-ops (summary+remove, skills+modify), dropped education from AI suggestion schema with per-item validation, surfaced skipped patches in PreviewTailored UI (defect/stale/unknown-reason banners), added 15-combination regression coverage + reachability guard wired into npm test, documented education exclusion in AI_PROVIDERS.md"
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-07-16)
 ## Current Position
 
 Phase: 15 (tailored-resume-patch-correctness) — COMPLETE
-Status: Phase 15 complete (ad hoc session), v2.0 milestone (Phases 9-15) fully complete, ready to plan next milestone
+Status: Phase 15 complete (implemented ad hoc, artifacts backfilled for GSD tooling), v2.0 milestone (Phases 9-15) fully complete, ready to plan next milestone
 Last activity: 2026-07-26 - Completed Phase 15: closed applyPatches silent no-ops, scoped AI suggestions away from education, surfaced skipped patches in the UI, full 15-combination test coverage
 
 Progress: [████████░░░] 47%
@@ -70,7 +70,7 @@ Progress: [████████░░░] 47%
 | Phase 11-5 P03 | 1min | - tasks | - files |
 | 12 | 3 | - | - |
 | 13 | 3 | - | - |
-| 15 (ad hoc, no PLAN.md) | 1 | - | 8 files |
+| 15 (implemented ad hoc, artifacts backfilled) | 1 | - | 9 files |
 
 ## Accumulated Context
 
@@ -113,7 +113,7 @@ Recent decisions affecting current work:
 ## Session Continuity
 
 Last session: 2026-07-26T04:30:00.000Z
-Stopped at: Phase 15 complete (ad hoc session, no PLAN.md) -- v2.0 milestone (Phases 9-15) fully complete
+Stopped at: Phase 15 complete (implemented ad hoc, artifacts backfilled for GSD tooling) -- v2.0 milestone (Phases 9-15) fully complete
 Resume file: None -- next step is planning the following milestone via `/gsd-new-milestone`
 
 ## Quick Tasks Completed

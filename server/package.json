@@ -10,10 +10,10 @@
     "test": "node lib/pdf.test.js && node lib/defaultResumeData.test.js && node lib/analysis/keywords.test.js && node lib/analysis/validate.test.js && node lib/analysis/providers/heuristic.test.js && node lib/analysis/analyze-route.test.js && node lib/cover-letter.test.js && node lib/tailor/applyPatches.test.js"
   },
   "dependencies": {
-    "@ai-sdk/google": "^4.0.24",
-    "@ai-sdk/groq": "^4.0.13",
-    "@ai-sdk/openai-compatible": "^3.0.14",
-    "ai": "^7.0.37",
+    "@ai-sdk/google": "^4.0.27",
+    "@ai-sdk/groq": "^4.0.15",
+    "@ai-sdk/openai-compatible": "^3.0.16",
+    "ai": "^7.0.41",
     "compression": "^1.8.1",
     "express": "^5.2.1",
     "helmet": "^8.3.0",

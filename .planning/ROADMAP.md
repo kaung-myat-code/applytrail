@@ -71,7 +71,10 @@ Archive: [v2.0 Roadmap](milestones/v2.0-ROADMAP.md) | [v2.0 Requirements](milest
   3. The README and AI-provider documentation accurately distinguish local JSON-file behavior from disposable hosted behavior, identify the actual runtime versions and development environment file, and disclose that optional AI providers may receive resume and job-posting content while heuristic mode remains local.
   4. Any `render.yaml` change, if needed, is limited to accurately supporting the warning; service type, build commands, persistence settings, and environment handling remain unchanged.
   5. Focused client tests verify the warning's required guidance, existing client tests remain valid, and lint, the full project test command, and the production build pass without API or server/persistence changes.
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 16-01-PLAN.md — Add the always-visible hosted-demo warning and align safety, setup, and AI-provider documentation
 **UI hint**: yes
 
 ## Progress

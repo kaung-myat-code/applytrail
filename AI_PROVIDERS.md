@@ -2,6 +2,10 @@
 
 ApplyTrail supports multiple AI providers for resume analysis with automatic fallback. This document explains how to configure each provider.
 
+## Data processing and privacy boundary
+
+Heuristic analysis runs locally and offline without sending resume or job-posting content over the network. When Gemini, OpenRouter, or Groq is selected, the submitted resume and job-posting content is sent to that configured third-party provider for analysis. Review the provider's terms and privacy policy before enabling it, and never submit credentials, secrets, or other sensitive information.
+
 ## Provider Options
 
 | Provider | Environment Variable | API Key Link | Default Model |

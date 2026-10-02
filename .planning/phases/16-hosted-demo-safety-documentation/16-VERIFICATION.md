@@ -1,11 +1,12 @@
 ---
 phase: 16-hosted-demo-safety-documentation
 verified: 2026-10-02T23:25:30+08:00
-status: human_needed
+status: passed
 score: 5/5 must-haves verified
 behavior_unverified: 0
 overrides_applied: 0
 human_verification:
+
   - test: "Open the client at desktop and narrow/mobile widths, then visit each registered route: /, /resume, /resume/:id, /resume-library, /new, /applications, /cover-letter, /analysis, /analysis/review, and /analysis/preview."
     expected: "The hosted-demo warning remains visible beside the navigation on every route, is readable with sufficient contrast and wrapping, and does not obscure or replace routed content."
     why_human: "Visual appearance, responsive layout, and real browser route presentation cannot be established completely from source inspection and jsdom tests."

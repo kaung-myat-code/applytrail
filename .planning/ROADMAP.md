@@ -9,7 +9,7 @@ ApplyTrail is a deployed web application for managing job applications and optim
 - [x] **v1.0 MVP** - Phases 1-4 (shipped 2026-06-26)
 - [x] **v1.1 Release Polish** - Phases 5-8 (shipped 2026-06-27)
 - [x] **v2.0 Resume Tailoring Flow** - Phases 9-15 (shipped 2026-07-26)
-- [ ] **v2.1 Protect and Clearly Label the Hosted Demo** - Phase 16 (planned)
+- [x] **v2.1 Protect and Clearly Label the Hosted Demo** - Phase 16 (planned) (completed 2026-10-02)
 
 ## Phases
 
@@ -62,19 +62,24 @@ Archive: [v2.0 Roadmap](milestones/v2.0-ROADMAP.md) | [v2.0 Requirements](milest
 ## Phase Details
 
 ### Phase 16: Hosted Demo Safety & Documentation
+
 **Goal**: Users can recognize the hosted demo's safety boundaries from every client route, and developers can configure and describe the project accurately without changes to authentication, APIs, persistence, or deployment behavior.
 **Depends on**: Phase 15
 **Requirements**: DEMO-01, DEMO-02, DEMO-03, DOCS-01, DOCS-02, DOCS-03, DOCS-04, DOCS-05, TEST-01, TEST-02
 **Success Criteria** (what must be TRUE):
+
   1. A visitor sees an always-visible client-shell warning on every route that identifies the hosted demo as unauthenticated, shared, writable, disposable, and for demonstration purposes only.
   2. The warning clearly tells visitors not to submit real resumes, contact information, credentials, secrets, or other private job-search data, without implying privacy, account isolation, or durable hosted storage.
   3. The README and AI-provider documentation accurately distinguish local JSON-file behavior from disposable hosted behavior, identify the actual runtime versions and development environment file, and disclose that optional AI providers may receive resume and job-posting content while heuristic mode remains local.
   4. Any `render.yaml` change, if needed, is limited to accurately supporting the warning; service type, build commands, persistence settings, and environment handling remain unchanged.
   5. Focused client tests verify the warning's required guidance, existing client tests remain valid, and lint, the full project test command, and the production build pass without API or server/persistence changes.
+
 **Plans**: 1 plan
 
 Plans:
-- [ ] 16-01-PLAN.md — Add the always-visible hosted-demo warning and align safety, setup, and AI-provider documentation
+
+- [x] 16-01-PLAN.md — Add the always-visible hosted-demo warning and align safety, setup, and AI-provider documentation
+
 **UI hint**: yes
 
 ## Progress
@@ -84,4 +89,4 @@ Plans:
 | 1-4 | v1.0 | Complete | Complete | 2026-06-26 |
 | 5-8 | v1.1 | Complete | Complete | 2026-06-27 |
 | 9-15 | v2.0 | Complete | Complete | 2026-07-26 |
-| 16. Hosted Demo Safety & Documentation | v2.1 | 0/TBD | Not started | - |
+| 16. Hosted Demo Safety & Documentation | v2.1 | 1/1 | Complete    | 2026-10-02 |

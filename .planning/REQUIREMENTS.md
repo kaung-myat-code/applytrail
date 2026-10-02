@@ -14,22 +14,22 @@ This milestone makes the public Render deployment’s safety boundaries explicit
 
 ### Hosted Demo Warning
 
-- [ ] **DEMO-01**: Users see an always-visible warning in the top-level client application shell stating that the hosted demo is unauthenticated, shared, writable, disposable, and for demonstration purposes only.
-- [ ] **DEMO-02**: The warning tells users not to submit real resumes, contact information, credentials, secrets, or other private job-search data.
-- [ ] **DEMO-03**: The warning does not imply privacy, account isolation, authentication, or durable hosted storage, and it does not require a new dependency or API change.
+- [x] **DEMO-01**: Users see an always-visible warning in the top-level client application shell stating that the hosted demo is unauthenticated, shared, writable, disposable, and for demonstration purposes only.
+- [x] **DEMO-02**: The warning tells users not to submit real resumes, contact information, credentials, secrets, or other private job-search data.
+- [x] **DEMO-03**: The warning does not imply privacy, account isolation, authentication, or durable hosted storage, and it does not require a new dependency or API change.
 
 ### Documentation Accuracy
 
-- [ ] **DOCS-01**: The README contains a prominent live-demo warning covering unauthenticated access, possible shared visibility/modification, reset/loss of hosted data, private-data prohibition, and demonstration-only use.
-- [ ] **DOCS-02**: The README explains local JSON-file behavior separately from hosted-demo behavior, including the hosted deployment’s disposable-data limitation.
-- [ ] **DOCS-03**: README framework/version information matches the package manifests and environment-variable instructions identify the actual file loaded by the root development command.
-- [ ] **DOCS-04**: AI-provider documentation clearly states that enabling optional AI analysis may send resume and job-posting content to the selected third-party provider, while heuristic mode remains local.
-- [ ] **DOCS-05**: `render.yaml` is changed only if needed to support or accurately document the warning; deployment service type, build commands, persistence settings, and environment handling remain unchanged.
+- [x] **DOCS-01**: The README contains a prominent live-demo warning covering unauthenticated access, possible shared visibility/modification, reset/loss of hosted data, private-data prohibition, and demonstration-only use.
+- [x] **DOCS-02**: The README explains local JSON-file behavior separately from hosted-demo behavior, including the hosted deployment’s disposable-data limitation.
+- [x] **DOCS-03**: README framework/version information matches the package manifests and environment-variable instructions identify the actual file loaded by the root development command.
+- [x] **DOCS-04**: AI-provider documentation clearly states that enabling optional AI analysis may send resume and job-posting content to the selected third-party provider, while heuristic mode remains local.
+- [x] **DOCS-05**: `render.yaml` is changed only if needed to support or accurately document the warning; deployment service type, build commands, persistence settings, and environment handling remain unchanged.
 
 ### Validation
 
-- [ ] **TEST-01**: Client tests verify the warning renders and includes the required unauthenticated, shared/disposable, private-data, and demo-only guidance.
-- [ ] **TEST-02**: Existing client tests, lint, the full project test command, and the production build continue to pass.
+- [x] **TEST-01**: Client tests verify the warning renders and includes the required unauthenticated, shared/disposable, private-data, and demo-only guidance.
+- [x] **TEST-02**: Existing client tests, lint, the full project test command, and the production build continue to pass.
 
 ## Out of Scope
 

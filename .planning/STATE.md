@@ -1,20 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v2.0
-milestone_name: Resume Tailoring Flow
-current_phase: 0
-status: Awaiting next milestone
-stopped_at: Phase 15 complete (implemented ad hoc, artifacts backfilled for GSD tooling) -- v2.0 milestone (Phases 9-15) fully complete
-last_updated: "2026-07-26T11:47:16.090Z"
-last_activity: 2026-07-26
-last_activity_desc: Milestone v2.0 completed and archived
+milestone: v2.1
+milestone_name: Protect and Clearly Label the Hosted Demo
+status: planning
+last_updated: "2026-10-02T14:34:10.471Z"
+last_activity: 2026-10-02
 progress:
-  total_phases: 16
-  completed_phases: 7
-  total_plans: 21
-  completed_plans: 21
-  percent: 44
-current_phase_name: tailored-resume-patch-correctness
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -28,10 +24,10 @@ See: .planning/PROJECT.md (updated 2026-07-26)
 
 ## Current Position
 
-Phase: Milestone v2.0 complete
+Phase: Not started (defining requirements)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-07-26 — Milestone v2.0 completed and archived
+Status: Defining requirements
+Last activity: 2026-10-02 — Milestone v2.1 started
 
 ## Milestones Shipped
 

@@ -5,8 +5,8 @@ milestone_name: Protect and Clearly Label the Hosted Demo
 current_phase: 16
 current_phase_name: Hosted Demo Safety & Documentation
 status: "Phase 16 shipped — PR #38"
-stopped_at: v2.1 roadmap and state initialization
-last_updated: "2026-10-04T09:18:42.164Z"
+stopped_at: context exhaustion at 80% (2026-10-04)
+last_updated: "2026-10-04T20:03:14.912Z"
 last_activity: 2026-10-04
 progress:
   total_phases: 1
@@ -69,6 +69,6 @@ None known. Render free-tier behavior and existing environment loading should be
 
 ## Session Continuity
 
-Last session: 2026-10-02
-Stopped at: v2.1 roadmap and state initialization
+Last session: 2026-10-04T20:03:14.905Z
+Stopped at: context exhaustion at 80% (2026-10-04)
 Resume file: None

@@ -4,11 +4,10 @@ milestone: v2.1
 milestone_name: Protect and Clearly Label the Hosted Demo
 current_phase: 16
 current_phase_name: Hosted Demo Safety & Documentation
-status: planning
+status: "Phase 16 shipped — PR #38"
 stopped_at: v2.1 roadmap and state initialization
-last_updated: "2026-10-02T15:35:42.592Z"
-last_activity: 2026-10-02
-last_activity_desc: Phase 16 complete
+last_updated: "2026-10-04T09:18:42.164Z"
+last_activity: 2026-10-04
 progress:
   total_phases: 1
   completed_phases: 1
@@ -30,8 +29,8 @@ See: .planning/PROJECT.md (updated 2026-10-02)
 
 Phase: 16 of 16 (Hosted Demo Safety & Documentation)
 Plan: Not started
-Status: Ready to plan
-Last activity: 2026-10-02 — Phase 16 complete
+Status: Phase 16 shipped — PR #38
+Last activity: 2026-10-04
 Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics

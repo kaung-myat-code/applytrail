@@ -1,19 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v2.1
-milestone_name: Protect and Clearly Label the Hosted Demo
-current_phase: 16
-current_phase_name: Hosted Demo Safety & Documentation
-status: "Post-audit: 5 questions answered — next milestone ready to scope"
-stopped_at: 5 prioritization questions answered (2026-10-05); proceeding to /gsd-new-milestone
-last_updated: "2026-10-05T14:14:12.000Z"
+milestone: v2.2
+milestone_name: Honest Output & Demo Path
+status: planning
+last_updated: "2026-10-05T15:11:03.833Z"
 last_activity: 2026-10-05
 progress:
-  total_phases: 1
-  completed_phases: 1
-  total_plans: 1
-  completed_plans: 1
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -27,11 +24,10 @@ See: .planning/PROJECT.md (updated 2026-10-02)
 
 ## Current Position
 
-Phase: 16 of 16 (Hosted Demo Safety & Documentation) — SHIPPED (PR #38)
-Plan: Complete
-Status: Post-audit: 5 questions answered — next milestone ready to scope
-Last activity: 2026-10-05
-Progress: [██████████] 100% (milestone v2.1)
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-10-05 — Milestone v2.2 started
 
 ## Performance Metrics
 
@@ -85,3 +81,7 @@ Scope adjustments from the answers:
 Last session: 2026-10-05T14:14:12.000Z
 Stopped at: 5 prioritization questions answered; proceeding to /gsd-new-milestone
 Resume file: .planning/.continue-here.md (full audit deliverable retained for milestone scoping)
+
+## Operator Next Steps
+
+- Start the next milestone with /gsd-new-milestone

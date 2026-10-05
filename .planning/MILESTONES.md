@@ -1,5 +1,15 @@
 # Milestones
 
+## v2.1 Protect and Clearly Label the Hosted Demo (Shipped: 2026-10-05)
+
+**Phases completed:** 1 phases, 1 plans, 2 tasks
+
+**Key accomplishments:**
+
+- An unconditional App-shell warning and accurate runtime/provider documentation now make the hosted demo's shared, disposable, and privacy-sensitive boundary explicit.
+
+---
+
 ## v2.0 Resume Tailoring Flow (Shipped: 2026-07-26)
 
 **Phases completed:** 8 phases, 22 plans, 46 tasks

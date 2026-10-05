@@ -15,6 +15,15 @@ End-to-end job application workflow in a web UI — from resume to cover letter 
 **Deployment:** Render free tier, auto-deploy from main branch
 **Status:** v1.0, v1.1, and v2.0 all shipped. Resume library, provider-agnostic match analysis (heuristic + Gemini/OpenRouter/Groq), section-by-section suggestions, tailored resume generation with a hardened patch-application engine, and application pre-fill/export are all live in production. No milestone currently in progress — awaiting `/gsd-new-milestone`.
 
+## Current Milestone: v2.1 Protect and Clearly Label the Hosted Demo
+
+**Goal:** Make the unauthenticated, shared, disposable nature of the hosted Render demo unmistakable without adding authentication or changing the local-first application architecture.
+
+**Target features:**
+- Add an always-visible hosted-demo warning in the client shell explaining shared access, no privacy guarantees, and disposable data
+- Align README and AI-provider documentation with the actual runtime versions, environment loading behavior, local-versus-hosted data behavior, and third-party content processing
+- Add focused client tests and validate lint, tests, and the production build
+
 <details>
 <summary>Previous milestone context</summary>
 
@@ -75,7 +84,10 @@ Not yet scoped. Run `/gsd-new-milestone` to define the next milestone's goal and
 
 ### Active
 
-(None — awaiting next milestone scope via `/gsd-new-milestone`)
+- [ ] **DEMO-01**: Users see a clear hosted-demo safety warning in the application shell
+- [ ] **DOCS-01**: README accurately documents hosted-demo risks, local data behavior, runtime versions, and environment setup
+- [ ] **DOCS-02**: AI-provider documentation explains that optional providers may receive resume and job-posting content
+- [ ] **TEST-01**: Automated client coverage verifies the warning content and existing behavior remains valid
 
 ### Out of Scope
 
@@ -93,8 +105,8 @@ Not yet scoped. Run `/gsd-new-milestone` to define the next milestone's goal and
 
 ## Tech Stack
 
-- Frontend: React 18 + React Router 6 (SPA)
-- Backend: Express 4 (Node.js API)
+- Frontend: React 19 + React Router 7 (SPA)
+- Backend: Express 5 (Node.js API)
 - Storage: JSON files (applications.json, resume.json, job_postings.json)
 - Build: Vite (frontend), npm scripts (backend)
 - Deployment: Render free tier
@@ -159,4 +171,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-26 after v2.0 milestone*
+*Last updated: 2026-10-02 after v2.1 milestone kickoff*

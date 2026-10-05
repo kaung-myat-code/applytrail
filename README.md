@@ -4,8 +4,8 @@
 
 <p align="center">
   <a href="https://github.com/kaung-myat-code/applytrail/actions/workflows/ci.yml"><img src="https://github.com/kaung-myat-code/applytrail/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
-  <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white" alt="React 18"></a>
-  <a href="https://expressjs.com/"><img src="https://img.shields.io/badge/Express-4-000000?logo=express&logoColor=white" alt="Express 4"></a>
+  <a href="https://react.dev/"><img src="https://img.shields.io/badge/React-19.2.8-61DAFB?logo=react&logoColor=white" alt="React 19.2.8"></a>
+  <a href="https://expressjs.com/"><img src="https://img.shields.io/badge/Express-5.2.1-000000?logo=express&logoColor=white" alt="Express 5.2.1"></a>
   <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-20.19+-339933?logo=node.js&logoColor=white" alt="Node.js 20.19+"></a>
   <a href="https://render.com/"><img src="https://img.shields.io/badge/Deploy-Render-46E3B7?logo=render&logoColor=white" alt="Deploy on Render"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="MIT License"></a>
@@ -15,13 +15,15 @@
 
 <br>
 
+> **Live demo warning:** The hosted demo is unauthenticated, shared, writable, and intended for demonstration purposes only. Other visitors may see or modify data submitted there, hosted data may be reset or lost at any time, and no durable storage or privacy is promised. Do not enter real resumes, contact information, credentials, secrets, or other private job-search data.
+
 <table>
 <tr>
 <td width="34%" valign="top">
 
 ### Every application has a trail
 
-ApplyTrail is a personal job-search workspace that keeps a library of resume versions on your own disk. Analyze any resume against a pasted job posting to get a match report — a compatibility score, strengths, gaps, and matched/missing keywords. Review the suggested improvements section by section, approve the ones you want, and generate a tailored resume as a new version without touching the original. Then track every application you send and see at a glance which ones have gone quiet for 10+ days — all as plain JSON files, no database required.
+ApplyTrail is a personal job-search workspace that keeps a library of resume versions on your own disk when run locally. Analyze any resume against a pasted job posting to get a match report — a compatibility score, strengths, gaps, and matched/missing keywords. Review the suggested improvements section by section, approve the ones you want, and generate a tailored resume as a new version without touching the original. Then track every application you send and see at a glance which ones have gone quiet for 10+ days — all as plain JSON files, no database required.
 
 No login. No job-board scraping. No cloud account required to start.
 
@@ -82,6 +84,10 @@ I was tired of tracking job applications in a spreadsheet and rewriting the same
 
 Cover letter and analysis generation default to a plain keyword heuristic — no API key, no network call, fully inspectable. Swap in a real AI provider any time; see [AI Analysis Providers](#ai-analysis-providers) below.
 
+### Local and hosted data
+
+Local development stores resumes, job postings, applications, and generated files in JSON files on your machine. The hosted Render demo uses the same writable JSON workflow, but its data is shared and disposable: redeploys or resets can remove it, and it is not account-isolated or durable storage.
+
 ---
 
 ## Getting started
@@ -97,6 +103,8 @@ npm run dev
 
 * Frontend: http://localhost:5173
 * API: http://localhost:3000
+
+The root development command starts the server with `cd server && node --env-file=.env index.js`, so local provider variables belong in `server/.env`.
 
 Demo data is seeded automatically on first launch, so there's something to look at immediately.
 
@@ -126,8 +134,8 @@ Full setup and fallback order: [AI_PROVIDERS.md](AI_PROVIDERS.md)
 
 | Layer | Technology |
 |-------|------------|
-| Frontend | React 18, Vite, React Router |
-| Backend | Express 4, Node.js |
+| Frontend | React 19.2.8, Vite 6.0.0, React Router 7.18.1 |
+| Backend | Express 5.2.1, Node.js >=20.19.0 |
 | Storage | JSON files on disk |
 | Styling | CSS Modules |
 | Deployment | Render free tier |
@@ -211,6 +219,7 @@ Environment variables:
 * `NODE_ENV=production` — enables helmet, compression, and static file serving (set in render.yaml)
 * `PORT` — auto-set by Render
 * `VITE_GOATCOUNTER_SITE` — your GoatCounter site code; enables privacy-friendly pageview analytics in production. Unset it locally to avoid tracking during development. On Render this is set as a service environment variable (build-time, since Vite inlines `VITE_*` vars at build).
+* Render uses Node 22 through the `NODE_VERSION` setting in `render.yaml`.
 
 Data resets on each redeploy (acceptable for a portfolio demo).
 

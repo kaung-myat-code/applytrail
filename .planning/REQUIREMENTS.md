@@ -88,22 +88,47 @@ v2.2 makes the hosted demo a trustworthy portfolio artifact for full-stack hirin
 
 ## Traceability
 
-Which phases cover which requirements. Updated during roadmap creation.
+Which phases cover which requirements. Updated during roadmap creation (2026-10-06).
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| OUT-01..OUT-06 | — | Pending |
-| PATH-01..PATH-08 | — | Pending |
-| FREEZE-01..FREEZE-04 | — | Pending |
-| COLD-01..COLD-02 | — | Pending |
-| README-01..README-04 | — | Pending |
-| REL-01..REL-07 | — | Pending |
+| OUT-01 | Phase 17 | Pending |
+| OUT-02 | Phase 17 | Pending |
+| OUT-03 | Phase 17 | Pending |
+| OUT-04 | Phase 17 | Pending |
+| OUT-05 | Phase 17 | Pending |
+| OUT-06 | Phase 17 | Pending |
+| PATH-01 | Phase 18 | Pending |
+| PATH-02 | Phase 18 | Pending |
+| PATH-03 | Phase 18 | Pending |
+| PATH-04 | Phase 18 | Pending |
+| PATH-05 | Phase 18 | Pending |
+| PATH-06 | Phase 18 | Pending |
+| PATH-07 | Phase 18 | Pending |
+| PATH-08 | Phase 18 | Pending |
+| FREEZE-01 | Phase 19 | Pending |
+| FREEZE-02 | Phase 19 | Pending |
+| FREEZE-03 | Phase 19 | Pending |
+| FREEZE-04 | Phase 19 | Pending |
+| COLD-01 | Phase 19 | Pending |
+| COLD-02 | Phase 19 | Pending |
+| REL-01 | Phase 20 | Pending |
+| REL-02 | Phase 20 | Pending |
+| REL-03 | Phase 20 | Pending |
+| REL-04 | Phase 20 | Pending |
+| REL-05 | Phase 20 | Pending |
+| REL-06 | Phase 20 | Pending |
+| REL-07 | Phase 20 | Pending |
+| README-01 | Phase 21 | Pending |
+| README-02 | Phase 21 | Pending |
+| README-03 | Phase 21 | Pending |
+| README-04 | Phase 21 | Pending |
 
 **Coverage:**
 - v2.2 requirements: 31 total
-- Mapped to phases: 0
-- Unmapped: 31 (roadmap pending)
+- Mapped to phases: 31
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-10-05*
-*Last updated: 2026-10-05 after user approval (roadmap pending — paused pre-roadmapper)*
+*Last updated: 2026-10-06 after roadmap creation (Phases 17-21; 31/31 mapped)*

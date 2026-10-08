@@ -2,14 +2,15 @@
 
 ## Overview
 
-ApplyTrail is a deployed web application for managing job applications and optimizing resumes. v1.0 delivered the core workflow, v1.1 prepared and deployed the public demo, and v2.0 added the end-to-end resume tailoring flow. Milestone v2.1 makes the unauthenticated, shared, disposable nature of the hosted demo unmistakable while keeping the local-first architecture, API contracts, persistence model, and deployment behavior unchanged.
+ApplyTrail is a deployed web application for managing job applications and optimizing resumes. v1.0 delivered the core workflow, v1.1 prepared and deployed the public demo, v2.0 added the end-to-end resume tailoring flow, and v2.1 labeled the hosted demo's safety boundaries. Milestone v2.2 makes the hosted demo a trustworthy portfolio artifact for full-stack hiring managers: honest analysis output (no fabricated experience), a demo path that reaches the flagship tailoring feature in two clicks, disposable demo data with honest cold-start surfacing, critical-path reliability, and a README that leads with the patch engine, fallback chain, and tests.
 
 ## Milestones
 
 - [x] **v1.0 MVP** - Phases 1-4 (shipped 2026-06-26)
 - [x] **v1.1 Release Polish** - Phases 5-8 (shipped 2026-06-27)
 - [x] **v2.0 Resume Tailoring Flow** - Phases 9-15 (shipped 2026-07-26)
-- [x] **v2.1 Protect and Clearly Label the Hosted Demo** - Phase 16 (planned) (completed 2026-10-02)
+- [x] **v2.1 Protect and Clearly Label the Hosted Demo** - Phase 16 (shipped 2026-10-02)
+- [ ] **v2.2 Honest Output & Demo Path** - Phases 17-21 (planned)
 
 ## Phases
 
@@ -53,34 +54,105 @@ Archive: [v2.0 Roadmap](milestones/v2.0-ROADMAP.md) | [v2.0 Requirements](milest
 
 </details>
 
-### v2.1 Protect and Clearly Label the Hosted Demo (Planned)
+<details>
+<summary>v2.1 Protect and Clearly Label the Hosted Demo (Phase 16) - SHIPPED 2026-10-02</summary>
 
-**Milestone Goal:** Visitors understand the hosted demo's shared, unauthenticated, writable, disposable, and third-party-data boundaries before using it, while local workflows and existing runtime contracts remain unchanged.
+- [x] **Phase 16: Hosted Demo Safety & Documentation** - Add the always-visible client warning, align safety/setup/provider documentation, and verify the client and production checks
 
-- [ ] **Phase 16: Hosted Demo Safety & Documentation** - Add the always-visible client warning, align safety/setup/provider documentation, and verify the client and production checks
+Archive: [v2.1 Roadmap](milestones/v2.1-ROADMAP.md) | [v2.1 Requirements](milestones/v2.1-REQUIREMENTS.md) | [v2.1 phases](milestones/v2.1-phases/)
+
+</details>
+
+### v2.2 Honest Output & Demo Path (Planned)
+
+**Milestone Goal:** Hiring managers who open the hosted demo reach the flagship tailoring feature immediately and see honest, well-targeted resume output — with the patch engine and fallback chain standing up to full-stack scrutiny.
+
+- [ ] **Phase 17: Honest Analysis Output** - Remove fabricated suggestions, add gap notes and AI guardrails, fix score normalization and patch targeting, and verify via an eval set
+- [ ] **Phase 18: Demo Path UX** - Analyze-first CTAs, Dashboard quick action, dead-end fixes, and provider visibility matched to the hosted demo
+- [ ] **Phase 19: Hosted Demo Freeze & Cold Start** - Seeded sample data with scheduled reset, a labeled pre-computed AI example, updated warning text, and honest wake-up surfacing
+- [ ] **Phase 20: Reliability & Repo Hygiene** - Write-route validation, critical-path tests, fresh-clone setup, and clean repo state
+- [ ] **Phase 21: README & Portfolio Pass** - Full-stack headline, demo media, AI-honesty section, and cold-start note
 
 ## Phase Details
 
-### Phase 16: Hosted Demo Safety & Documentation
+### Phase 17: Honest Analysis Output
 
-**Goal**: Users can recognize the hosted demo's safety boundaries from every client route, and developers can configure and describe the project accurately without changes to authentication, APIs, persistence, or deployment behavior.
-**Depends on**: Phase 15
-**Requirements**: DEMO-01, DEMO-02, DEMO-03, DOCS-01, DOCS-02, DOCS-03, DOCS-04, DOCS-05, TEST-01, TEST-02
+**Goal**: Analysis and tailoring output never fabricates experience — every suggestion traces to the user's resume, missing skills surface as honest gap notes, and the behavior is verifiable via a committed eval set.
+**Depends on**: Phase 16
+**Requirements**: OUT-01, OUT-02, OUT-03, OUT-04, OUT-05, OUT-06
 **Success Criteria** (what must be TRUE):
 
-  1. A visitor sees an always-visible client-shell warning on every route that identifies the hosted demo as unauthenticated, shared, writable, disposable, and for demonstration purposes only.
-  2. The warning clearly tells visitors not to submit real resumes, contact information, credentials, secrets, or other private job-search data, without implying privacy, account isolation, or durable hosted storage.
-  3. The README and AI-provider documentation accurately distinguish local JSON-file behavior from disposable hosted behavior, identify the actual runtime versions and development environment file, and disclose that optional AI providers may receive resume and job-posting content while heuristic mode remains local.
-  4. Any `render.yaml` change, if needed, is limited to accurately supporting the warning; service type, build commands, persistence settings, and environment handling remain unchanged.
-  5. Focused client tests verify the warning's required guidance, existing client tests remain valid, and lint, the full project test command, and the production build pass without API or server/persistence changes.
+  1. Given a resume missing a skill the posting asks for, the Analysis page shows an honest gap note ("not on your resume; add a bullet only if you have real experience") instead of a generated suggestion claiming that skill.
+  2. Heuristic suggestions for experience/project sections only rephrase bullets already present in the resume — no fabrication templates remain in the output.
+  3. When an AI provider is configured, its prompt guardrails forbid inventing skills, employers, metrics, dates, or experience not in the resume JSON, and AI scores render on a 0–100 scale (a raw score of 1 displays as 1, not 100).
+  4. An add-type patch with `target_entry` attaches to the named experience/project entry; when the name doesn't match, it falls back to the last entry with a visible skip reason.
+  5. Running the committed eval script over 5+ resume×posting pairs produces a markdown report showing zero fabricated claims, with AI runs included when a provider key is present.
 
-**Plans**: 1 plan
-
-Plans:
-
-- [x] 16-01-PLAN.md — Add the always-visible hosted-demo warning and align safety, setup, and AI-provider documentation
+**Plans**: TBD
 
 **UI hint**: yes
+
+### Phase 18: Demo Path UX
+
+**Goal**: A first-time visitor reaches the flagship tailoring feature immediately, dead ends are fixed, and provider options match actual availability — AI hidden on the hosted demo.
+**Depends on**: Phase 17
+**Requirements**: PATH-01, PATH-02, PATH-03, PATH-04, PATH-05, PATH-06, PATH-07, PATH-08
+**Success Criteria** (what must be TRUE):
+
+  1. After saving a job posting, the primary CTA is "Analyze match" and the cover-letter path is secondary.
+  2. A first-time visitor reaches Analysis within 2 clicks from the Dashboard via the new "Tailor resume" quick action.
+  3. From ReviewSuggestions, "Back to Analysis" rehydrates the prior report via `?resume=&posting=` search params without re-running analysis.
+  4. Job-posting dropdowns disambiguate duplicates with date and snippet labels, and "Create Application" from Resume Library opens a posting picker instead of attaching the most-recent posting.
+  5. The Analysis provider dropdown renders from `/api/providers` — AI options are hidden on the hosted demo and no env-var names appear anywhere in the UI; the PATH-01 and PATH-02 flows are verified via browser check at 375px.
+
+**Plans**: TBD
+
+**UI hint**: yes
+
+### Phase 19: Hosted Demo Freeze & Cold Start
+
+**Goal**: The hosted demo is a trustworthy disposable artifact — seeded sample data that resets on a schedule, a labeled pre-computed AI example, accurate warning text, and cold start surfaced honestly.
+**Depends on**: Phase 18
+**Requirements**: FREEZE-01, FREEZE-02, FREEZE-03, FREEZE-04, COLD-01, COLD-02
+**Success Criteria** (what must be TRUE):
+
+  1. Opening the hosted demo with empty data shows a sample resume and 2–3 sample job postings seeded on boot (hosted/demo mode only).
+  2. Saved data on the hosted demo resets to the seeded state on a schedule — visitors can try the full flow, but nothing they save is durable.
+  3. The demo includes one pre-computed AI analysis example, clearly labeled as generated locally rather than by the hosted heuristic.
+  4. The Phase 16 hosted-demo warning text accurately describes the new reset/disposable behavior.
+  5. First load against a cold (woken) instance shows a friendly wake-up state that polls `/api/health` until the server responds; an external uptime pinger is set up and its setup is documented.
+
+**Plans**: TBD
+
+**UI hint**: yes
+
+### Phase 20: Reliability & Repo Hygiene
+
+**Goal**: Critical paths are validated and tested, a fresh clone runs cleanly on Node 20.19, and repo state is clean for reviewers.
+**Depends on**: Phase 19
+**Requirements**: REL-01, REL-02, REL-03, REL-04, REL-05, REL-06, REL-07
+**Success Criteria** (what must be TRUE):
+
+  1. Invalid write requests (missing or oversized string fields on job-postings, applications, and resume-library routes) return 400 with an error message instead of writing garbage to disk.
+  2. `npm test` covers the AI→heuristic fallback chain (mock provider failure → heuristic succeeds), the draft 24h cleanup sweep, resume-library CRUD routes, and one ReviewSuggestions accept → generate → draft-id flow.
+  3. A fresh clone runs on Node 20.19 with no manual file creation, and the exact setup commands are documented.
+  4. `drafts/` is gitignored, `slides.pdf` is moved out of the repo root, empty directories are removed — `git status` is clean on a fresh clone.
+
+**Plans**: TBD
+
+### Phase 21: README & Portfolio Pass
+
+**Goal**: The README leads with the full-stack story — patch engine, fallback chain, tests/CI — and sets accurate expectations for demo visitors.
+**Depends on**: Phase 20
+**Requirements**: README-01, README-02, README-03, README-04
+**Success Criteria** (what must be TRUE):
+
+  1. The README headline targets full-stack roles, with the patch engine, fallback chain, and tests/CI as the selling points.
+  2. A demo GIF or video sits at the top of the README.
+  3. An AI-honesty section states: heuristic mode is local; optional AI providers may receive resume and job-posting content; no keys on the hosted demo; fabrication is never generated.
+  4. The README notes cold-start behavior and what visitors should expect on first load.
+
+**Plans**: TBD
 
 ## Progress
 
@@ -89,4 +161,9 @@ Plans:
 | 1-4 | v1.0 | Complete | Complete | 2026-06-26 |
 | 5-8 | v1.1 | Complete | Complete | 2026-06-27 |
 | 9-15 | v2.0 | Complete | Complete | 2026-07-26 |
-| 16. Hosted Demo Safety & Documentation | v2.1 | 1/1 | Complete    | 2026-10-02 |
+| 16. Hosted Demo Safety & Documentation | v2.1 | 1/1 | Complete | 2026-10-02 |
+| 17. Honest Analysis Output | v2.2 | 0/0 | Not started | - |
+| 18. Demo Path UX | v2.2 | 0/0 | Not started | - |
+| 19. Hosted Demo Freeze & Cold Start | v2.2 | 0/0 | Not started | - |
+| 20. Reliability & Repo Hygiene | v2.2 | 0/0 | Not started | - |
+| 21. README & Portfolio Pass | v2.2 | 0/0 | Not started | - |

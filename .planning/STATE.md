@@ -4,10 +4,10 @@ milestone: v2.2
 milestone_name: Honest Output & Demo Path
 current_phase_name: "Phase 17: Honest Analysis Output (not started)"
 status: planning
-stopped_at: roadmap written; awaiting approval (2026-10-06)
-last_updated: "2026-10-06T12:00:00.000Z"
-last_activity: 2026-10-06
-last_activity_desc: v2.2 roadmap created (Phases 17-21)
+stopped_at: roadmap approved; ready to plan Phase 17
+last_updated: "2026-10-09T00:00:00.000Z"
+last_activity: 2026-10-09
+last_activity_desc: v2.2 roadmap approved and committed
 progress:
   total_phases: 5
   completed_phases: 0
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-10-05)
 Phase: Phase 17: Honest Analysis Output (not started)
 Plan: —
 Status: Roadmap complete — ready to plan Phase 17
-Last activity: 2026-10-06 — v2.2 roadmap created (Phases 17-21)
+Last activity: 2026-10-09 — v2.2 roadmap approved and committed (3bad63f)
 
 ## Performance Metrics
 
@@ -57,8 +57,7 @@ Last activity: 2026-10-06 — v2.2 roadmap created (Phases 17-21)
 
 ### Pending Todos
 
-- User approval of roadmap draft (Phases 17-21)
-- After approval: `/gsd-plan-phase 17`
+- After Phase 17 plan approval: `/gsd-execute-phase 17`
 
 ### Blockers/Concerns
 
@@ -79,11 +78,10 @@ Audit Q&A retained in `.planning/.continue-here.md` (full audit: verdict 6/10, G
 
 ## Session Continuity
 
-Last session: 2026-10-06
-Stopped at: v2.2 roadmap written (Phases 17-21); files on disk; awaiting user approval; orchestrator commits after approval
+Last session: 2026-10-09
+Stopped at: v2.2 roadmap approved and committed (3bad63f); Phase 17 next
 Resume file: .planning/ROADMAP.md (v2.2 section), .planning/REQUIREMENTS.md (traceability filled)
 
 ## Operator Next Steps
 
-- Review the v2.2 roadmap draft (ROADMAP.md Phases 17-21)
-- After approval: `/gsd-plan-phase 17`
+- Discuss or plan Phase 17: `/gsd-discuss-phase 17` or `/gsd-plan-phase 17`

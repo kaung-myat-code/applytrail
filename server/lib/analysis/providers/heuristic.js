@@ -181,7 +181,9 @@ function analyzeResume(resume, jobPosting) {
   }
 
   if (missingKeywords.length > 0) {
-    gaps.push(`${missingKeywords.length} posting keywords missing from resume`)
+    for (const kw of missingKeywords) {
+      gaps.push(`${displayCase(kw)}: not on your resume; add a bullet only if you have real experience.`)
+    }
   }
 
   // Summary sentence

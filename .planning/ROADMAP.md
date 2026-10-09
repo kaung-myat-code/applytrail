@@ -89,11 +89,11 @@ Archive: [v2.1 Roadmap](milestones/v2.1-ROADMAP.md) | [v2.1 Requirements](milest
   5. Running the committed eval script over 5+ resume×posting pairs produces a markdown report showing zero fabricated claims, with AI runs included when a provider key is present.
 
 **Plans**:
-**Wave 1**
+3/5 plans executed
 
-- [ ] 17-01-PLAN.md — Heuristic fabrication removal + honest gap notes (OUT-01, OUT-02)
-- [ ] 17-02-PLAN.md — AI prompt guardrails, score normalization fix, target_entry schemas (OUT-03, OUT-05, OUT-06)
-- [ ] 17-03-PLAN.md — target_entry patch targeting + visible fallback skip (OUT-05)
+- [x] 17-01-PLAN.md — Heuristic fabrication removal + honest gap notes (OUT-01, OUT-02)
+- [x] 17-02-PLAN.md — AI prompt guardrails, score normalization fix, target_entry schemas (OUT-03, OUT-05, OUT-06)
+- [x] 17-03-PLAN.md — target_entry patch targeting + visible fallback skip (OUT-05)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -172,7 +172,7 @@ Archive: [v2.1 Roadmap](milestones/v2.1-ROADMAP.md) | [v2.1 Requirements](milest
 | 5-8 | v1.1 | Complete | Complete | 2026-06-27 |
 | 9-15 | v2.0 | Complete | Complete | 2026-07-26 |
 | 16. Hosted Demo Safety & Documentation | v2.1 | 1/1 | Complete | 2026-10-02 |
-| 17. Honest Analysis Output | v2.2 | 0/5 | Planned | - |
+| 17. Honest Analysis Output | v2.2 | 3/5 | In Progress|  |
 | 18. Demo Path UX | v2.2 | 0/0 | Not started | - |
 | 19. Hosted Demo Freeze & Cold Start | v2.2 | 0/0 | Not started | - |
 | 20. Reliability & Repo Hygiene | v2.2 | 0/0 | Not started | - |

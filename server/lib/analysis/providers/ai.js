@@ -63,6 +63,8 @@ const rawSuggestionSchema = z.object({
   current: z.string().nullable(),
   suggested: z.string(),
   reason: z.string(),
+  // OUT-05: company (experience) or name (projects) the add should attach to
+  target_entry: z.string().nullable().optional(),
 })
 
 // --- Model helper ---
@@ -174,6 +176,10 @@ async function analyzeResume(resume, jobPosting, provider = 'gemini') {
       'IMPORTANT FORMAT: matchRate must be a decimal between 0 and 1 (e.g. 0.85, not 85).',
       'score must be a number between 0 and 100.',
       '',
+      'Never invent, assume, or embellish skills, employers, job titles, metrics, dates, or experience',
+      'not explicitly present in the resume JSON. Every claim must trace to resume content.',
+      'If a required skill is absent from the resume, reflect it as a gap — do not generate a claim.',
+      '',
       '## Resume',
       JSON.stringify(resume, null, 2),
       '',
@@ -222,6 +228,13 @@ async function generateSuggestions(resume, report, provider = 'gemini') {
       'skills array entry, or an exact bullet string from experience/projects). Do not paraphrase,',
       'reword, summarize, or truncate it with an ellipsis, and do not add or remove punctuation.',
       "If you cannot find an exact string to reference, use type 'add' instead of 'modify'.",
+      '',
+      'Never invent, assume, or embellish skills, employers, job titles, metrics, dates, or experience',
+      'not explicitly present in the resume JSON. Every claim must trace to resume content.',
+      'If a required skill is absent from the resume, reflect it as a gap — do not generate a claim.',
+      '',
+      "For 'add' suggestions targeting a specific experience or projects entry, set target_entry",
+      "to that entry's company (experience) or name (projects); omit it otherwise.",
       '',
       '## Resume',
       JSON.stringify(resume, null, 2),

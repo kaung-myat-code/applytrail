@@ -88,7 +88,12 @@ Archive: [v2.1 Roadmap](milestones/v2.1-ROADMAP.md) | [v2.1 Requirements](milest
   4. An add-type patch with `target_entry` attaches to the named experience/project entry; when the name doesn't match, it falls back to the last entry with a visible skip reason.
   5. Running the committed eval script over 5+ resume×posting pairs produces a markdown report showing zero fabricated claims, with AI runs included when a provider key is present.
 
-**Plans**: TBD
+**Plans**:
+- [ ] 17-01-PLAN.md — Heuristic fabrication removal + honest gap notes (OUT-01, OUT-02)
+- [ ] 17-02-PLAN.md — AI prompt guardrails, score normalization fix, target_entry schemas (OUT-03, OUT-05, OUT-06)
+- [ ] 17-03-PLAN.md — target_entry patch targeting + visible fallback skip (OUT-05)
+- [ ] 17-04-PLAN.md — Client skip-reason mirror + per-reason skip copy (OUT-05)
+- [ ] 17-05-PLAN.md — Eval set + plain-Node eval runner (OUT-04)
 
 **UI hint**: yes
 
@@ -162,7 +167,7 @@ Archive: [v2.1 Roadmap](milestones/v2.1-ROADMAP.md) | [v2.1 Requirements](milest
 | 5-8 | v1.1 | Complete | Complete | 2026-06-27 |
 | 9-15 | v2.0 | Complete | Complete | 2026-07-26 |
 | 16. Hosted Demo Safety & Documentation | v2.1 | 1/1 | Complete | 2026-10-02 |
-| 17. Honest Analysis Output | v2.2 | 0/0 | Not started | - |
+| 17. Honest Analysis Output | v2.2 | 0/5 | Planned | - |
 | 18. Demo Path UX | v2.2 | 0/0 | Not started | - |
 | 19. Hosted Demo Freeze & Cold Start | v2.2 | 0/0 | Not started | - |
 | 20. Reliability & Repo Hygiene | v2.2 | 0/0 | Not started | - |

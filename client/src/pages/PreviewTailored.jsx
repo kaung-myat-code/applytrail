@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate, useSearchParams, useLocation, Link } from 'react-router-dom'
 import styles from './PreviewTailored.module.css'
 import CreateApplicationModal from '../components/CreateApplicationModal.jsx'
-import { isDefectSkip, isKnownReason } from '../lib/skipReasons.js'
+import { SKIP_REASON, isDefectSkip, isKnownReason } from '../lib/skipReasons.js'
 
 const SECTION_LABELS = { summary: 'Summary', skills: 'Skills', experience: 'Experience', projects: 'Projects' }
 const TYPE_LABELS = { add: 'add', modify: 'update', remove: 'remove' }
@@ -168,7 +168,9 @@ function PreviewTailored() {
           <ul>
             {staleSkips.map(s => (
               <li key={s.id}>
-                {SECTION_LABELS[s.section] || s.section} ({TYPE_LABELS[s.type] || s.type}) — the resume content it targeted no longer matches exactly.
+                {SECTION_LABELS[s.section] || s.section} ({TYPE_LABELS[s.type] || s.type}) — {s.reason === SKIP_REASON.TARGET_ENTRY_NOT_FOUND
+                  ? <>no entry named "{s.target_entry}" was found — this was attached to your most recent {s.section} entry instead.</>
+                  : 'the resume content it targeted no longer matches exactly.'}
               </li>
             ))}
           </ul>

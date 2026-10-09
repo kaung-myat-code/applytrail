@@ -10,6 +10,7 @@ export const SKIP_REASON = {
   NOT_FOUND: 'not-found',
   CURRENT_MISMATCH: 'current-mismatch',
   UNSUPPORTED_COMBINATION: 'unsupported-combination',
+  TARGET_ENTRY_NOT_FOUND: 'target-entry-not-found',
 }
 
 const KNOWN_REASONS = new Set(Object.values(SKIP_REASON))

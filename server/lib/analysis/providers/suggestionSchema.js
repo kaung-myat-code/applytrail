@@ -21,6 +21,8 @@ const suggestionSchema = z.object({
   current: z.string().nullable(),
   suggested: z.string(),
   reason: z.string(),
+  // OUT-05: company (experience) or name (projects) the add should attach to
+  target_entry: z.string().nullable().optional(),
 })
 
 module.exports = { suggestionSchema }

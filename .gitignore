@@ -31,6 +31,9 @@ job_postings.json
 applications.json
 resume.json
 
+# eval fixtures are committed test data (negate the generic resume.json ignore above)
+!evals/fixtures/*/resume.json
+
 
 # GSD local installation artifacts
 .claude/.gsd-profile

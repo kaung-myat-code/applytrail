@@ -1,0 +1,6 @@
+{
+  "id": "eval-pair-03",
+  "company": "Harbor Analytics",
+  "role": "Data Engineer",
+  "posting_text": "Harbor Analytics is looking for a Data Engineer fluent in Python, pandas, and SQL. You will design warehouse models in PostgreSQL, maintain orchestrated pipelines with Airflow, and process streaming events with Kafka. Candidates should be comfortable containerizing pipeline jobs with Docker in a Git-based workflow."
+}

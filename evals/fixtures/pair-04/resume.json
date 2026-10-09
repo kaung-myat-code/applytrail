@@ -1,0 +1,48 @@
+{
+  "name": "Sam Okafor",
+  "contact": {
+    "email": "sam.okafor@example.com",
+    "github": "github.com/samokafor",
+    "location": "Denver, CO"
+  },
+  "summary": "Platform engineer focused on container infrastructure, infrastructure-as-code, and making deploys boring through automation.",
+  "experience": [
+    {
+      "company": "Summit Infrastructure",
+      "role": "Platform Engineer",
+      "period": "Apr 2022 - Present",
+      "bullets": [
+        "Operate Kubernetes clusters on AWS with zero-downtime rolling deploys.",
+        "Wrote Terraform modules for networking and service accounts adopted by five teams.",
+        "Containerized legacy services with Docker and migrated them onto the shared cluster."
+      ]
+    },
+    {
+      "company": "Beacon Hosting",
+      "role": "Systems Administrator",
+      "period": "Aug 2019 - Mar 2022",
+      "bullets": [
+        "Managed AWS accounts, IAM policies, and backup automation.",
+        "Built Python tooling for fleet inventory and patch reporting."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Cluster Bootstrap",
+      "description": "Terraform and shell scripts that spin up a demo Kubernetes cluster.",
+      "bullets": [
+        "Terraform provisions AWS resources; Docker images ship with the demo workloads.",
+        "Documented the Git-based promotion flow for environment changes."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.S. Information Technology",
+      "school": "Rocky Mountain College",
+      "year": "2019"
+    }
+  ],
+  "skills": ["docker", "kubernetes", "terraform", "aws", "python", "git", "linux"]
+}

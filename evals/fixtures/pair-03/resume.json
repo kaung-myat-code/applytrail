@@ -1,0 +1,48 @@
+{
+  "name": "Priya Shah",
+  "contact": {
+    "email": "priya.shah@example.com",
+    "github": "github.com/priyashah",
+    "location": "Chicago, IL (remote preferred)"
+  },
+  "summary": "Data engineer with a Python-first toolkit, building reliable pipelines and analytical datasets for product and growth teams.",
+  "experience": [
+    {
+      "company": "DataWorks Inc",
+      "role": "Data Engineer",
+      "period": "Feb 2023 - Present",
+      "bullets": [
+        "Built batch pipelines in Python using pandas and numpy for nightly metric refreshes.",
+        "Modeled warehouse tables in PostgreSQL and wrote SQL consumed by product dashboards.",
+        "Documented pipeline contracts and on-call runbooks for the analytics team."
+      ]
+    },
+    {
+      "company": "Lakeview Retail",
+      "role": "Analytics Developer",
+      "period": "Jul 2021 - Jan 2023",
+      "bullets": [
+        "Automated weekly Python reports, replacing a manual spreadsheet process.",
+        "Explored cohorts in Jupyter notebooks shared with marketing stakeholders."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Transit ETAs",
+      "description": "A small pipeline that cleans city transit feeds for public analysis.",
+      "bullets": [
+        "Python scripts parse raw feeds into tidy pandas DataFrames.",
+        "Publishes daily snapshots to a PostgreSQL database."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.S. Statistics",
+      "school": "Midwest State University",
+      "year": "2021"
+    }
+  ],
+  "skills": ["python", "pandas", "numpy", "sql", "postgresql", "jupyter", "git"]
+}

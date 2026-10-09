@@ -1,0 +1,48 @@
+{
+  "name": "Jamie Doe",
+  "contact": {
+    "email": "jamie.doe@example.com",
+    "github": "github.com/jamiedoe",
+    "location": "Austin, TX (open to remote)"
+  },
+  "summary": "Backend engineer with five years of experience building APIs in Node and Express, backed by solid JavaScript fundamentals and production PostgreSQL work.",
+  "experience": [
+    {
+      "company": "Acme Systems",
+      "role": "Backend Engineer",
+      "period": "Jan 2023 - Present",
+      "bullets": [
+        "Built REST APIs in Node and Express serving internal dashboards.",
+        "Designed PostgreSQL schemas and wrote complex SQL reporting queries.",
+        "Improved API latency by adding Redis caching to hot endpoints."
+      ]
+    },
+    {
+      "company": "Trailhead Software",
+      "role": "Software Developer",
+      "period": "Jun 2020 - Dec 2022",
+      "bullets": [
+        "Maintained JavaScript services and automated deployment scripts with Git.",
+        "Wrote integration tests and reviewed pull requests for a four-person team."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Job Board CLI",
+      "description": "A command-line tool that indexes job postings into a local database.",
+      "bullets": [
+        "Implemented a Node CLI with Express-backed local API.",
+        "Stored postings in PostgreSQL with full-text search."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.S. Computer Science",
+      "school": "State University",
+      "year": "2020"
+    }
+  ],
+  "skills": ["javascript", "node", "express", "postgresql", "redis", "git"]
+}

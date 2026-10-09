@@ -89,9 +89,14 @@ Archive: [v2.1 Roadmap](milestones/v2.1-ROADMAP.md) | [v2.1 Requirements](milest
   5. Running the committed eval script over 5+ resume×posting pairs produces a markdown report showing zero fabricated claims, with AI runs included when a provider key is present.
 
 **Plans**:
+**Wave 1**
+
 - [ ] 17-01-PLAN.md — Heuristic fabrication removal + honest gap notes (OUT-01, OUT-02)
 - [ ] 17-02-PLAN.md — AI prompt guardrails, score normalization fix, target_entry schemas (OUT-03, OUT-05, OUT-06)
 - [ ] 17-03-PLAN.md — target_entry patch targeting + visible fallback skip (OUT-05)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 17-04-PLAN.md — Client skip-reason mirror + per-reason skip copy (OUT-05)
 - [ ] 17-05-PLAN.md — Eval set + plain-Node eval runner (OUT-04)
 

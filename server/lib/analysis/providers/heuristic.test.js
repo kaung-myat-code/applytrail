@@ -40,44 +40,45 @@ test("summary 'add' suggestion displays 'SQL' correctly-cased, never 'Sql'", () 
   assert.ok(!summaryAdd.suggested.includes('Sql'), `did not expect "Sql" in: ${summaryAdd.suggested}`)
 })
 
-test('experience add suggestion incorporates two distinct missing keywords in one bullet', () => {
+// --- OUT-01: fabrication removed from generateSuggestions ---
+
+test('generateSuggestions emits no experience or projects add suggestions for missing keywords', () => {
   const resume = { summary: 'Existing summary.', skills: [], experience: [], projects: [] }
-  const report = {
-    keywords: {
-      matched: [],
-      missing: ['docker', 'kubernetes'],
-      bonus: [],
-    },
-  }
+  const report = { keywords: { matched: [], missing: ['docker', 'kubernetes'], bonus: [] } }
 
   const suggestions = generateSuggestions(resume, report)
-  const experienceAdds = suggestions.filter(s => s.section === 'experience' && s.type === 'add')
-
-  assert.ok(experienceAdds.length > 0, 'expected at least one experience add suggestion')
-  const multiKeywordBullet = experienceAdds.find(s => s.suggested.includes('Docker') && s.suggested.includes('Kubernetes'))
-  assert.ok(multiKeywordBullet, `expected a bullet mentioning both Docker and Kubernetes, got: ${JSON.stringify(experienceAdds)}`)
+  assert.strictEqual(
+    suggestions.filter(s => s.section === 'experience').length, 0,
+    `expected zero experience suggestions, got: ${JSON.stringify(suggestions)}`
+  )
+  assert.strictEqual(
+    suggestions.filter(s => s.section === 'projects').length, 0,
+    `expected zero projects suggestions, got: ${JSON.stringify(suggestions)}`
+  )
 })
 
-test('experience add bullets use different sentence templates for different missing-keyword sets', () => {
-  const resumeA = { summary: 'Existing summary.', skills: [], experience: [], projects: [] }
-  const reportA = { keywords: { matched: [], missing: ['docker', 'kubernetes'], bonus: [] } }
+test('generateSuggestions never fabricates an "Experienced in" summary modification', () => {
+  const resume = { summary: 'Existing summary.', skills: [], experience: [], projects: [] }
+  const report = { keywords: { matched: [], missing: ['docker', 'kubernetes'], bonus: [] } }
 
-  const resumeB = { summary: 'Existing summary.', skills: [], experience: [], projects: [] }
-  const reportB = { keywords: { matched: [], missing: ['python', 'java'], bonus: [] } }
+  const suggestions = generateSuggestions(resume, report)
+  for (const s of suggestions) {
+    assert.ok(
+      !s.suggested.includes('Experienced in'),
+      `did not expect "Experienced in" in suggestion: ${s.suggested}`
+    )
+  }
+})
 
-  const suggestionsA = generateSuggestions(resumeA, reportA)
-  const suggestionsB = generateSuggestions(resumeB, reportB)
+test('generateSuggestions emits no skills add suggestion for a missing keyword', () => {
+  const resume = { summary: 'Existing summary.', skills: ['JavaScript'], experience: [], projects: [] }
+  const report = { keywords: { matched: ['javascript'], missing: ['docker'], bonus: [] } }
 
-  const bulletA = suggestionsA.find(s => s.section === 'experience' && s.type === 'add')
-  const bulletB = suggestionsB.find(s => s.section === 'experience' && s.type === 'add')
-
-  assert.ok(bulletA && bulletB, 'expected experience add suggestions from both reports')
-
-  // Strip the keyword text so we compare only the surrounding template phrasing.
-  const templateA = bulletA.suggested.replace(/Docker and Kubernetes|Kubernetes and Docker/i, '{kw}')
-  const templateB = bulletB.suggested.replace(/Python and Java|Java and Python/i, '{kw}')
-
-  assert.notStrictEqual(templateA, templateB, `expected different templates, got:\nA: ${templateA}\nB: ${templateB}`)
+  const suggestions = generateSuggestions(resume, report)
+  assert.strictEqual(
+    suggestions.filter(s => s.section === 'skills').length, 0,
+    `expected zero skills suggestions, got: ${JSON.stringify(suggestions)}`
+  )
 })
 
 // --- OUT-02: honest per-keyword gap notes from analyzeResume ---

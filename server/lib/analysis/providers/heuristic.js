@@ -241,16 +241,6 @@ function displayCase(kw) {
 }
 
 /**
- * Deterministically pick one of several phrasing variants based on a seed
- * string, so output stays reproducible/testable while still varying across
- * different missing-keyword sets.
- */
-function pickVariant(variants, seed) {
-  const sum = [...String(seed)].reduce((acc, ch) => acc + ch.charCodeAt(0), 0)
-  return variants[sum % variants.length]
-}
-
-/**
  * Generate per-section improvement suggestions from the match report.
  * @param {object} resume - Resume data object
  * @param {object} report - MatchReport from analyzeResume
@@ -272,116 +262,30 @@ function generateSuggestions(resume, report) {
     return []
   }
 
-  // Track which keywords have been used for experience/project suggestions
-  // to avoid duplicates across sections
-  const usedForExperience = new Set()
-  const usedForProjects = new Set()
-
-  // --- Summary suggestions (modify or add) ---
+  // --- Summary suggestions (add when empty only) ---
+  // OUT-01: do NOT fabricate an "Experienced in <missing keyword>" modification
+  // when a summary already exists. The only honest summary suggestion is to add
+  // one when none exists, built from matched keywords the resume actually has.
   const summary = (resume.summary || '').trim()
-  const topMissingForSummary = missing.slice(0, 3)
 
-  if (topMissingForSummary.length > 0) {
-    if (summary) {
-      // Modify: append keywords to existing summary
-      const kwPhrase = topMissingForSummary.length === 1
-        ? displayCase(topMissingForSummary[0])
-        : topMissingForSummary.slice(0, -1).map(displayCase).join(', ') + ' and ' + displayCase(topMissingForSummary[topMissingForSummary.length - 1])
-      const suggested = summary + (summary.endsWith('.') ? ' ' : '. ') + 'Experienced in ' + kwPhrase + '.'
-      suggestions.push({
-        id: nextId(),
-        section: 'summary',
-        type: 'modify',
-        current: summary,
-        suggested,
-        reason: 'Your summary is missing key technologies mentioned in the job posting.',
-      })
-    } else {
-      // Add: no summary exists
-      const kwPhrase = matched.slice(0, 3).map(displayCase).join(', ')
-      const suggested = kwPhrase
-        ? 'Professional with experience in ' + kwPhrase + '.'
-        : 'Professional with relevant industry experience.'
-      suggestions.push({
-        id: nextId(),
-        section: 'summary',
-        type: 'add',
-        current: null,
-        suggested,
-        reason: 'Your resume has no summary. Adding one helps recruiters quickly understand your profile.',
-      })
-    }
-  }
-
-  // --- Skills suggestions (add) ---
-  const skills = (resume.skills || []).map(s => s.toLowerCase().trim())
-  const missingSkills = missing.filter(kw => {
-    // Only suggest skills not already in the skills list
-    return !skills.some(sk => keywordsMatch(sk, kw))
-  }).slice(0, 5)
-
-  for (const kw of missingSkills) {
+  if (!summary) {
+    const kwPhrase = matched.slice(0, 3).map(displayCase).join(', ')
+    const suggested = kwPhrase
+      ? 'Professional with experience in ' + kwPhrase + '.'
+      : 'Professional with relevant industry experience.'
     suggestions.push({
       id: nextId(),
-      section: 'skills',
+      section: 'summary',
       type: 'add',
       current: null,
-      suggested: displayCase(kw),
-      reason: "'" + displayCase(kw) + "' appears in the job posting but is not in your skills list.",
+      suggested,
+      reason: 'Your resume has no summary. Adding one helps recruiters quickly understand your profile.',
     })
   }
 
-  // --- Experience suggestions (add) ---
-  const EXPERIENCE_TEMPLATES = [
-    kwText => 'Led ' + kwText + ' initiatives that improved project delivery and team productivity.',
-    kwText => 'Drove ' + kwText + ' efforts, partnering across teams to ship measurable improvements.',
-    kwText => 'Applied ' + kwText + ' to streamline workflows and boost team output.',
-  ]
-
-  const topMissingForExp = missing.slice(0, 3)
-  for (let i = 0; i < topMissingForExp.length; i += 2) {
-    const pair = topMissingForExp.slice(i, i + 2)
-    for (const kw of pair) usedForExperience.add(kw)
-
-    const kwText = pair.map(displayCase).join(' and ')
-    const reasonText = pair.map(displayCase).join(' or ')
-    const template = pickVariant(EXPERIENCE_TEMPLATES, kwText)
-
-    suggestions.push({
-      id: nextId(),
-      section: 'experience',
-      type: 'add',
-      current: null,
-      suggested: template(kwText),
-      reason: 'No experience bullets mention ' + reasonText + ', which is a key requirement in this job posting.',
-    })
-  }
-
-  // --- Projects suggestions (add) ---
-  const PROJECT_TEMPLATES = [
-    kwText => 'Implemented ' + kwText + ' solutions to address real-world technical challenges.',
-    kwText => 'Built a project centered on ' + kwText + ', solving a concrete real-world problem.',
-    kwText => 'Delivered a ' + kwText + '-driven project from concept through completion.',
-  ]
-
-  const remainingForProjects = missing.filter(kw => !usedForExperience.has(kw)).slice(0, 2)
-  for (let i = 0; i < remainingForProjects.length; i += 2) {
-    const pair = remainingForProjects.slice(i, i + 2)
-    for (const kw of pair) usedForProjects.add(kw)
-
-    const kwText = pair.map(displayCase).join(' and ')
-    const reasonText = pair.map(displayCase).join(' or ')
-    const template = pickVariant(PROJECT_TEMPLATES, kwText)
-
-    suggestions.push({
-      id: nextId(),
-      section: 'projects',
-      type: 'add',
-      current: null,
-      suggested: template(kwText),
-      reason: 'Consider adding a project that demonstrates ' + reasonText + ' experience.',
-    })
-  }
+  // OUT-01: experience/projects fabrication templates and skills-add-missing-keyword
+  // suggestions removed — that honesty now lives in analyzeResume's per-keyword
+  // report.gaps notes. No suggestion claims a skill or experience the resume lacks.
 
   // --- Education: skip (factual, not improved by heuristics) ---
 

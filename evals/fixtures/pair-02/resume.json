@@ -1,0 +1,39 @@
+{
+  "name": "Alex Rivera",
+  "contact": {
+    "email": "alex.rivera@example.com",
+    "github": "github.com/alexrivera",
+    "location": "Portland, OR"
+  },
+  "summary": "Frontend developer specializing in React and TypeScript interfaces, with a strong CSS background and experience shipping accessible component libraries.",
+  "experience": [
+    {
+      "company": "Pixel & Co",
+      "role": "Frontend Developer",
+      "period": "Mar 2022 - Present",
+      "bullets": [
+        "Built React component libraries in TypeScript used across three product teams.",
+        "Rewrote legacy CSS into a design-token system, cutting style bugs reported per sprint.",
+        "Added keyboard and screen-reader support to modal and menu components."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Portfolio Site",
+      "description": "A personal site showcasing interface experiments.",
+      "bullets": [
+        "Built with React and TypeScript, styled in plain CSS.",
+        "Lighthouse accessibility score of 100 across all pages."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.A. Interaction Design",
+      "school": "Pacific College of Art",
+      "year": "2021"
+    }
+  ],
+  "skills": ["react", "typescript", "css", "html", "vite", "jest"]
+}

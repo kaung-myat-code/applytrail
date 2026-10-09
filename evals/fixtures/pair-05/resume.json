@@ -1,0 +1,46 @@
+{
+  "name": "Taylor Kim",
+  "contact": {
+    "email": "taylor.kim@example.com",
+    "github": "github.com/taylorkim",
+    "location": "Brooklyn, NY (hybrid)"
+  },
+  "summary": "Full-stack engineer who enjoys owning features end to end, from React interfaces to the Express services and PostgreSQL tables behind them.",
+  "experience": [
+    {
+      "company": "Riverbend Labs",
+      "role": "Full-Stack Engineer",
+      "period": "May 2023 - Present",
+      "bullets": [
+        "Ship React features backed by Express endpoints and PostgreSQL queries.",
+        "Pair with designers to implement CSS layouts that match specs pixel-for-pixel."
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Neighborhood Exchange",
+      "description": "A lending app for sharing tools between neighbors.",
+      "bullets": [
+        "React front end with an Express API and PostgreSQL storage for listings.",
+        "Built the CSS design system and documented component usage for contributors."
+      ]
+    },
+    {
+      "name": "Study Timer",
+      "description": "A focus timer with shareable session stats.",
+      "bullets": [
+        "JavaScript SPA with an Express backend for storing session history.",
+        "Deployed with Git-based continuous delivery."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "degree": "B.S. Computer Science",
+      "school": "Metro University",
+      "year": "2022"
+    }
+  ],
+  "skills": ["react", "express", "postgresql", "javascript", "css", "html", "git"]
+}

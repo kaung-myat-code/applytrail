@@ -1,0 +1,6 @@
+{
+  "id": "eval-pair-01",
+  "company": "Northwind Logistics",
+  "role": "Backend Engineer",
+  "posting_text": "Northwind Logistics is hiring a Backend Engineer to build internal APIs. You will write JavaScript and Node services using Express, model data in PostgreSQL, and cache hot paths with Redis. The role requires Git-based collaboration and code review experience. Our stack runs on AWS with Docker and Kubernetes; production experience deploying containers to Kubernetes clusters is required for this role."
+}

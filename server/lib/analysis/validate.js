@@ -146,6 +146,25 @@ function validateSuggestions(suggestions, resume) {
       }
     }
 
+    // OUT-05: optional target_entry — warn (not error) when a non-empty
+    // target_entry names no experience/projects entry, predicting the
+    // last-entry fallback in applyPatches.applyAddToList. Only meaningful
+    // for entry-list sections (experience/projects); summary/skills adds
+    // are not entry-targeted and are skipped here.
+    if (
+      typeof s.target_entry === 'string' && s.target_entry.trim() &&
+      (s.section === 'experience' || s.section === 'projects') &&
+      resume
+    ) {
+      const entries = resume[s.section] || []
+      const nameField = s.section === 'experience' ? 'company' : 'name'
+      const normTarget = normalizeText(s.target_entry)
+      const matched = entries.some(e => e && normalizeText(e[nameField]) === normTarget)
+      if (!matched) {
+        warnings.push(`${prefix}: target_entry "${s.target_entry}" matches no ${s.section} entry — patch will fall back to the last entry`)
+      }
+    }
+
     // Add to education (factual data, shouldn't be heuristic-patched)
     if (s.type === 'add' && s.section === 'education') {
       warnings.push(`${prefix}: adding to education section — education is factual and should not be heuristic-patched`)
@@ -228,4 +247,8 @@ function findInResume(resume, section, value) {
   }
 }
 
-module.exports = { validateMatchReport, validateSuggestions }
+// OUT-05: findInResume/normalizeText are the sanctioned resume matcher —
+// exported so applyPatches.js and the OUT-04 eval script reuse them instead
+// of hand-rolling a (fuzzy) comparison. See PATTERNS.md "Shared Patterns →
+// Resume content matching".
+module.exports = { validateMatchReport, validateSuggestions, findInResume, normalizeText }

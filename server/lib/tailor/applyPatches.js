@@ -8,13 +8,19 @@
  * matching entries (not just the last one) within experience and projects.
  *
  * Suggestion shape (from server/lib/analysis/providers/heuristic.js):
- *   { id, section, type, current, suggested, reason }
+ *   { id, section, type, current, suggested, reason, target_entry? }
+ * (OUT-05: add-type experience/projects suggestions may carry target_entry —
+ * the experience company / projects name the bullet should attach to.)
  *
  * Decision shape (from client review workflow):
  *   { status: 'accepted' | 'rejected' | 'edited', editedContent?: string }
  */
 
 const { validateResume } = require('../validateResume')
+// OUT-05: the sanctioned resume matcher (exported by validate.js in this
+// phase) — used for target_entry name comparison. Never hand-roll a fuzzy
+// matcher here; see PATTERNS.md "Shared Patterns → Resume content matching".
+const { normalizeText } = require('../analysis/validate')
 
 /**
  * Closed enum of reasons a decided (accepted/edited) suggestion may fail to
@@ -39,11 +45,24 @@ const { validateResume } = require('../validateResume')
  *                              suggestion reached here that should have
  *                              been rejected upstream (e.g. at the AI
  *                              provider's schema boundary).
+ *   TARGET_ENTRY_NOT_FOUND   - (OUT-05) an add-type suggestion named a
+ *                              specific entry via target_entry (experience
+ *                              company / projects name), but no entry
+ *                              matched under normalizeText comparison. The
+ *                              bullet still lands on the last entry
+ *                              (informational fallback, NOT a hard
+ *                              failure); the skip record carries the
+ *                              target_entry value so the UI can explain the
+ *                              mis-target. A known non-defect (stale or
+ *                              positional suggestion), bucketed with
+ *                              NOT_FOUND/CURRENT_MISMATCH -- not with
+ *                              UNSUPPORTED_COMBINATION.
  */
 const SKIP_REASON = Object.freeze({
   NOT_FOUND: 'not-found',
   CURRENT_MISMATCH: 'current-mismatch',
   UNSUPPORTED_COMBINATION: 'unsupported-combination',
+  TARGET_ENTRY_NOT_FOUND: 'target-entry-not-found',
 })
 
 /**
@@ -98,35 +117,62 @@ function applyToAllEntries(entries, currentValue, replacement) {
 
 /**
  * Apply an add-type patch to experience or projects: append the suggested
- * bullet to the last entry, or create a new entry if the list is empty.
+ * bullet to the entry named by targetEntry when it matches (OUT-05),
+ * otherwise append to the last entry, or create a new entry if the list is
+ * empty.
  *
- * KNOWN LIMITATION (WR-06): suggestions do not carry a target entry
- * identifier (e.g. company/project name or index), so the bullet is always
- * attached to whatever entry happens to be last in the array — regardless
- * of whether that entry is actually the most relevant one for the matched
- * keyword. If the resume's most recent job/project isn't the best match for
- * the job posting, the tailored bullet can land on the wrong entry, which is
- * a correctness issue for the feature's stated goal (accurate tailored
- * resumes). Fixing this properly requires suggestions to specify a target
- * entry; until then, this is a documented best-effort placement.
+ * RESOLVED (was WR-06 KNOWN LIMITATION): suggestions can now carry a target
+ * entry identifier (suggestion.target_entry — the experience company or
+ * projects name), and this function attaches the bullet to that entry via
+ * normalized name comparison (normalizeText from validate.js — the
+ * sanctioned matcher, never raw string equality: 'Acme Corp' and 'acme
+ * corp' match the same entry). When a non-empty targetEntry matches no
+ * entry, the bullet still falls back to the last entry (informational, not
+ * a hard failure) and this function returns fellBack=true so the caller
+ * records a visible SKIP_REASON.TARGET_ENTRY_NOT_FOUND — never a silent
+ * mis-target. Absent/empty targetEntry keeps the pre-OUT-05 last-entry
+ * behavior with fellBack=false.
  * @param {object[]} entries
  * @param {string} suggestedBullet
  * @param {'experience'|'projects'} kind
+ * @param {string} [targetEntry] - entry name to attach to (company for experience, name for projects)
+ * @returns {boolean} fellBack - true when a non-empty targetEntry matched no entry and the bullet landed on the last entry instead
  */
-function applyAddToList(entries, suggestedBullet, kind) {
+function applyAddToList(entries, suggestedBullet, kind, targetEntry) {
   if (entries.length === 0) {
     if (kind === 'experience') {
       entries.push({ company: '', role: '', period: '', bullets: [suggestedBullet] })
     } else {
       entries.push({ name: '', description: '', bullets: [suggestedBullet] })
     }
-    return
+    return false
   }
+
+  const hasTarget = typeof targetEntry === 'string' && !!targetEntry.trim()
+  if (hasTarget) {
+    // OUT-05: attach to the named entry — normalized (case/whitespace/
+    // smart-quote-insensitive) comparison on entry.company (experience) or
+    // entry.name (projects).
+    const nameField = kind === 'experience' ? 'company' : 'name'
+    const normTarget = normalizeText(targetEntry)
+    const target = entries.find(e => e && normalizeText(e[nameField]) === normTarget)
+    if (target) {
+      if (!Array.isArray(target.bullets)) {
+        target.bullets = []
+      }
+      target.bullets.push(suggestedBullet)
+      return false
+    }
+    // No match — fall through to the last-entry fallback; the caller
+    // records the visible TARGET_ENTRY_NOT_FOUND skip.
+  }
+
   const last = entries[entries.length - 1]
   if (!Array.isArray(last.bullets)) {
     last.bullets = []
   }
   last.bullets.push(suggestedBullet)
+  return hasTarget
 }
 
 /**
@@ -138,7 +184,7 @@ function applyAddToList(entries, suggestedBullet, kind) {
  *   resume: object,
  *   validation: { ok: boolean, errors?: string[] },
  *   applied: { id: string, section: string, type: string }[],
- *   skipped: { id: string, section: string, type: string, reason: string }[],
+ *   skipped: { id: string, section: string, type: string, reason: string, target_entry?: string }[],
  * }}
  */
 function applyPatches(resume, suggestions, decisions) {
@@ -158,9 +204,9 @@ function applyPatches(resume, suggestions, decisions) {
     applied.push({ id: suggestion.id, section: suggestion.section, type: suggestion.type })
   }
 
-  function markSkipped(suggestion, reason, logMessage) {
+  function markSkipped(suggestion, reason, logMessage, extra) {
     console.warn(`applyPatches: ${logMessage}`)
-    skipped.push({ id: suggestion.id, section: suggestion.section, type: suggestion.type, reason })
+    skipped.push({ id: suggestion.id, section: suggestion.section, type: suggestion.type, reason, ...(extra || {}) })
   }
 
   for (const suggestion of accepted) {
@@ -218,8 +264,16 @@ function applyPatches(resume, suggestions, decisions) {
       case 'experience': {
         if (!Array.isArray(cloned.experience)) cloned.experience = []
         if (type === 'add') {
-          applyAddToList(cloned.experience, resolveContent(suggestion, decision), 'experience')
-          markApplied(suggestion)
+          const fellBack = applyAddToList(cloned.experience, resolveContent(suggestion, decision), 'experience', suggestion.target_entry)
+          if (fellBack) {
+            // OUT-05: mis-targeted — the bullet still lands on the last
+            // entry, but the suggestion is recorded as skipped (not applied)
+            // with a visible reason carrying target_entry so the UI can
+            // explain where the bullet actually went.
+            markSkipped(suggestion, SKIP_REASON.TARGET_ENTRY_NOT_FOUND, `add suggestion "${suggestion.id}" (experience) — target_entry "${suggestion.target_entry}" matched no entry, bullet fell back to the last entry`, { target_entry: suggestion.target_entry })
+          } else {
+            markApplied(suggestion)
+          }
         } else if (type === 'modify') {
           const replacement = resolveContent(suggestion, decision)
           const found = applyToAllEntries(cloned.experience, suggestion.current, replacement)
@@ -242,8 +296,14 @@ function applyPatches(resume, suggestions, decisions) {
       case 'projects': {
         if (!Array.isArray(cloned.projects)) cloned.projects = []
         if (type === 'add') {
-          applyAddToList(cloned.projects, resolveContent(suggestion, decision), 'projects')
-          markApplied(suggestion)
+          const fellBack = applyAddToList(cloned.projects, resolveContent(suggestion, decision), 'projects', suggestion.target_entry)
+          if (fellBack) {
+            // OUT-05: see the experience branch — informational mis-target,
+            // recorded as skipped with target_entry, not silently applied.
+            markSkipped(suggestion, SKIP_REASON.TARGET_ENTRY_NOT_FOUND, `add suggestion "${suggestion.id}" (projects) — target_entry "${suggestion.target_entry}" matched no entry, bullet fell back to the last entry`, { target_entry: suggestion.target_entry })
+          } else {
+            markApplied(suggestion)
+          }
         } else if (type === 'modify') {
           const replacement = resolveContent(suggestion, decision)
           const found = applyToAllEntries(cloned.projects, suggestion.current, replacement)

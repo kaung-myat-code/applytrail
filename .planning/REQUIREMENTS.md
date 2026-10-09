@@ -17,8 +17,8 @@ v2.2 makes the hosted demo a trustworthy portfolio artifact for full-stack hirin
 
 ### Honest Output
 
-- [ ] **OUT-01**: Heuristic experience/project suggestions only rephrase bullets already in the resume — fabrication templates are removed.
-- [ ] **OUT-02**: When the posting asks for something absent from the resume, analysis outputs an honest gap note ("not on your resume; add a bullet only if you have real experience") instead of a generated claim.
+- [x] **OUT-01**: Heuristic experience/project suggestions only rephrase bullets already in the resume — fabrication templates are removed.
+- [x] **OUT-02**: When the posting asks for something absent from the resume, analysis outputs an honest gap note ("not on your resume; add a bullet only if you have real experience") instead of a generated claim.
 - [ ] **OUT-03**: AI provider prompts explicitly forbid inventing skills, employers, metrics, dates, or experience not present in the resume JSON.
 - [ ] **OUT-04**: Eval set of 5+ resume×posting pairs committed under `evals/` with a script that runs analysis (heuristic, and AI when a key is present) and dumps a markdown report for review.
 - [ ] **OUT-05**: Add-type patches carry `target_entry` (company/project name); applyPatches attaches to the named entry and falls back to last-entry with a skip reason when absent.
@@ -92,8 +92,8 @@ Which phases cover which requirements. Updated during roadmap creation (2026-10-
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| OUT-01 | Phase 17 | Pending |
-| OUT-02 | Phase 17 | Pending |
+| OUT-01 | Phase 17 | Complete |
+| OUT-02 | Phase 17 | Complete |
 | OUT-03 | Phase 17 | Pending |
 | OUT-04 | Phase 17 | Pending |
 | OUT-05 | Phase 17 | Pending |
@@ -125,6 +125,7 @@ Which phases cover which requirements. Updated during roadmap creation (2026-10-
 | README-04 | Phase 21 | Pending |
 
 **Coverage:**
+
 - v2.2 requirements: 31 total
 - Mapped to phases: 31
 - Unmapped: 0

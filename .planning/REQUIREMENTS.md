@@ -21,7 +21,7 @@ v2.2 makes the hosted demo a trustworthy portfolio artifact for full-stack hirin
 - [x] **OUT-02**: When the posting asks for something absent from the resume, analysis outputs an honest gap note ("not on your resume; add a bullet only if you have real experience") instead of a generated claim.
 - [ ] **OUT-03**: AI provider prompts explicitly forbid inventing skills, employers, metrics, dates, or experience not present in the resume JSON.
 - [ ] **OUT-04**: Eval set of 5+ resume×posting pairs committed under `evals/` with a script that runs analysis (heuristic, and AI when a key is present) and dumps a markdown report for review.
-- [ ] **OUT-05**: Add-type patches carry `target_entry` (company/project name); applyPatches attaches to the named entry and falls back to last-entry with a skip reason when absent.
+- [x] **OUT-05**: Add-type patches carry `target_entry` (company/project name); applyPatches attaches to the named entry and falls back to last-entry with a skip reason when absent.
 - [ ] **OUT-06**: AI models must return scores on a 0–100 scale; `score: 1` is not silently scaled to 100.
 
 ### Demo Path
@@ -96,7 +96,7 @@ Which phases cover which requirements. Updated during roadmap creation (2026-10-
 | OUT-02 | Phase 17 | Complete |
 | OUT-03 | Phase 17 | Pending |
 | OUT-04 | Phase 17 | Pending |
-| OUT-05 | Phase 17 | Pending |
+| OUT-05 | Phase 17 | Complete |
 | OUT-06 | Phase 17 | Pending |
 | PATH-01 | Phase 18 | Pending |
 | PATH-02 | Phase 18 | Pending |

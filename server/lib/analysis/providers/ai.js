@@ -13,6 +13,7 @@ const { groq } = require('@ai-sdk/groq')
 const { z } = require('zod')
 const { sanitizeError } = require('../sanitizeError')
 const { suggestionSchema } = require('./suggestionSchema')
+const { normalizeReportScores } = require('./normalizeReport')
 
 // --- Zod Schemas ---
 
@@ -187,25 +188,11 @@ async function analyzeResume(resume, jobPosting, provider = 'gemini') {
       maxRetries: 3,
     })
 
-    // Normalize matchRate: if model returned percentage (e.g. 85), convert to decimal (0.85)
-    // Then clamp to valid 0-1 range regardless
-    for (const key of ['summary', 'skills', 'experience', 'projects', 'education']) {
-      const section = object.sections?.[key]
-      if (section && section.matchRate != null) {
-        if (section.matchRate > 1) {
-          section.matchRate = section.matchRate / 100
-        }
-        section.matchRate = Math.max(0, Math.min(1, section.matchRate))
-      }
-    }
-
-    // Normalize score: if model returned 0-1 scale, convert to 0-100
-    if (object.score != null) {
-      if (object.score <= 1 && object.score >= 0) {
-        object.score = Math.round(object.score * 100)
-      }
-      object.score = Math.max(0, Math.min(100, Math.round(object.score)))
-    }
+    // Normalize score (0-100 clamp, no [0,1] rescale -- see OUT-06) and
+    // section matchRate (>1 -> /100, then clamp to [0,1]) in one place.
+    // Delegated to ./normalizeReport so the regression is testable without
+    // loading this module's ESM 'ai' dependency.
+    normalizeReportScores(object)
 
     return object
   } catch (err) {

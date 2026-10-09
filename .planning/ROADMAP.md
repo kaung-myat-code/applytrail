@@ -67,7 +67,7 @@ Archive: [v2.1 Roadmap](milestones/v2.1-ROADMAP.md) | [v2.1 Requirements](milest
 
 **Milestone Goal:** Hiring managers who open the hosted demo reach the flagship tailoring feature immediately and see honest, well-targeted resume output — with the patch engine and fallback chain standing up to full-stack scrutiny.
 
-- [ ] **Phase 17: Honest Analysis Output** - Remove fabricated suggestions, add gap notes and AI guardrails, fix score normalization and patch targeting, and verify via an eval set
+- [x] **Phase 17: Honest Analysis Output** - Remove fabricated suggestions, add gap notes and AI guardrails, fix score normalization and patch targeting, and verify via an eval set (completed 2026-10-09)
 - [ ] **Phase 18: Demo Path UX** - Analyze-first CTAs, Dashboard quick action, dead-end fixes, and provider visibility matched to the hosted demo
 - [ ] **Phase 19: Hosted Demo Freeze & Cold Start** - Seeded sample data with scheduled reset, a labeled pre-computed AI example, updated warning text, and honest wake-up surfacing
 - [ ] **Phase 20: Reliability & Repo Hygiene** - Write-route validation, critical-path tests, fresh-clone setup, and clean repo state
@@ -89,7 +89,7 @@ Archive: [v2.1 Roadmap](milestones/v2.1-ROADMAP.md) | [v2.1 Requirements](milest
   5. Running the committed eval script over 5+ resume×posting pairs produces a markdown report showing zero fabricated claims, with AI runs included when a provider key is present.
 
 **Plans**:
-3/5 plans executed
+5/5 plans complete
 
 - [x] 17-01-PLAN.md — Heuristic fabrication removal + honest gap notes (OUT-01, OUT-02)
 - [x] 17-02-PLAN.md — AI prompt guardrails, score normalization fix, target_entry schemas (OUT-03, OUT-05, OUT-06)
@@ -97,8 +97,8 @@ Archive: [v2.1 Roadmap](milestones/v2.1-ROADMAP.md) | [v2.1 Requirements](milest
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 17-04-PLAN.md — Client skip-reason mirror + per-reason skip copy (OUT-05)
-- [ ] 17-05-PLAN.md — Eval set + plain-Node eval runner (OUT-04)
+- [x] 17-04-PLAN.md — Client skip-reason mirror + per-reason skip copy (OUT-05)
+- [x] 17-05-PLAN.md — Eval set + plain-Node eval runner (OUT-04)
 
 **UI hint**: yes
 
@@ -172,7 +172,7 @@ Archive: [v2.1 Roadmap](milestones/v2.1-ROADMAP.md) | [v2.1 Requirements](milest
 | 5-8 | v1.1 | Complete | Complete | 2026-06-27 |
 | 9-15 | v2.0 | Complete | Complete | 2026-07-26 |
 | 16. Hosted Demo Safety & Documentation | v2.1 | 1/1 | Complete | 2026-10-02 |
-| 17. Honest Analysis Output | v2.2 | 3/5 | In Progress|  |
+| 17. Honest Analysis Output | v2.2 | 5/5 | Complete   | 2026-10-09 |
 | 18. Demo Path UX | v2.2 | 0/0 | Not started | - |
 | 19. Hosted Demo Freeze & Cold Start | v2.2 | 0/0 | Not started | - |
 | 20. Reliability & Repo Hygiene | v2.2 | 0/0 | Not started | - |

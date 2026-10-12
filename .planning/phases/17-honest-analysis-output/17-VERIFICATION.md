@@ -1,14 +1,16 @@
 ---
 phase: 17-honest-analysis-output
 verified: 2026-10-09T21:19:43Z
-status: human_needed
+status: passed
 score: 5/5 must-haves verified
 behavior_unverified: 0
 overrides_applied: 0
 human_verification:
+
   - test: "On a machine with an AI provider key set (GOOGLE_GENERATIVE_AI_API_KEY / OPENROUTER_API_KEY / GROQ_API_KEY), run `node evals/run-evals.js` once and open evals/reports/report.md"
     expected: "The AI analysis section appears per pair (no 'skipped — no key'), AI suggestions are dumped verbatim with fabrication verdicts, and the run exits 0"
     why_human: "The keyed AI branch (lazy-requires ai.js, calls the live provider) is source-verified and correctly structured, but no key is available in this environment so the branch could not be executed end-to-end (external service integration — SUMMARY 17-05 coverage D3 flagged this as human_judgment)"
+
   - test: "In the browser, open the Analysis page for a resume/posting pair with missing keywords and inspect the 'Gaps to Address' block"
     expected: "One neutral gap note per missing keyword renders (e.g. 'Docker: not on your resume; add a bullet only if you have real experience.') alongside per-section match-rate strings; the block is absent when report.gaps is empty"
     why_human: "Provider-level emission and the Analysis.jsx conditional render are source-verified and the copy contract is test-asserted at the provider, but no client test exercises Analysis.jsx and visual rendering is a human check"

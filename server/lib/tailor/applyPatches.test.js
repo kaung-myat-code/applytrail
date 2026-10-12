@@ -17,6 +17,14 @@
  * Plain Node assertions -- no test runner is installed in this repo (matches
  * the existing convention used by pdf.test.js, heuristic.test.js). Run
  * directly with `node server/lib/tailor/applyPatches.test.js`.
+ *
+ * Phase 17 / OUT-05 additions: add-type experience/projects patches now
+ * honor an optional suggestion.target_entry (company/name) and attach the
+ * bullet to the named entry via normalizeText comparison; an unmatched
+ * target_entry falls back to the last entry but records a visible
+ * SKIP_REASON.TARGET_ENTRY_NOT_FOUND skip carrying the target_entry value
+ * (never a silent mis-target). Cases live between the projects section and
+ * the reachability guard.
  */
 
 const assert = require('assert')
@@ -237,6 +245,86 @@ test('projects + remove: skipped with NOT_FOUND when bullet absent', () => {
   const skip = findSkipped(result, 'p5')
   assert.ok(skip)
   assert.strictEqual(skip.reason, SKIP_REASON.NOT_FOUND)
+})
+
+// --- OUT-05: target_entry targeting (add-type experience/projects) ---
+// These use a multi-entry resume so a targeted attach is distinguishable
+// from the old "always last entry" behavior (with a single entry, the named
+// entry IS the last entry and the old code would pass by coincidence).
+
+function multiEntryResume() {
+  const r = baseResume()
+  r.experience.push({ company: 'Beta LLC', role: 'Developer', period: '2023-2024', bullets: ['Maintained services.'] })
+  r.projects.push({ name: 'Other Project', description: 'Another thing.', bullets: ['Wrote docs.'] })
+  return r
+}
+
+test('experience + add with target_entry: attaches to the named entry, not the last', () => {
+  const resume = multiEntryResume()
+  const suggestions = [{ id: 't1', section: 'experience', type: 'add', current: null, target_entry: 'Acme Corp', suggested: 'Led the tooling migration.', reason: 'r' }]
+  const result = applyPatches(resume, suggestions, accept('t1'))
+  assert.ok(
+    result.resume.experience[0].bullets.includes('Led the tooling migration.'),
+    'bullet should attach to the Acme Corp entry'
+  )
+  assert.ok(
+    !result.resume.experience[1].bullets.includes('Led the tooling migration.'),
+    'bullet must not attach to the last (Beta LLC) entry'
+  )
+  assert.ok(findApplied(result, 't1'), 'expected the suggestion to be recorded as applied')
+  assert.ok(!findSkipped(result, 't1'), 'no skip expected when target_entry matches')
+})
+
+test('experience + add with unmatched target_entry: falls back to last entry with TARGET_ENTRY_NOT_FOUND skip carrying target_entry', () => {
+  const resume = multiEntryResume()
+  const suggestions = [{ id: 't2', section: 'experience', type: 'add', current: null, target_entry: 'Nonexistent Corp', suggested: 'Led the tooling migration.', reason: 'r' }]
+  const result = applyPatches(resume, suggestions, accept('t2'))
+  assert.ok(
+    result.resume.experience[result.resume.experience.length - 1].bullets.includes('Led the tooling migration.'),
+    'bullet should still land on the last entry (informational fallback, not a hard failure)'
+  )
+  const skip = findSkipped(result, 't2')
+  assert.ok(skip, 'expected a visible skip record for the unmatched target_entry — never a silent fallback')
+  assert.strictEqual(skip.reason, SKIP_REASON.TARGET_ENTRY_NOT_FOUND)
+  assert.strictEqual(skip.target_entry, 'Nonexistent Corp', 'skip record must carry target_entry for client copy interpolation')
+  assert.ok(!findApplied(result, 't2'), 'mis-targeted suggestion is recorded as skipped, not applied')
+})
+
+test('experience + add without target_entry: unchanged last-entry behavior, no skip', () => {
+  const resume = multiEntryResume()
+  const suggestions = [{ id: 't3', section: 'experience', type: 'add', current: null, suggested: 'Led the tooling migration.', reason: 'r' }]
+  const result = applyPatches(resume, suggestions, accept('t3'))
+  assert.ok(result.resume.experience[1].bullets.includes('Led the tooling migration.'), 'absent target_entry keeps last-entry behavior')
+  assert.ok(findApplied(result, 't3'))
+  assert.ok(!findSkipped(result, 't3'), 'no skip expected when target_entry is absent')
+})
+
+test('projects + add with target_entry: attaches to the named project entry', () => {
+  const resume = multiEntryResume()
+  const suggestions = [{ id: 't4', section: 'projects', type: 'add', current: null, target_entry: 'Side Project', suggested: 'Added a REST API.', reason: 'r' }]
+  const result = applyPatches(resume, suggestions, accept('t4'))
+  assert.ok(
+    result.resume.projects[0].bullets.includes('Added a REST API.'),
+    'bullet should attach to the Side Project entry'
+  )
+  assert.ok(
+    !result.resume.projects[1].bullets.includes('Added a REST API.'),
+    'bullet must not attach to the last (Other Project) entry'
+  )
+  assert.ok(findApplied(result, 't4'))
+  assert.ok(!findSkipped(result, 't4'))
+})
+
+test('experience + add with case-different target_entry: normalizeText match still attaches to the named entry', () => {
+  const resume = multiEntryResume()
+  const suggestions = [{ id: 't5', section: 'experience', type: 'add', current: null, target_entry: 'acme corp', suggested: 'Led the tooling migration.', reason: 'r' }]
+  const result = applyPatches(resume, suggestions, accept('t5'))
+  assert.ok(
+    result.resume.experience[0].bullets.includes('Led the tooling migration.'),
+    "'acme corp' must match 'Acme Corp' via normalizeText, not raw equality"
+  )
+  assert.ok(findApplied(result, 't5'))
+  assert.ok(!findSkipped(result, 't5'))
 })
 
 // --- reachability guard ---

@@ -13,6 +13,7 @@ const { groq } = require('@ai-sdk/groq')
 const { z } = require('zod')
 const { sanitizeError } = require('../sanitizeError')
 const { suggestionSchema } = require('./suggestionSchema')
+const { normalizeReportScores } = require('./normalizeReport')
 
 // --- Zod Schemas ---
 
@@ -62,6 +63,8 @@ const rawSuggestionSchema = z.object({
   current: z.string().nullable(),
   suggested: z.string(),
   reason: z.string(),
+  // OUT-05: company (experience) or name (projects) the add should attach to
+  target_entry: z.string().nullable().optional(),
 })
 
 // --- Model helper ---
@@ -173,6 +176,10 @@ async function analyzeResume(resume, jobPosting, provider = 'gemini') {
       'IMPORTANT FORMAT: matchRate must be a decimal between 0 and 1 (e.g. 0.85, not 85).',
       'score must be a number between 0 and 100.',
       '',
+      'Never invent, assume, or embellish skills, employers, job titles, metrics, dates, or experience',
+      'not explicitly present in the resume JSON. Every claim must trace to resume content.',
+      'If a required skill is absent from the resume, reflect it as a gap — do not generate a claim.',
+      '',
       '## Resume',
       JSON.stringify(resume, null, 2),
       '',
@@ -187,25 +194,11 @@ async function analyzeResume(resume, jobPosting, provider = 'gemini') {
       maxRetries: 3,
     })
 
-    // Normalize matchRate: if model returned percentage (e.g. 85), convert to decimal (0.85)
-    // Then clamp to valid 0-1 range regardless
-    for (const key of ['summary', 'skills', 'experience', 'projects', 'education']) {
-      const section = object.sections?.[key]
-      if (section && section.matchRate != null) {
-        if (section.matchRate > 1) {
-          section.matchRate = section.matchRate / 100
-        }
-        section.matchRate = Math.max(0, Math.min(1, section.matchRate))
-      }
-    }
-
-    // Normalize score: if model returned 0-1 scale, convert to 0-100
-    if (object.score != null) {
-      if (object.score <= 1 && object.score >= 0) {
-        object.score = Math.round(object.score * 100)
-      }
-      object.score = Math.max(0, Math.min(100, Math.round(object.score)))
-    }
+    // Normalize score (0-100 clamp, no [0,1] rescale -- see OUT-06) and
+    // section matchRate (>1 -> /100, then clamp to [0,1]) in one place.
+    // Delegated to ./normalizeReport so the regression is testable without
+    // loading this module's ESM 'ai' dependency.
+    normalizeReportScores(object)
 
     return object
   } catch (err) {
@@ -235,6 +228,13 @@ async function generateSuggestions(resume, report, provider = 'gemini') {
       'skills array entry, or an exact bullet string from experience/projects). Do not paraphrase,',
       'reword, summarize, or truncate it with an ellipsis, and do not add or remove punctuation.',
       "If you cannot find an exact string to reference, use type 'add' instead of 'modify'.",
+      '',
+      'Never invent, assume, or embellish skills, employers, job titles, metrics, dates, or experience',
+      'not explicitly present in the resume JSON. Every claim must trace to resume content.',
+      'If a required skill is absent from the resume, reflect it as a gap — do not generate a claim.',
+      '',
+      "For 'add' suggestions targeting a specific experience or projects entry, set target_entry",
+      "to that entry's company (experience) or name (projects); omit it otherwise.",
       '',
       '## Resume',
       JSON.stringify(resume, null, 2),

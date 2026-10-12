@@ -7,7 +7,7 @@
   },
   "scripts": {
     "start": "node index.js",
-    "test": "node lib/pdf.test.js && node lib/defaultResumeData.test.js && node lib/analysis/keywords.test.js && node lib/analysis/validate.test.js && node lib/analysis/providers/heuristic.test.js && node lib/analysis/analyze-route.test.js && node lib/cover-letter.test.js && node lib/tailor/applyPatches.test.js"
+    "test": "node lib/pdf.test.js && node lib/defaultResumeData.test.js && node lib/analysis/keywords.test.js && node lib/analysis/validate.test.js && node lib/analysis/providers/heuristic.test.js && node lib/analysis/analyze-route.test.js && node lib/cover-letter.test.js && node lib/tailor/applyPatches.test.js && node lib/analysis/providers/normalizeReport.test.js"
   },
   "dependencies": {
     "@ai-sdk/google": "^4.0.24",

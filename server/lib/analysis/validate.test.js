@@ -16,6 +16,13 @@
  * Plain Node assertions -- no test runner is installed in this repo
  * (matches the existing convention used by heuristic.test.js). Run
  * directly with `node server/lib/analysis/validate.test.js`.
+ *
+ * Phase 17 / OUT-05 additions: validate.js now also exports the sanctioned
+ * matcher (findInResume/normalizeText) for reuse by applyPatches.js and the
+ * eval script, and validateSuggestions warns (not errors) when a suggestion's
+ * optional target_entry names no experience/projects entry (predicting the
+ * last-entry fallback in applyPatches). Cases for both live at the bottom of
+ * this file.
  */
 
 const assert = require('assert')
@@ -126,6 +133,100 @@ test('one benignly-formatted suggestion among several does not invalidate the wh
   ]
   const result = validateSuggestions(batch, resume)
   assert.strictEqual(result.valid, true, `expected valid, got errors: ${JSON.stringify(result.errors)}`)
+})
+
+// --- OUT-05: target_entry warning ---
+
+test('validate.js exports the sanctioned matcher (findInResume, normalizeText) for reuse', () => {
+  const validate = require('./validate')
+  assert.strictEqual(typeof validate.validateMatchReport, 'function', 'expected validateMatchReport export')
+  assert.strictEqual(typeof validate.validateSuggestions, 'function', 'expected validateSuggestions export')
+  assert.strictEqual(typeof validate.findInResume, 'function', 'expected findInResume export (OUT-05)')
+  assert.strictEqual(typeof validate.normalizeText, 'function', 'expected normalizeText export (OUT-05)')
+})
+
+// The base fixture's experience/projects entries have no company/name field,
+// so a dedicated fixture with real entry names is used for the target_entry
+// cases below.
+const targetEntryResume = {
+  summary: 'Experienced engineer.',
+  skills: ['javascript'],
+  experience: [
+    { company: 'Acme Corp', role: 'Engineer', bullets: ['Built internal tools.'] },
+    { company: 'Beta LLC', role: 'Developer', bullets: ['Maintained services.'] },
+  ],
+  projects: [
+    { name: 'Side Project', description: 'A thing.', bullets: ['Shipped a feature.'] },
+  ],
+}
+
+function addTargetSuggestion(overrides) {
+  return {
+    id: 'tX',
+    section: 'experience',
+    type: 'add',
+    current: null,
+    target_entry: null,
+    suggested: 'placeholder suggested bullet',
+    reason: 'placeholder reason',
+    ...overrides,
+  }
+}
+
+test('target_entry matching an existing experience company produces no fallback warning', () => {
+  const s = addTargetSuggestion({ target_entry: 'Acme Corp' })
+  const result = validateSuggestions([s], targetEntryResume)
+  assert.strictEqual(result.valid, true, `expected valid, got errors: ${JSON.stringify(result.errors)}`)
+  assert.ok(
+    !result.warnings.some(w => w.includes('matches no experience entry')),
+    `expected no fallback warning, got: ${JSON.stringify(result.warnings)}`
+  )
+})
+
+test('target_entry matching no experience company warns (not errors) about the last-entry fallback', () => {
+  const s = addTargetSuggestion({ target_entry: 'Nonexistent Corp' })
+  const result = validateSuggestions([s], targetEntryResume)
+  assert.ok(
+    result.warnings.some(w => w.includes('target_entry "Nonexistent Corp" matches no experience entry')),
+    `expected a fallback warning, got: ${JSON.stringify(result.warnings)}`
+  )
+  assert.ok(
+    !result.errors.some(e => e.includes('target_entry')),
+    `target_entry mismatch must be a warning, not an error; got errors: ${JSON.stringify(result.errors)}`
+  )
+})
+
+test('target_entry match is case-insensitive (normalizeText, not raw equality)', () => {
+  const s = addTargetSuggestion({ target_entry: 'acme corp' })
+  const result = validateSuggestions([s], targetEntryResume)
+  assert.ok(
+    !result.warnings.some(w => w.includes('matches no experience entry')),
+    `expected case-insensitive match to suppress the warning, got: ${JSON.stringify(result.warnings)}`
+  )
+})
+
+test('projects target_entry matching an existing project name produces no fallback warning', () => {
+  const s = addTargetSuggestion({ id: 'tP', section: 'projects', target_entry: 'Side Project' })
+  const result = validateSuggestions([s], targetEntryResume)
+  assert.ok(
+    !result.warnings.some(w => w.includes('matches no projects entry')),
+    `expected no fallback warning, got: ${JSON.stringify(result.warnings)}`
+  )
+})
+
+test('absent, empty, or summary/skills target_entry produces no fallback warning', () => {
+  const absent = addTargetSuggestion({ target_entry: undefined })
+  const empty = addTargetSuggestion({ id: 'tE2', target_entry: '' })
+  const nullish = addTargetSuggestion({ id: 'tE3', target_entry: null })
+  // target_entry is only meaningful for entry lists — summary/skills sections
+  // must not warn even when a target_entry is present.
+  const summaryWithTarget = addTargetSuggestion({ id: 'tE4', section: 'summary', target_entry: 'No Such Entry' })
+  const skillsWithTarget = addTargetSuggestion({ id: 'tE5', section: 'skills', target_entry: 'No Such Entry' })
+  const result = validateSuggestions([absent, empty, nullish, summaryWithTarget, skillsWithTarget], targetEntryResume)
+  assert.ok(
+    !result.warnings.some(w => w.includes('matches no')),
+    `expected no fallback warning for absent/empty target_entry or summary/skills sections, got: ${JSON.stringify(result.warnings)}`
+  )
 })
 
 if (process.exitCode === 1) {

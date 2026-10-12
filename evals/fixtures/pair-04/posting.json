@@ -1,0 +1,6 @@
+{
+  "id": "eval-pair-04",
+  "company": "Ironclad Cloud",
+  "role": "Platform Engineer",
+  "posting_text": "Ironclad Cloud hires a Platform Engineer to own our AWS footprint. Day to day you will write Terraform, operate Docker workloads on Kubernetes, and improve Linux host baselines with Git-reviewed automation. Our teams also build internal tooling in Golang and maintain Grafana dashboards for cluster health; Golang experience is required for the tooling half of this role."
+}

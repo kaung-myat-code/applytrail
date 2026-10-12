@@ -1,64 +1,135 @@
-# Requirements: v2.1 Protect and Clearly Label the Hosted Demo
+# Requirements: v2.2 Honest Output & Demo Path
+
+**Defined:** 2026-10-05
+**Core Value:** End-to-end job application workflow in a web UI — from resume to cover letter to application tracking — so the user can manage their job search from any browser.
 
 ## Overview
 
-This milestone makes the public Render deployment’s safety boundaries explicit while preserving the existing unauthenticated, single-user local architecture. The warning is always visible because the repository has no reliable existing hosted/demo-mode flag and adding one would introduce unnecessary configuration complexity for this first safety milestone.
+v2.2 makes the hosted demo a trustworthy portfolio artifact for full-stack hiring managers: honest AI output (no fabricated experience), a demo path that reaches the flagship tailoring feature in two clicks, disposable demo data, and a README that leads with the patch engine, fallback chain, and tests. Scope is the 2026-10-05 portfolio audit (Groups A/B/C) adjusted by five prioritization answers. Branch: `gsd/v2.2-honest-output-demo-path`.
 
 ## User Stories
 
-* As a visitor to the hosted demo, I want to understand that it is unauthenticated and shared before entering data.
-* As a local user, I want the existing application workflow to continue working without authentication or deployment-specific behavior.
-* As a developer, I want setup and provider documentation to match the actual repository so I do not accidentally put private data into the hosted demo or configure the wrong environment file.
+* As a hiring manager viewing the hosted demo, I want to reach the tailoring feature immediately and see honest output I can trust.
+* As a job seeker using the app locally, I want suggestions that rephrase my real experience, never invent it.
+* As a full-stack reviewer of this repo, I want the patch engine, fallback chain, and tests to be the headline.
 
 ## Requirements
 
-### Hosted Demo Warning
+### Honest Output
 
-- [x] **DEMO-01**: Users see an always-visible warning in the top-level client application shell stating that the hosted demo is unauthenticated, shared, writable, disposable, and for demonstration purposes only.
-- [x] **DEMO-02**: The warning tells users not to submit real resumes, contact information, credentials, secrets, or other private job-search data.
-- [x] **DEMO-03**: The warning does not imply privacy, account isolation, authentication, or durable hosted storage, and it does not require a new dependency or API change.
+- [x] **OUT-01**: Heuristic experience/project suggestions only rephrase bullets already in the resume — fabrication templates are removed.
+- [x] **OUT-02**: When the posting asks for something absent from the resume, analysis outputs an honest gap note ("not on your resume; add a bullet only if you have real experience") instead of a generated claim.
+- [x] **OUT-03**: AI provider prompts explicitly forbid inventing skills, employers, metrics, dates, or experience not present in the resume JSON.
+- [x] **OUT-04**: Eval set of 5+ resume×posting pairs committed under `evals/` with a script that runs analysis (heuristic, and AI when a key is present) and dumps a markdown report for review.
+- [x] **OUT-05**: Add-type patches carry `target_entry` (company/project name); applyPatches attaches to the named entry and falls back to last-entry with a skip reason when absent.
+- [x] **OUT-06**: AI models must return scores on a 0–100 scale; `score: 1` is not silently scaled to 100.
 
-### Documentation Accuracy
+### Demo Path
 
-- [x] **DOCS-01**: The README contains a prominent live-demo warning covering unauthenticated access, possible shared visibility/modification, reset/loss of hosted data, private-data prohibition, and demonstration-only use.
-- [x] **DOCS-02**: The README explains local JSON-file behavior separately from hosted-demo behavior, including the hosted deployment’s disposable-data limitation.
-- [x] **DOCS-03**: README framework/version information matches the package manifests and environment-variable instructions identify the actual file loaded by the root development command.
-- [x] **DOCS-04**: AI-provider documentation clearly states that enabling optional AI analysis may send resume and job-posting content to the selected third-party provider, while heuristic mode remains local.
-- [x] **DOCS-05**: `render.yaml` is changed only if needed to support or accurately document the warning; deployment service type, build commands, persistence settings, and environment handling remain unchanged.
+- [ ] **PATH-01**: After saving a job posting, the primary CTA is "Analyze match" (cover letter secondary).
+- [ ] **PATH-02**: Dashboard gains a "Tailor resume" quick action; a first-time visitor reaches Analysis within 2 clicks from Dashboard.
+- [ ] **PATH-03**: "Back to Analysis" from ReviewSuggestions rehydrates the prior report via `?resume=&posting=` search params.
+- [ ] **PATH-04**: Job-posting dropdowns disambiguate duplicates with date and snippet labels.
+- [ ] **PATH-05**: "Create Application" from Resume Library opens a posting picker instead of attaching the most-recent posting.
+- [ ] **PATH-06**: `/api/providers` reports which AI providers are configured; the Analysis dropdown renders accordingly and shows no env-var names.
+- [ ] **PATH-07**: On the hosted demo, AI provider options are hidden (heuristic only).
+- [ ] **PATH-08**: PATH-01 and PATH-02 flows are verified via browser check at 375px.
 
-### Validation
+### Demo Freeze
 
-- [x] **TEST-01**: Client tests verify the warning renders and includes the required unauthenticated, shared/disposable, private-data, and demo-only guidance.
-- [x] **TEST-02**: Existing client tests, lint, the full project test command, and the production build continue to pass.
+- [ ] **FREEZE-01**: In hosted/demo mode, the server seeds a sample resume and 2–3 sample postings on boot if data is empty.
+- [ ] **FREEZE-02**: Hosted demo data resets on a schedule back to the seeded state — visitors can try flows; data is not durable.
+- [ ] **FREEZE-03**: One pre-computed AI analysis example ships with the demo, clearly labeled as generated locally.
+- [ ] **FREEZE-04**: Phase 16 warning text is updated to describe the reset/disposable behavior accurately.
+
+### Cold Start
+
+- [ ] **COLD-01**: First load shows a friendly wake-up loading state that polls `/api/health` until the server responds.
+- [ ] **COLD-02**: An external uptime pinger keeps or monitors the Render free-tier service; setup is documented.
+
+### README
+
+- [ ] **README-01**: The README headline targets full-stack roles — patch engine, fallback chain, and tests/CI as the selling points.
+- [ ] **README-02**: A demo GIF or video sits at the top of the README.
+- [ ] **README-03**: An AI-honesty section states: heuristic mode is local; optional AI providers may receive resume and job-posting content; no keys on the hosted demo; fabrication is never generated.
+- [ ] **README-04**: The README notes cold-start behavior and what visitors should expect.
+
+### Reliability
+
+- [ ] **REL-01**: Write routes (job-postings, applications, resume-library) validate required string fields and max lengths; invalid input returns 400.
+- [ ] **REL-02**: A test covers the AI→heuristic fallback chain (mock provider failure → heuristic succeeds).
+- [ ] **REL-03**: A test covers the draft cleanup lifecycle (24h sweep).
+- [ ] **REL-04**: Tests cover resume-library CRUD API routes.
+- [ ] **REL-05**: One ReviewSuggestions page test covers accept → generate → draft id.
+- [ ] **REL-06**: A fresh clone runs on Node 20.19 with no manual file creation; README documents the exact setup commands.
+- [ ] **REL-07**: Repo hygiene — `drafts/` gitignored, `slides.pdf` moved out of repo root, empty dirs removed; `git status` clean on fresh clone.
 
 ## Out of Scope
 
-* Authentication, authorization, accounts, or session isolation
-* API route changes or server/persistence refactoring
-* SQLite migration, durable hosted persistence, backups, or data recovery
-* Changes to Render service type, build commands, or deployment settings unrelated to the warning
-* New AI providers, changes to provider fallback behavior, or AI prompt/schema changes
-* Broad README rewriting unrelated to safety, setup accuracy, runtime versions, or local-versus-hosted behavior
-* Fixing every issue listed in `PROJECT_REVIEW.md`
+| Feature | Reason |
+|---------|--------|
+| PDF export pass (B4) | Deferred 2026-10-05 — keep milestone on output quality + demo path |
+| Visual/a11y sweep (B5) | Deferred 2026-10-05 — 375px check applies only to PATH-01/02 verification |
+| Cut-list removals (Cover Letter page fold, bonus keywords, server-side drafts refactor) | Removals/refactors are not this milestone's headline; deferred |
+| C5 write serialization | Replaced by demo freeze (seed + scheduled reset) per answer 5 |
+| Paid Render tier | Cold start handled via loading UX + uptime pinger, not spend |
+| Authentication | Single-user local tool |
+| Mobile responsive redesign | Desktop-first; 375px check is verification only |
+| AI API keys on hosted demo | No-keys policy stands (answer 2); heuristic-only demo |
 
 ## Definition of Done
 
-* A visitor can see and understand the hosted-demo warning from every client route.
-* The README and `AI_PROVIDERS.md` make no inaccurate privacy, persistence, or version claims.
-* No API contract, local workflow, or deployment command changes.
-* Focused warning tests pass, followed by lint, tests, and production build.
+* Eval pairs show zero fabricated claims; gap notes appear where the posting asks for absent experience.
+* New-user walkthrough reaches Analysis within 2 clicks from Dashboard; provider options match availability.
+* Hosted demo seeds on boot, resets on schedule, and shows a labeled pre-computed AI example; Phase 16 warning text matches.
+* README leads with the full-stack story, includes demo media, AI-honesty, and cold-start note.
+* `npm test` covers fallback chain, draft lifecycle, and library CRUD; lint and production build pass.
+* Fresh clone runs on Node 20.19; `git status` clean.
 
 ## Traceability
 
-| Requirement | Phase |
-|---|---|
-| DEMO-01 | Phase 16 |
-| DEMO-02 | Phase 16 |
-| DEMO-03 | Phase 16 |
-| DOCS-01 | Phase 16 |
-| DOCS-02 | Phase 16 |
-| DOCS-03 | Phase 16 |
-| DOCS-04 | Phase 16 |
-| DOCS-05 | Phase 16 |
-| TEST-01 | Phase 16 |
-| TEST-02 | Phase 16 |
+Which phases cover which requirements. Updated during roadmap creation (2026-10-06).
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| OUT-01 | Phase 17 | Complete |
+| OUT-02 | Phase 17 | Complete |
+| OUT-03 | Phase 17 | Complete |
+| OUT-04 | Phase 17 | Complete |
+| OUT-05 | Phase 17 | Complete |
+| OUT-06 | Phase 17 | Complete |
+| PATH-01 | Phase 18 | Pending |
+| PATH-02 | Phase 18 | Pending |
+| PATH-03 | Phase 18 | Pending |
+| PATH-04 | Phase 18 | Pending |
+| PATH-05 | Phase 18 | Pending |
+| PATH-06 | Phase 18 | Pending |
+| PATH-07 | Phase 18 | Pending |
+| PATH-08 | Phase 18 | Pending |
+| FREEZE-01 | Phase 19 | Pending |
+| FREEZE-02 | Phase 19 | Pending |
+| FREEZE-03 | Phase 19 | Pending |
+| FREEZE-04 | Phase 19 | Pending |
+| COLD-01 | Phase 19 | Pending |
+| COLD-02 | Phase 19 | Pending |
+| REL-01 | Phase 20 | Pending |
+| REL-02 | Phase 20 | Pending |
+| REL-03 | Phase 20 | Pending |
+| REL-04 | Phase 20 | Pending |
+| REL-05 | Phase 20 | Pending |
+| REL-06 | Phase 20 | Pending |
+| REL-07 | Phase 20 | Pending |
+| README-01 | Phase 21 | Pending |
+| README-02 | Phase 21 | Pending |
+| README-03 | Phase 21 | Pending |
+| README-04 | Phase 21 | Pending |
+
+**Coverage:**
+
+- v2.2 requirements: 31 total
+- Mapped to phases: 31
+- Unmapped: 0
+
+---
+*Requirements defined: 2026-10-05*
+*Last updated: 2026-10-06 after roadmap creation (Phases 17-21; 31/31 mapped)*

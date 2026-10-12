@@ -169,7 +169,7 @@ function PreviewTailored() {
             {staleSkips.map(s => (
               <li key={s.id}>
                 {SECTION_LABELS[s.section] || s.section} ({TYPE_LABELS[s.type] || s.type}) — {s.reason === SKIP_REASON.TARGET_ENTRY_NOT_FOUND
-                  ? <>no entry named "{s.target_entry}" was found — this was attached to your most recent {s.section} entry instead.</>
+                  ? <>no entry named &quot;{s.target_entry}&quot; was found — this was attached to your most recent {s.section} entry instead.</>
                   : 'the resume content it targeted no longer matches exactly.'}
               </li>
             ))}

@@ -4,11 +4,10 @@ milestone: v2.2
 milestone_name: Honest Output & Demo Path
 current_phase: 18
 current_phase_name: Demo Path UX
-status: ready_to_plan
+status: "Phase 17 shipped — PR #39"
 stopped_at: Phase 17 complete, ready to plan Phase 18
-last_updated: "2026-10-12T10:22:35.909Z"
+last_updated: "2026-10-12T11:10:20.656Z"
 last_activity: 2026-10-12
-last_activity_desc: Phase 17 complete, transitioned to Phase 18
 progress:
   total_phases: 5
   completed_phases: 1
@@ -31,8 +30,8 @@ See: .planning/PROJECT.md (updated 2026-10-12)
 Phase: 18 — Demo Path UX
 Plan: Not started
 Total Plans in Phase: 5
-Status: Ready to plan
-Last activity: 2026-10-12 — Phase 17 complete, transitioned to Phase 18
+Status: Phase 17 shipped — PR #39
+Last activity: 2026-10-12
 
 ## Performance Metrics
 

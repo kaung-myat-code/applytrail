@@ -5,6 +5,26 @@
   min-height: 100vh;
 }
 
+.demoWarning {
+  display: flex;
+  gap: var(--space-3);
+  align-items: baseline;
+  margin-top: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-warning);
+  border-radius: var(--radius-md);
+  background: var(--color-warning-bg);
+  color: var(--color-text);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.demoWarning strong {
+  flex: 0 0 auto;
+  color: var(--color-warning);
+  font-weight: 700;
+}
+
 .main {
   padding: var(--space-8) 0 var(--space-10);
   /* fill-mode is intentionally "backwards" (not "both"): "both" would hold
@@ -37,5 +57,11 @@
 
   .main {
     padding: var(--space-6) 0 var(--space-8);
+  }
+
+  .demoWarning {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-1);
   }
 }

@@ -172,7 +172,7 @@ Archive: [v2.1 Roadmap](milestones/v2.1-ROADMAP.md) | [v2.1 Requirements](milest
 | 5-8 | v1.1 | Complete | Complete | 2026-06-27 |
 | 9-15 | v2.0 | Complete | Complete | 2026-07-26 |
 | 16. Hosted Demo Safety & Documentation | v2.1 | 1/1 | Complete | 2026-10-02 |
-| 17. Honest Analysis Output | v2.2 | 5/5 | Complete   | 2026-10-09 |
+| 17. Honest Analysis Output | v2.2 | 5/5 | Complete    | 2026-10-09 |
 | 18. Demo Path UX | v2.2 | 0/0 | Not started | - |
 | 19. Hosted Demo Freeze & Cold Start | v2.2 | 0/0 | Not started | - |
 | 20. Reliability & Repo Hygiene | v2.2 | 0/0 | Not started | - |

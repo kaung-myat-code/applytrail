@@ -2,37 +2,37 @@
 gsd_state_version: 1.0
 milestone: v2.2
 milestone_name: Honest Output & Demo Path
-current_phase: 17
-current_phase_name: honest-analysis-output
-status: executing
-stopped_at: Phase 17 plan complete
-last_updated: "2026-10-09T15:39:26.925Z"
-last_activity: 2026-10-09
-last_activity_desc: Phase 17 execution started
+current_phase: 18
+current_phase_name: Demo Path UX
+status: ready_to_plan
+stopped_at: Phase 17 complete, ready to plan Phase 18
+last_updated: "2026-10-12T10:22:35.909Z"
+last_activity: 2026-10-12
+last_activity_desc: Phase 17 complete, transitioned to Phase 18
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 5
-  completed_plans: 0
-  percent: 0
+  completed_plans: 5
+  percent: 20
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-10-05)
+See: .planning/PROJECT.md (updated 2026-10-12)
 
 **Core value:** End-to-end job application workflow in a web UI -- from resume to cover letter to application tracking -- so the user can manage their job search from any browser.
-**Current focus:** Phase 17 — honest-analysis-output
+**Current focus:** Phase 18 — demo-path-ux
 
 ## Current Position
 
-Phase: 17 (honest-analysis-output) — EXECUTING
-Plan: 1 of 5
+Phase: 18 — Demo Path UX
+Plan: Not started
 Total Plans in Phase: 5
-Status: Executing Phase 17
-Last activity: 2026-10-09 — Phase 17 execution started
+Status: Ready to plan
+Last activity: 2026-10-12 — Phase 17 complete, transitioned to Phase 18
 
 ## Performance Metrics
 
@@ -42,7 +42,7 @@ Last activity: 2026-10-09 — Phase 17 execution started
 - Average duration: ~5 min/plan
 - Total execution time: ~50 min
 
-**By Phase:** Historical metrics are retained in prior milestone artifacts; v2.1 completed 1 plan (Phase 16). v2.2 has no completed plans.
+**By Phase:** Historical metrics are retained in prior milestone artifacts; v2.1 completed 1 plan (Phase 16). v2.2 Phase 17 completed 5 plans (2 waves, ~45 min wall-clock with parallel worktrees).
 
 ## Accumulated Context
 
@@ -57,10 +57,12 @@ Last activity: 2026-10-09 — Phase 17 execution started
 - Phase 21 (README) last — per audit: README after behavior is real.
 - Dependencies: 17 → 18 → 19 → 20 → 21 (demo path routes to honest output; freeze seeds data matching new CTAs; tests cover shipped behavior; README after behavior + setup docs final).
 - Deferred out of v2.2 unchanged: PDF export pass (B4), visual/a11y sweep (B5), cut-list removals, C5 write serialization.
+- Phase 17 shipped with an honest low-suggestion deviation (locked audit answer 4): heuristic emits NO experience/projects suggestions rather than rephrases — fabrication-removal intent fully met.
+- Phase 17 code review: 4 warnings, 0 critical (advisory — WR-01 footer/copy contradiction in PreviewTailored, WR-02 skills-remove markApplied, WR-03 validate/applyPatches matcher divergence, WR-04 heuristic score weights sum 1.05). Candidate for a later polish/gap pass, not blocking.
 
 ### Pending Todos
 
-- Execute Phase 17: `/gsd-execute-phase 17`
+- Plan Phase 18: `/gsd-plan-phase 18`
 
 ### Blockers/Concerns
 
@@ -81,10 +83,11 @@ Audit Q&A retained in `.planning/.continue-here.md` (full audit: verdict 6/10, G
 
 ## Session Continuity
 
-Last session: 2026-10-09T10:15:00.000Z
-Stopped at: Phase 17 plan complete (5 plans, 2 waves)
-Resume file: .planning/phases/17-honest-analysis-output/17-01-PLAN.md
+Last session: 2026-10-12T10:30:00.000Z
+Stopped at: Phase 17 complete, ready to plan Phase 18
+Resume file: None
 
 ## Operator Next Steps
 
-- Execute Phase 17: `/gsd-execute-phase 17`
+- Discuss Phase 18: `/gsd-discuss-phase 18` (if context gathering needed)
+- Plan Phase 18: `/gsd-plan-phase 18`

@@ -10,10 +10,10 @@ End-to-end job application workflow in a web UI — from resume to cover letter 
 
 ## Current State
 
-**Shipped:** v2.1 Protect and Clearly Label the Hosted Demo (2026-10-02)
+**Shipped:** v2.1 Protect and Clearly Label the Hosted Demo (2026-10-02); v2.2 Phase 17 Honest Analysis Output (2026-10-12)
 **Live URL:** https://applytrail.onrender.com
 **Deployment:** Render free tier, auto-deploy from main branch
-**Status:** v1.0 through v2.1 shipped. Hosted-demo safety warning live in production (PR #38). v2.2 (Honest Output & Demo Path) kicking off — scope set by the 2026-10-05 portfolio audit (verdict 6/10) and the five prioritization answers recorded in `.planning/.continue-here.md`.
+**Status:** v1.0 through v2.1 shipped. Phase 17 (honest output) shipped — fabrication removed from heuristic + AI paths, target_entry patching, committed eval harness (20/20 assertions incl. live Gemini). Next: Phase 18 demo-path-ux.
 
 ## Current Milestone: v2.2 Honest Output & Demo Path
 
@@ -96,9 +96,12 @@ A local web MVP that migrated an existing Claude Code job application workflow i
 - [x] AI-provider documentation states that optional providers may receive resume and job-posting content (Phase 16)
 - [x] Client tests verify the warning content; lint, tests, and production build pass (Phase 16)
 
+### Validated (v2.2)
+
+- [x] Users get honest analysis output: rephrase-only suggestions, gap notes instead of invented claims, no fabricated experience (Phase 17 — OUT-01..06; fabrication templates removed, per-keyword gap notes, AI anti-fabrication guardrails, score-rescale fix, target_entry patching, 5-pair eval harness 20/20)
+
 ### Active
 
-- [ ] Users get honest analysis output: rephrase-only suggestions, gap notes instead of invented claims, no fabricated experience (v2.2)
 - [ ] A first-time visitor reaches Analysis within 2 clicks from the Dashboard, and provider options match actual availability — AI hidden on hosted demo (v2.2)
 - [ ] Hosted demo data is disposable: seeded on boot, resets on a schedule, includes a labeled pre-computed AI example; Phase 16 warning text matches the new behavior (v2.2)
 - [ ] README tells the full-stack story: patch engine, fallback chain, tests/CI, demo media at top, AI-honesty section, cold-start note (v2.2)
@@ -201,4 +204,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-10-05 after v2.2 milestone kickoff*
+*Last updated: 2026-10-12 after Phase 17 (honest-analysis-output)*
